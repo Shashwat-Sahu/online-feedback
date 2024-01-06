@@ -10,7 +10,7 @@ const Login = () => {
                     <Col xs={8} md={3}>
                     <Form className="mb-4">
                         <Row>
-                            <h2 color="white">Login</h2>
+                            <h2 className='link-info'>Login</h2>
                         </Row>
                         <Form.Group className="mb-4">
                             <Form.Control type="text" placeholder="User ID" />
