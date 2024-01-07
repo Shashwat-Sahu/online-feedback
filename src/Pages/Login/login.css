@@ -3,18 +3,17 @@
 *{
     font-family: 'Poppins', sans serif;
 }
-body{
+
+.box{
     background-image: url("https://hips.hearstapps.com/hmg-prod/images/snow-capped-mountain-peak-surrounded-by-clouds-on-royalty-free-image-1623254319.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-}
-.box{
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 90vh;
+    min-height: 100vh;
 }
 .container{
     width: 350px;
