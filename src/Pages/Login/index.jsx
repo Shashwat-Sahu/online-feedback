@@ -35,14 +35,53 @@
 
 // export default Login;
 
-import React from 'react'
+import React,{ useState,useEffect } from 'react'
 import './login.css'
+import Form from 'react-bootstrap/Form';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import PasswordIcon from '@mui/icons-material/Password';
 
 const Login = () => {
+    const [inputFields,setInputFields]=useState({serviceId:"",password:""});
+    const[errors,setErrors]=useState({});
+    const [submitting,setSubmitting]=useState(false);
+    const validateValues=(inputValues)=>{
+        let errors={};
+        if(inputValues.serviceId.length<5){
+          errors.serviceId="Service ID should be 5 digits long";
+        }
+        if((inputValues.serviceId!=/^[0-9]+$/)){
+            errors.serviceId="Service ID should be numbers";
+        }
+        if (inputValues.password.length < 5) {
+            errors.password = "Password is too short";
+          }
+          return errors;
+    }
+    const handleChange = (e) => {
+        setInputFields({ ...inputFields, [e.target.name]: e.target.value });
+      };
+   const handleSubmit=(e)=>{
+    e.preventDefault();
+        setErrors(validateValues(inputFields));
+        setSubmitting(true); 
+    }
+    const finishSubmit = () => {
+        console.log(inputFields);
+      };
+
+      useEffect(() => {
+        if (Object.keys(errors).length === 0 && submitting) {
+          finishSubmit();
+        }
+      }, [errors]);
+   
   return (
-    <div class="box">
+    <div >
+         {Object.keys(errors).length === 0 && submitting ? (
+        <span className="success">Successfully submitted ✓</span>
+      ) : null}
+    <Form className="box" action='' onSubmit={handleSubmit} >
         <div class="container">
             <div class="top-header">
                 <span>Have an account?</span>
@@ -50,13 +89,19 @@ const Login = () => {
             </div>
             <div class="input-field">
             <PersonOutlinedIcon className='icon'/>
-                <input type="text" class="input" placeholder="Username" required/>
-              
+                <input type="text" class="input" name="serviceId" placeholder="Service ID" value={inputFields.serviceId} onChange={handleChange}  style={{ border: errors.serviceId ? "1px solid red" : null }}/>
+                {errors.serviceId ? (
+            <p className="error">Email should be number and atleast 5 digits long</p>
+          ) : null}
             </div>
             <div class="input-field">
                 <PasswordIcon className='icon'/>
-                <input type="password" class="input" placeholder="Password" required/>
-                <i class="bx bx-lock-alt"></i>
+                <input type="password" name="password" class="input" placeholder="Password" value={inputFields.password} onChange={handleChange}  style={{ border: errors.password ? "1px solid red" : null }}/>
+                {errors.password ? (
+            <p className="error">
+              Password should be at least 5 characters long
+            </p>
+          ) : null}
             </div>
             <div class="input-field">
                 <input type="submit" class="submit" value="Login"/>
@@ -72,8 +117,9 @@ const Login = () => {
                 </div>
             </div>
         </div>
+    </Form>
     </div>
   )
-}
+};
 
 export default Login
