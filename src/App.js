@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './Pages/Login';
-import User from './Pages/User'
+import FeedbackFrom from './Pages/User/FeedbackForm';'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
