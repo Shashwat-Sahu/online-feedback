@@ -5,22 +5,24 @@
 }
 
 .box{
-    background-image: url("https://hips.hearstapps.com/hmg-prod/images/snow-capped-mountain-peak-surrounded-by-clouds-on-royalty-free-image-1623254319.jpg");
+    background-image: url("https://www.cumberlandcrossingrc.com/wp-content/uploads/2021/08/ran-ding-QgrQVM3A04A-unsplash-1500x1001.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    display: flex;
+    height: 100vh;
+    /* display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100vh; */
 }
-.container{
-    width: 350px;
+/* .container{
+    width: 50rem;
     display: flex;
     flex-direction: column;
     padding: 0 15px 0 15px;
-}
+} */
+
 span{
     color: #fff;
     font-size: small;
@@ -37,20 +39,35 @@ header{
 }
 .input-field{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     margin-bottom: 2rem;
 }
-.input-field .input{
+.input-container{
     height: 45px;
     width: 60%;
     border: 1px solid #cfe2ff45;
-    outline: none;
     border-radius: 30px;
     color: #fff;
-    padding: 0 0 0 42px;
-    background: rgba(255,255,255,0.1);
+    padding: 0 0 0 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
+}
+.input-field .input{
+    color: #fff;
+    outline: none;
+    background-color: transparent;
+    border: none;
+    flex-grow: 4;
+    margin-left: 1rem;
+}
+.input-field .input[type=number]::-webkit-outer-spin-button,.input-field .input[type=number]::-webkit-inner-spin-button
+{
+    -webkit-appearance: none;
+    margin: 0;
 }
 i{
     position: relative;
