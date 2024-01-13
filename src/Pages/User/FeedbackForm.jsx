@@ -2,9 +2,11 @@ import React from 'react'
 import { Col, Row, Container } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+// import Button from 'react-bootstrap/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
 
 const currDate = new Date().toLocaleDateString();
 const FeedbackForm = () => {
@@ -27,19 +29,23 @@ const FeedbackForm = () => {
             </div>
           </Col>
           <Col>
-            <h1 style={{ textAlign: "center" }}>User Feedback Form</h1>
+            <h1 style={{ textAlign: "center" }}>Counselee Feedback Form</h1>
             {/* <Col style={{paddingRight:"0"}}> */}
             <Table striped bordered style={{ width: "auto", textAlign: "none", marginTop: "2rem" }}>
 
               <tbody>
                 <tr>
-                  <td>Candidate Name</td>
+                  <td>Counselee Name</td>
                   <td>Jainendra Kumar Sahu</td>
 
                 </tr>
                 <tr>
                   <td>Service ID</td>
                   <td>17116</td>
+                </tr>
+                <tr>
+                  <td>Rank</td>
+                  <td>FO</td>
                 </tr>
                 <tr>
                   <td>Date</td>
@@ -82,6 +88,9 @@ const FeedbackForm = () => {
                 <Form.Control as="textarea" aria-label="With textarea" />
               </InputGroup>
             </div>
+            <div className="text-center">
+                        <Button variant="contained" color="success" endIcon={<SendIcon />} size="large"> Submit</Button>
+                    </div>
           </Col>
           {/* </Col> */}
         </Row>

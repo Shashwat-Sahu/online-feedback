@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react'
 import { Col, Container, Form, Row,Dropdown } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
-const AddUser = () => {
 
+const AddStudent = () => {
     return (
         <Container>
             <Row>
                 <Col>
-                    <h1 className="text-center">Add Counsellor</h1>
+                    <h1 className="text-center">Add Counselee</h1>
                 </Col>
             </Row>
             <Row>
@@ -60,14 +60,6 @@ const AddUser = () => {
                                 <Dropdown.Item href="#/action-3">Flight cadet</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Set Password</Form.Label>
-                            <Form.Control type="password" placeholder="Enter Password" />
-                            <Form.Text className="text-danger">
-                                *Required
-                            </Form.Text>
-                        </Form.Group>
                     </Form>
                     <div className="text-center">
                         <Button variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
@@ -80,4 +72,4 @@ const AddUser = () => {
     )
 }
 
-export default AddUser;
+export default AddStudent

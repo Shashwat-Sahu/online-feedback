@@ -1,6 +1,11 @@
 import React from "react";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import {Card, Col, Container, Row } from "react-bootstrap";
+import User from './User'
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from "react-router-dom";
+import Stack from '@mui/material/Stack';
+
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -12,16 +17,13 @@ const AdminDashboard = () => {
                     <h1 className="text-center">Admin Dashboard</h1>
                 </Col>
             </Row>
-            <Row className="flex-grow-1 mt-5">
-                <Col xs={4} className="d-flex justify-content-center align-items-center">
-                    <Button variant="primary" style={{ width: "20rem", height: "10rem" }} onClick={()=>{navigate("/admin/adduser")}}>Add User</Button>
+            <Row className="flex-grow-1 mt-5 mb-4">
+                <Col xs={4} className="d-flex" style={{padding:"0"}}>
+                    <Button  style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<AddIcon />} onClick={()=>{navigate("/admin/adduser")}} size="large">Add Counsellor</Button>
                 </Col>
-                <Col xs={4} className="d-flex justify-content-center align-items-center">
-                    <Button variant="primary" style={{ width: "20rem", height: "10rem" }}>Add Students</Button>
-                </Col>
-                <Col xs={4} className="d-flex justify-content-center align-items-center">
-                    <Button variant="primary" style={{ width: "20rem", height: "10rem" }}>Modify</Button>
-                </Col>
+            </Row>
+            <Row>
+                <User/>
             </Row>
         </Container>
     </>)
