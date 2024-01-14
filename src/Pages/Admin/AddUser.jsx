@@ -1,37 +1,41 @@
 import React from "react";
-import { Col, Container, Form, Row,Dropdown } from "react-bootstrap";
+import { Col, Container, Form, Row, Dropdown, FloatingLabel } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import '../../commonStyles.css'
+// import '../Login/login.css'
 const AddUser = () => {
 
     return (
-        <Container>
-            <Row>
-                <Col>
-                    <h1 className="text-center">Add Counsellor</h1>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
+        <div className="counsellor-box">
+            <Container >
+                <Row>
+
+                    <h1 className="text-center"  style={{color:"white",marginTop:"1rem"}}>Add Counsellor</h1>
+
+                </Row>
+                <Row className="text-center table-user">
+
                     <Form>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control id="input-field" type="text" placeholder="Enter Name" />
-                            <Form.Text className="text-danger">
-                                *Required
-                            </Form.Text>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Service ID</Form.Label>
-                            <Form.Control id="input-field" type="number" placeholder="Enter Service ID" />
-                            <Form.Text className="text-danger">
-                                *Required
-                            </Form.Text>
-                        </Form.Group>
-                        <Form.Label>Rank</Form.Label>
+                        <FloatingLabel
+                            controlId="floatingInput"
+                            label="Name"
+                            className="mb-3"
+                            style={{color:"white"}}
+                            id="input-field"
+                        >
+                            <Form.Control type="text" placeholder="User Name" />
+                        </FloatingLabel>
+
+                        <FloatingLabel
+                            controlId="floatingInput"
+                            label="Service ID"
+                            className="mb-3" style={{color:"white"}}>
+                            <Form.Control  id="input-field" type="number" placeholder="Enter Service ID" />
+                        </FloatingLabel>
+                        <Form.Label style={{color:"white"}}>Rank</Form.Label>
                         <Dropdown>
-                            <Dropdown.Toggle id="dropdown-button-dark-example1" variant="secondary" className="mb-3" style={{color:"#212529",backgroundColor:"white",border:"1px solid #dee2e6"}}  >
+                            <Dropdown.Toggle id="dropdown-button-dark-example1" variant="secondary" className="mb-3" style={{ color: "#212529", backgroundColor: "white", border: "1px solid #dee2e6" }}  >
                                 Select Rank
                             </Dropdown.Toggle>
 
@@ -62,22 +66,26 @@ const AddUser = () => {
                             </Dropdown.Menu>
                         </Dropdown>
 
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Set Password</Form.Label>
-                            <Form.Control id="input-field" type="password" placeholder="Enter Password" />
-                            <Form.Text className="text-danger">
-                                *Required
-                            </Form.Text>
-                        </Form.Group>
+                        <FloatingLabel
+                            controlId="floatingInput"
+                            label="Set Password"
+                            className="mb-3"
+                            id="input-field"
+                            style={{color:"white"}}
+                        >
+                            <Form.Control type="password" placeholder="Set Password" />
+                        </FloatingLabel>
+                        <div className="text-center">
+                            <Button id="submit-Btn" variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
+                        </div>
                     </Form>
-                    <div className="text-center">
-                        <Button id="submit-Btn" variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
-                    </div>
-                </Col>
 
-            </Row>
 
-        </Container>
+
+                </Row>
+
+            </Container>
+        </div>
     )
 }
 

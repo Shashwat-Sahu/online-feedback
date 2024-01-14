@@ -1,101 +1,81 @@
 import React from 'react'
 import { Col, Row, Container } from "react-bootstrap";
-import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
-// import Button from 'react-bootstrap/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 
-const currDate = new Date().toLocaleDateString();
 const FeedbackForm = () => {
   return (
-      <Container fluid style={{ margin: "0" }} >
-        <Row>
-          <Col className='d-flex justify-content-center align-items-center col-auto bg-dark min-vh-100' style={{ color: "white", opacity: "0.3" }}>
-            <div>
-              <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
-              <h1>Samiksha Sahu</h1>
-              <h5> Department:Engineering</h5>
-              <h6>Service ID:78908</h6>
-              <Form.Select size="sm" style={{ width: "auto", backgroundColor: "#fff3cd8c" }}>
-                <option>Select Student</option>
-                <option value="1">Jainendra Kr Sahu:17116</option>
-                <option value="2">Neelam Sahu:22027</option>
-                <option value="3">Shashwat Sahu:25112</option>
-              </Form.Select>
-
-            </div>
-          </Col>
-          <Col>
-            <h1 style={{ textAlign: "center" }}>Counselee Feedback Form</h1>
-            {/* <Col style={{paddingRight:"0"}}> */}
-            <Table striped bordered style={{ width: "auto", textAlign: "none", marginTop: "2rem" }}>
-
-              <tbody>
-                <tr>
-                  <td>Counselee Name</td>
-                  <td>Jainendra Kumar Sahu</td>
-
-                </tr>
-                <tr>
-                  <td>Service ID</td>
-                  <td>17116</td>
-                </tr>
-                <tr>
-                  <td>Rank</td>
-                  <td>FO</td>
-                </tr>
-                <tr>
-                  <td>Date</td>
-                  <td>{currDate}</td>
-                </tr>
-
-              </tbody>
-            </Table>
-            <div style={{ paddingLeft: "0" }}>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Academics</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Projects</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Sick Report</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>OLQ</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Games</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Cultural</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Financial</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-              <InputGroup className="mb-3">
-                <InputGroup.Text>Personal</InputGroup.Text>
-                <Form.Control as="textarea" aria-label="With textarea" />
-              </InputGroup>
-            </div>
-            <div className="text-center">
-                        <Button variant="contained" color="success" endIcon={<SendIcon />} size="large"> Submit</Button>
-                    </div>
-          </Col>
-          {/* </Col> */}
-        </Row>
-      </Container>
- 
+    
+     <div class="container" style={{marginLeft:"0"}}>
+  <div class="row align-items-start">
+    <div class="col col-auto min-vh-100" style={{backgroundColor:"#0d6efd40"}}>
+    <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
+    <h2 style={{marginBottom:"0"}}>
+  <small class="text-muted">Samiksha Sahu</small>
+</h2>
+<p style={{marginBottom:"0"}}>
+  <small class="text-muted">Service ID:13342</small>
+</p>
+<p >
+<small class="text-muted">Rank:Flying Officer</small>
+</p>
+    <select class="form-select" aria-label="Select Counselee">
+  <option selected>Select Counselee</option>
+  <option value="1">Samiksha Sahu</option>
+  <option value="2">Neelam Sahu</option>
+  <option value="3">Shashwat Sahu</option>
+</select>
+    </div>
+    <div class="col">
+      <h1 className='mb-3 text-center'>Feedback Form</h1>
+    <table class="table table-bordered" style={{width:"auto"}}>
+  <tbody>
+   
+      <tr>
+    <th scope="row">Counselee Name</th>
+      <td>Samiksha Sahu</td>  
+      </tr>
+      <tr>
+    <th scope="row">Service ID</th>
+      <td>13342</td>  
+      </tr>
+   
+  </tbody>
+</table>
+<div class="input-group mb-2">
+  <span class="input-group-text">Academics</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">Projects</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">Sick Report</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">OLQ</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">Games</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">Cultural</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group mb-2">
+  <span class="input-group-text">FinanciaL</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+<div class="input-group">
+  <span class="input-group-text">Personal</span>
+  <textarea class="form-control" aria-label="With textarea" style={{borderColor:"#adb5bd"}}></textarea>
+</div>
+    </div>
+    </div>
+    </div>
   )
 }
 

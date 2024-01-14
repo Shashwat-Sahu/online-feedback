@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
-    return (<>
+    return (< div className="counsellor-box">
         <Container style={{ height: "100vh" }}>
 
             <Row>
@@ -26,7 +26,7 @@ const AdminDashboard = () => {
                 <User/>
             </Row>
         </Container>
-    </>)
+    </div>)
 
 }
 
