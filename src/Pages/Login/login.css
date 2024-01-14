@@ -11,17 +11,7 @@
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
-    /* display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; */
 }
-/* .container{
-    width: 50rem;
-    display: flex;
-    flex-direction: column;
-    padding: 0 15px 0 15px;
-} */
 
 span{
     color: #fff;

@@ -48,11 +48,6 @@ const Login = () => {
         console.log(inputFields);
     };
 
-    // useEffect(() => {
-    //     if (Object.keys(errors).length === 0 && submitting) {
-    //         finishSubmit();
-    //     }
-    // }, [errors]);
 
     return (
         <div className='box'>

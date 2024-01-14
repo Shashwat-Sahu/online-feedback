@@ -2,6 +2,7 @@ import React from "react";
 import { Col, Container, Form, Row,Dropdown } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
+import '../../commonStyles.css'
 const AddUser = () => {
 
     return (
@@ -16,14 +17,14 @@ const AddUser = () => {
                     <Form>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter Name" />
+                            <Form.Control id="input-field" type="text" placeholder="Enter Name" />
                             <Form.Text className="text-danger">
                                 *Required
                             </Form.Text>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Service ID</Form.Label>
-                            <Form.Control type="number" placeholder="Enter Service ID" />
+                            <Form.Control id="input-field" type="number" placeholder="Enter Service ID" />
                             <Form.Text className="text-danger">
                                 *Required
                             </Form.Text>
@@ -34,7 +35,7 @@ const AddUser = () => {
                                 Select Rank
                             </Dropdown.Toggle>
 
-                            <Dropdown.Menu>
+                            <Dropdown.Menu id="input-field">
                                 <Dropdown.Item href="#/action-1" active>Marshal of the Indian Air Force</Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Item href="#/action-2">Air chief marshal</Dropdown.Item>
@@ -63,14 +64,14 @@ const AddUser = () => {
 
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Set Password</Form.Label>
-                            <Form.Control type="password" placeholder="Enter Password" />
+                            <Form.Control id="input-field" type="password" placeholder="Enter Password" />
                             <Form.Text className="text-danger">
                                 *Required
                             </Form.Text>
                         </Form.Group>
                     </Form>
                     <div className="text-center">
-                        <Button variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
+                        <Button id="submit-Btn" variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
                     </div>
                 </Col>
 

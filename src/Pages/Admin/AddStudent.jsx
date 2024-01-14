@@ -2,10 +2,11 @@ import React from 'react'
 import { Col, Container, Form, Row,Dropdown } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
+import '../../commonStyles.css'
 
 const AddStudent = () => {
     return (
-        <Container>
+        <Container fluid={{url:('')}}>
             <Row>
                 <Col>
                     <h1 className="text-center">Add Counselee</h1>
@@ -14,9 +15,9 @@ const AddStudent = () => {
             <Row>
                 <Col>
                     <Form>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Group id="input-field" className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter Name" />
+                            <Form.Control id="input-container" type="text" placeholder="Enter Name" />
                             <Form.Text className="text-danger">
                                 *Required
                             </Form.Text>
@@ -62,7 +63,7 @@ const AddStudent = () => {
                         </Dropdown>
                     </Form>
                     <div className="text-center">
-                        <Button variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
+                        <Button className='submit-Btn' variant="contained" color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
                     </div>
                 </Col>
 
