@@ -7,7 +7,9 @@ const sha256 = require('sha256');
 
 
 router.post("/login", (req, res) => {
+    console.log(req.body)
     const { service_id, password, type } = req.body;
+    
     if (type == "admin") {
         const cryptedPassword = sha256(password)
         AdminAuth.find({ "service_id":service_id, password: cryptedPassword }).then(data => {

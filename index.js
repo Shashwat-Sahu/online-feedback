@@ -27,7 +27,7 @@ app.use(require("./Routes/Login.js"))
 app.use("/counsellor",require("./Routes/Counsellor.js"))
 app.use("/counselee",require("./Routes/Counselee.js"))
 
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 app.listen(PORT,()=>{
     console.log(`Server running on port:${PORT}`)
