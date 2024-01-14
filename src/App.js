@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminDashboard from './Pages/Admin';
 import AddUser from './Pages/Admin/AddUser';
 import AddStudent from './Pages/Admin/AddStudent';
+import ViewCounseleeList from './Pages/Admin/ViewCounseleeList';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/admindashboard" Component={AdminDashboard}/>
         <Route path="/admin/adduser" Component={AddUser}/>
         <Route path="/admin/addstudent" Component={AddStudent}/>
+        <Route path="/admin/viewcounseleelist/:counselId" Component={ViewCounseleeList} />
         
       </Routes>
     </BrowserRouter>

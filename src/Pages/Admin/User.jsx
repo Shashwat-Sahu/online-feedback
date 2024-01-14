@@ -12,61 +12,33 @@ const User = () => {
   const navigate = useNavigate();
   return (
     <table class="table table-hover table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Service ID</th>
-      <th scope="col">Counsellor Name</th>
-      <th scope="col">Modify Counsellor</th>
-      <th scope="col">Delete Counsellor</th>
-      <th scope="col">Add Counselee</th>
-      <th scope="col">View Counselee List</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">12345</th>
-      <td>Samiksha Sahu</td>
-      <td><Modify/></td>
-      <td><IconButton aria-label="delete">
-  <DeleteIcon />
-</IconButton></td>
-      <td><AddIcon onClick={()=>{navigate("/admin/addstudent")}} style={{color:"blue"}}/></td>
-      <td><RemoveRedEyeIcon style={{color:"blue"}}/></td>
+      <thead>
+        <tr>
+          <th scope="col">Service ID</th>
+          <th scope="col">Counsellor Name</th>
+          <th scope="col">Rank</th>
+          <th scope="col">Modify Counsellor</th>
+          <th scope="col">Delete Counsellor</th>
+          <th scope="col">Add Counselee</th>
+          <th scope="col">View Counselee List</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">12345</th>
+          <td>Samiksha Sahu</td>
+          <td>Wing Commander</td>
+          <td><Modify /></td>
+          <td><IconButton aria-label="delete">
+            <DeleteIcon />
+          </IconButton></td>
+          <td><AddIcon onClick={() => { navigate("/admin/addstudent") }} style={{ color: "blue" }} /></td>
+          <td><RemoveRedEyeIcon style={{ color: "blue" }} onClick={() => { navigate("/admin/viewcounseleelist/12344") }} /></td>
 
-    </tr>
-    <tr>
-    <th scope="row">12342</th>
-      <td>Neelam Sahu</td>
-      <td><Modify/></td>
-      <td><IconButton aria-label="delete">
-  <DeleteIcon />
-</IconButton></td>
-      <td><AddIcon onClick={()=>{navigate("/admin/addstudent")}} style={{color:"blue"}}/></td>
-      <td><RemoveRedEyeIcon style={{color:"blue"}}/></td>
-    </tr>
-    <tr>
-    <th scope="row">12343</th>
-      <td>Shashwat Sahu</td>
-      <td><Modify/></td>
-      <td><IconButton aria-label="delete">
-  <DeleteIcon />
-</IconButton></td>
-      <td><AddIcon onClick={()=>{navigate("/admin/addstudent")}} style={{color:"blue"}}/></td>
-      <td><RemoveRedEyeIcon style={{color:"blue"}}/></td>
-    </tr>
-    <tr>
-    <th scope="row">12341</th>
-      <td>Jainendra Kumar Sahu</td>
-      <td><Modify/></td>
-      <td><IconButton aria-label="delete">
-  <DeleteIcon />
-</IconButton></td>
-      <td><AddIcon onClick={()=>{navigate("/admin/addstudent")}} style={{color:"blue"}}/></td>
-      <td><RemoveRedEyeIcon style={{color:"blue"}}/></td>
-    </tr>
+        </tr>
 
-  </tbody>
-</table>
+      </tbody>
+    </table>
   )
 }
 

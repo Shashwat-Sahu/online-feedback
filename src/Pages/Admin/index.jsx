@@ -17,7 +17,7 @@ const AdminDashboard = () => {
                     <h1 className="text-center">Admin Dashboard</h1>
                 </Col>
             </Row>
-            <Row className="flex-grow-1 mt-5 mb-4">
+            <Row className="flex-grow-1 mt-5">
                 <Col xs={4} className="d-flex" style={{padding:"0"}}>
                     <Button  style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<AddIcon />} onClick={()=>{navigate("/admin/adduser")}} size="large">Add Counsellor</Button>
                 </Col>
