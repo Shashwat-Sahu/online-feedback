@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const User = () => {
   const navigate = useNavigate();
   return (
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered mt-4">
       <thead>
         <tr>
           <th scope="col">Service ID</th>

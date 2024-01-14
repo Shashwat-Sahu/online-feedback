@@ -5,23 +5,13 @@
 }
 
 .box{
-    background-image: url("https://www.cumberlandcrossingrc.com/wp-content/uploads/2021/08/ran-ding-QgrQVM3A04A-unsplash-1500x1001.jpg");
+    background-image: url("https://wallpapercave.com/dwp2x/wp6676998.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
     height: 100vh;
-    /* display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; */
 }
-/* .container{
-    width: 50rem;
-    display: flex;
-    flex-direction: column;
-    padding: 0 15px 0 15px;
-} */
 
 span{
     color: #fff;

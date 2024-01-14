@@ -1,0 +1,46 @@
+
+
+#submit-Btn{
+    border: none;
+    border-radius: 3rem;
+    font-size: 15px;
+    height: 3rem;
+    outline: none;
+    width: auto;
+    cursor: pointer;
+    transition: .3s;
+}
+/* #input-field{
+    border-radius: 3rem;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
+    width: auto;
+    margin: 0 auto;
+} */
+.counsellor-box{
+    background-image: url("https://wallpaperset.com/w/full/0/d/6/39864.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+}
+.table-user{
+    border: 2px solid #ffffff61;
+    border-radius: 3rem;
+    width: 50%;
+    margin: 2rem auto;
+    padding: 2rem 2rem;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
+}
+.form-control,.form-floating>.form-control{
+   background-color: transparent;
+   border-radius: 1rem;
+   border-color: white;
+   color: white;
+}
+/* 
+.input-field .input[type=number]::-webkit-outer-spin-button,.input-field .input[type=number]::-webkit-inner-spin-button
+{
+    -webkit-appearance: none;
+    margin: 0;
+} */
