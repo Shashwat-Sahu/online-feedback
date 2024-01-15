@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -7,9 +7,18 @@ import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import Modify from './Modify';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const User = () => {
   const navigate = useNavigate();
+  const [counsellors, setCounsellors] = useState([])
+  useEffect(() => {
+    axios.get("/getCounsellors").then(data => {
+      console.log(data)
+      setCounsellors(data.data)
+    })
+  }, [])
+
   return (
     <table class="table table-hover table-bordered mt-4">
       <thead>
@@ -24,18 +33,23 @@ const User = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">12345</th>
-          <td>Samiksha Sahu</td>
-          <td>Wing Commander</td>
-          <td><Modify /></td>
-          <td><IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton></td>
-          <td><AddIcon onClick={() => { navigate("/admin/addstudent") }} style={{ color: "blue" }} /></td>
-          <td><RemoveRedEyeIcon style={{ color: "blue" }} onClick={() => { navigate("/admin/viewcounseleelist/12344") }} /></td>
+        {counsellors.map((counsellor) => {
+          return (
+            <tr>
+              <th scope="row">{counsellor.service_id}</th>
+              <td>{counsellor.name}</td>
+              <td>{counsellor.rank}</td>
+              <td><Modify details={{...counsellor,type:"counsellor"}}/></td>
+              <td><IconButton aria-label="delete">
+                <DeleteIcon />
+              </IconButton></td>
+              <td><AddIcon onClick={() => { navigate("/admin/addstudent") }} style={{ color: "blue" }} /></td>
+              <td><RemoveRedEyeIcon style={{ color: "blue" }} onClick={() => { navigate("/admin/viewcounseleelist/12344") }} /></td>
 
-        </tr>
+            </tr>
+          )
+        })}
+
 
       </tbody>
     </table>

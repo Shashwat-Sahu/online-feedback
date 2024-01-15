@@ -1,15 +1,33 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Dropdown, Modal, Button } from 'react-bootstrap';
 import EditIcon from '@mui/icons-material/Edit';
+import axios from 'axios';
+import { Alert, Snackbar } from '@mui/material';
 
-const Modify = () => {
+const Modify = (props) => {
   const [show, setShow] = useState(false);
+  const [data, setData] = useState(props.details);
+  const [message, setMessage] = useState({message:null,error:null})
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const handleSubmit = () => {
+    if (!data.name || !data.rank)
+      return window.alert("Name or Rank can't be empty")
+    axios.put('/counsellor/update', {
+      service_id: data.service_id,
+      name: data.name,
+      rank: data.rank
+    }).then(data => {
+      console.log(data)
+      setMessage(data?.data?.message)
+    }).catch(err => {
+      setMessage(err?.error)
+    })
+  }
+
   return (
-
     <>
-
       <Button variant="primary" onClick={handleShow}>
         <EditIcon />
       </Button>
@@ -20,8 +38,18 @@ const Modify = () => {
         backdrop="static"
         keyboard={false}
       >
+        <Snackbar open={true} autoHideDuration={6000} onClose={() => setMessage({message:null,error:null})} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+          {message?.message && <Alert severity="error">
+            <p className="error">{true}</p>
+          </Alert>
+          }
+          {message?.error &&<Alert severity="success">
+              <p className="success">{true}</p>
+            </Alert>
+          }
+        </Snackbar>
         <Modal.Header closeButton>
-          <Modal.Title>Update Counsellor</Modal.Title>
+          <Modal.Title>Update Counsellor : {data.service_id}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -31,48 +59,50 @@ const Modify = () => {
                 Name
               </Form.Label>
               <Col sm="10">
-                <Form.Control type="text" placeholder="Full Name" />
+                <Form.Control type="text" placeholder="Full Name" value={data.name} onChange={(event) => setData({ ...data, name: event.target.value })} />
               </Col>
+              {!data.name && <Col sm={{ span: 10, offset: 2 }}>
+                <Form.Text className="text-danger">
+                  *Name can't be empty
+                </Form.Text>
+              </Col>}
             </Form.Group>
             <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
               <Form.Label column sm="2">
                 Rank
               </Form.Label>
               <Col sm="10">
-                <Dropdown>
-                  <Dropdown.Toggle id="dropdown-button-dark-example1" variant="dark" className="mb-3" style={{ color: "#212529", backgroundColor: "white", border: "1px solid #dee2e6" }} >
-                    Select Rank
-                  </Dropdown.Toggle>
+                <Form.Select value={data.rank} onChange={(event) => setData({ ...data, rank: event.target.value })}>
 
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1" active>Marshal of the Indian Air Force</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Air chief marshal</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-3">Air marshal</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-4">Air vice marshal</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Air chief marshal</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-3">Air commodore </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Group captain</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-3">Wing commander</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Squadron leader</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-3">Flight lieutenant</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-2">Flying officer</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item href="#/action-3">Flight cadet</Dropdown.Item>
-                  </Dropdown.Menu>
+                  <option value="Marshal of the Indian Air Force">Marshal of the Indian Air Force</option>
 
-                </Dropdown>
+                  <option value="Air chief marshal">Air chief marshal</option>
 
+                  <option value="Air marshal">Air marshal</option>
+
+                  <option value="Air vice marshal">Air vice marshal</option>
+
+                  <option value="Air commodore">Air commodore</option>
+
+                  <option value="Group captain">Group captain</option>
+
+                  <option value="Wing commander">Wing commander</option>
+
+                  <option value="Squadron leader">Squadron leader</option>
+
+                  <option value="Flight lieutenant">Flight lieutenant</option>
+
+                  <option value="Flying officer">Flying officer</option>
+
+                  <option value="Flight cadet">Flight cadet</option>
+
+                </Form.Select>
               </Col>
+              {!data.rank && <Col sm={{ span: 10, offset: 2 }}>
+                <Form.Text className="text-danger">
+                  *Rank can't be empty
+                </Form.Text>
+              </Col>}
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -80,7 +110,7 @@ const Modify = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary">Update</Button>
+          <Button variant="primary" onClick={handleSubmit}>Update</Button>
         </Modal.Footer>
       </Modal>
     </>
