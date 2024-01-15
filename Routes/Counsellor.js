@@ -5,7 +5,6 @@ const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
 
 router.post("/add", (req, res) => {
-    console.log(req.body)
     const { name, rank, service_id, password } = req.body;
     Counsellor.findOne({ service_id }).then(data => {
         if (data)
@@ -70,7 +69,8 @@ router.put("/update", (req, res) => {
 
 
 router.delete("/delete", (req, res) => {
-    const { service_id } = req.body;
+    console.log(req.query)
+    const service_id  = req.query.service_id;
     Counsellor.findOneAndDelete({ service_id }).then(data => {
         if (!data)
             return res.status(404).json({ error: "Not Found " + service_id })
@@ -78,6 +78,9 @@ router.delete("/delete", (req, res) => {
             Counselee.deleteMany({ service_id: { $in: data.counselee_list } }).then(data => {
                 return res.status(200).json({ message: "Deleted Successfully" })
             })
+        }
+        else{
+            return res.status(200).json({ message: "Deleted Successfully" })
         }
 
     })

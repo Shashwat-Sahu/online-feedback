@@ -5,11 +5,10 @@ import axios from 'axios';
 import { Alert, Snackbar } from '@mui/material';
 
 const Modify = (props) => {
-  const [show, setShow] = useState(false);
   const [data, setData] = useState(props.details);
-  const [message, setMessage] = useState({message:null,error:null})
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [message, setMessage] = useState({ message: null, error: null })
+  const handleClose = () => props.setShow(false);
+  const handleShow = () => props.setShow(true);
 
   const handleSubmit = () => {
     if (!data.name || !data.rank)
@@ -20,9 +19,11 @@ const Modify = (props) => {
       rank: data.rank
     }).then(data => {
       console.log(data)
-      setMessage(data?.data?.message)
+      setMessage({ message: data?.data?.message, error: null })
+      handleClose()
     }).catch(err => {
-      setMessage(err?.error)
+      console.log(err)
+      setMessage({ error: err?.error, message: null })
     })
   }
 
@@ -31,23 +32,25 @@ const Modify = (props) => {
       <Button variant="primary" onClick={handleShow}>
         <EditIcon />
       </Button>
+      {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="error">
+          <p className="error">{message.error}</p>
+        </Alert>
 
+      </Snackbar>}
+      {<Snackbar open={message?.message} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="success">
+          <p className="success">{message.message}</p>
+        </Alert>
+
+      </Snackbar>}
       <Modal
-        show={show}
+        show={props.show}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
       >
-        <Snackbar open={true} autoHideDuration={6000} onClose={() => setMessage({message:null,error:null})} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-          {message?.message && <Alert severity="error">
-            <p className="error">{true}</p>
-          </Alert>
-          }
-          {message?.error &&<Alert severity="success">
-              <p className="success">{true}</p>
-            </Alert>
-          }
-        </Snackbar>
+
         <Modal.Header closeButton>
           <Modal.Title>Update Counsellor : {data.service_id}</Modal.Title>
         </Modal.Header>

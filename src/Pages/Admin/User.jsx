@@ -8,18 +8,51 @@ import Modal from '@mui/material/Modal';
 import Modify from './Modify';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { Alert, Snackbar } from '@mui/material';
 
 const User = () => {
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [message, setMessage] = useState({ message: null, error: null })
+  
+  
   const [counsellors, setCounsellors] = useState([])
+
+  const handleDelete = (service_id)=>{
+    console.log(service_id)
+    axios.delete("/counsellor/delete?service_id="+service_id).then(data => {
+      console.log(data)
+      setMessage({ message: data?.data?.message, error: null })
+    }).catch(err=>{
+      console.log(err)
+      err = err.response.data
+      setMessage({ error: err?.error, message: null })
+  })
+  }
+
   useEffect(() => {
+    if(show==false||message?.message)
     axios.get("/getCounsellors").then(data => {
       console.log(data)
       setCounsellors(data.data)
     })
-  }, [])
+  }, [show,message])
 
   return (
+    <div className='table-responsive'>
+      
+      {<Snackbar open={message?.error} autoHideDuration={1000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="error">
+          <p className="error">{message.error}</p>
+        </Alert>
+
+      </Snackbar>}
+      {<Snackbar open={message?.message} autoHideDuration={1000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="success">
+          <p className="success">{message.message}</p>
+        </Alert>
+
+      </Snackbar>}
     <table class="table table-hover table-bordered mt-4">
       <thead>
         <tr>
@@ -39,8 +72,8 @@ const User = () => {
               <th scope="row">{counsellor.service_id}</th>
               <td>{counsellor.name}</td>
               <td>{counsellor.rank}</td>
-              <td><Modify details={{...counsellor,type:"counsellor"}}/></td>
-              <td><IconButton aria-label="delete">
+              <td><Modify details={{...counsellor,type:"counsellor"}} show={show} setShow={setShow}/></td>
+              <td><IconButton aria-label="delete" onClick={()=>{handleDelete(counsellor.service_id)}}>
                 <DeleteIcon />
               </IconButton></td>
               <td><AddIcon onClick={() => { navigate("/admin/addstudent") }} style={{ color: "blue" }} /></td>
@@ -53,6 +86,7 @@ const User = () => {
 
       </tbody>
     </table>
+    </div>
   )
 }
 
