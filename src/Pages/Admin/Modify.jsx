@@ -1,37 +1,52 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Form, Dropdown, Modal, Button } from 'react-bootstrap';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import { Alert, Snackbar } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Modify = (props) => {
-  const [data, setData] = useState(props.details);
+  const [data, setData] = useState({});
   const [message, setMessage] = useState({ message: null, error: null })
   const handleClose = () => props.setShow(false);
   const handleShow = () => props.setShow(true);
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (!data.name || !data.rank)
       return window.alert("Name or Rank can't be empty")
-    axios.put('/counsellor/update', {
+    axios.put(data.type == "counsellor" ? '/counsellor/update' : '/counselee/update', {
       service_id: data.service_id,
       name: data.name,
       rank: data.rank
+    },{
+      headers:{
+        Authorization:`Bearer ${localStorage.getItem("token")}`
+      }
     }).then(data => {
       console.log(data)
       setMessage({ message: data?.data?.message, error: null })
       handleClose()
     }).catch(err => {
       console.log(err)
+      err = err?.response?.data
       setMessage({ error: err?.error, message: null })
+      if(err.error=="Not Authorized")
+      setTimeout(() => {
+          window.location.reload()  
+      }, 2000);
     })
   }
 
+  useEffect(()=>{
+    setData(props.details)
+  },[props])
+
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        <EditIcon />
-      </Button>
+      
       {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
         <Alert severity="error">
           <p className="error">{message.error}</p>
@@ -50,7 +65,7 @@ const Modify = (props) => {
         backdrop="static"
         keyboard={false}
       >
-
+        {console.log(props)}
         <Modal.Header closeButton>
           <Modal.Title>Update Counsellor : {data.service_id}</Modal.Title>
         </Modal.Header>

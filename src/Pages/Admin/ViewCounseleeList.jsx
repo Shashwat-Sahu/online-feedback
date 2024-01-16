@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -6,49 +6,128 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import Modify from './Modify';
-import { useNavigate } from "react-router-dom";
-import { Col, Container, Row } from "react-bootstrap";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Col, Container, Row } from "react-bootstrap";
+import axios from "axios";
+import { Alert, Snackbar } from "@mui/material";
+import { useDispatch } from "react-redux";
 const ViewCounseleeList = () => {
     const navigate = useNavigate();
+    const [show, setShow] = useState(false);
+    const [editCounsellor, setEditCounsellor] = useState({})
+    const { counselId } = useParams()
+    const [message, setMessage] = useState({ message: null, error: null })
+    const dispatch = useDispatch()
+
+
+    const [counselees, setCounselees] = useState([])
+    const handleShow = (counsellor) => {
+        setEditCounsellor(counsellor)
+
+        setShow(true)
+    }
+    const handleDelete = (service_id) => {
+        console.log(service_id)
+        axios.delete(`/counselee/delete?service_id=${service_id}&counsellor_service_id=${counselId}`).then(data => {
+            console.log(data)
+            setMessage({ message: data?.data?.message, error: null })
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }).catch(err => {
+            console.log(err)
+            err = err.response.data
+            setMessage({ error: err?.error, message: null })
+            if (err.error == "Not Authorized")
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+        })
+    }
+
+    useEffect(() => {
+        if (show == false || message?.message)
+            axios.get("/getCounselees?service_id=" + counselId, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }).then(data => {
+                console.log(data)
+                setCounselees(data.data)
+            }).catch(err => {
+                err = err.response.data
+
+                if (err.error == "Not Authorized")
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+            })
+    }, [show, message])
     return (
-        <Container>
-            <Row>
-                <Col>
-                    <h1 className="text-center">View Counselee under</h1>
-                </Col>
-            </Row>
-            <Row className="mt-5">
-                <Col xs={12}>
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Service ID</th>
-                                <th scope="col">Counselee Name</th>
-                                <th scope="col">Rank</th>
-                                <th scope="col">Modify Counselee</th>
-                                <th scope="col">Delete Counselee</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">12345</th>
-                                <td>Samiksha Sahu</td>
+        < div className="counsellor-box">
+            <Container style={{ height: "100vh" }}>
 
-                                <td>Wing Commander</td>
-                                <td><Modify /></td>
-                                <td><IconButton aria-label="delete">
-                                    <DeleteIcon />
-                                </IconButton></td>
+                <Row>
+                    <Col>
+                        <h1 className="text-center">All Counselee under {counselId}</h1>
+                    </Col>
+                </Row>
+                <Row>
+                    <div className='table-responsive'>
 
-                            </tr>
-                            
+                        {<Snackbar open={message?.error} autoHideDuration={1000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                            <Alert severity="error">
+                                <p className="error">{message.error}</p>
+                            </Alert>
 
-                        </tbody>
-                    </table>
-                </Col>
-            </Row>
-        </Container>
+                        </Snackbar>}
+                        {<Snackbar open={message?.message} autoHideDuration={1000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                            <Alert severity="success">
+                                <p className="success">{message.message}</p>
+                            </Alert>
+
+                        </Snackbar>}
+                        <table class="table table-hover table-bordered mt-4">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Service ID</th>
+                                    <th scope="col">Counselee Name</th>
+                                    <th scope="col">Rank</th>
+                                    <th scope="col">Modify Counselee</th>
+                                    <th scope="col">Delete Counselee</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {counselees.map((counsellor) => {
+                                    return (
+                                        <tr>
+                                            <th scope="row">{counsellor.service_id}</th>
+                                            <td>{counsellor.name}</td>
+                                            <td>{counsellor.rank}</td>
+                                            <td><Button variant="primary" onClick={() => handleShow(counsellor)}>
+                                                <EditIcon />
+                                            </Button></td>
+                                            <td><IconButton aria-label="delete" onClick={() => { handleDelete(counsellor.service_id) }}>
+                                                <DeleteIcon />
+                                            </IconButton></td>
+
+                                        </tr>
+                                    )
+                                })}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </Row>
+            </Container>
+            <Modify details={editCounsellor} show={show} setShow={setShow} />
+        </div>
     )
 }
 

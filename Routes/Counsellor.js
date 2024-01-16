@@ -3,14 +3,16 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
+const verifyToken = require("../Middleware/VerifyToken")
+const sha256 = require('sha256');
 
-router.post("/add", (req, res) => {
+router.post("/add",verifyToken, (req, res) => {
     const { name, rank, service_id, password } = req.body;
     Counsellor.findOne({ service_id }).then(data => {
         if (data)
             return res.status(422).json({ error: "Counsellor already exists" })
         const counsellor = new Counsellor({
-            name, rank, service_id, password, counselee_list: []
+            name, rank, service_id, password:sha256(password), counselee_list: []
         })
 
         counsellor.save().then(data => {
@@ -53,7 +55,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
 
 }
 
-router.put("/update", (req, res) => {
+router.put("/update",verifyToken, (req, res) => {
     const { service_id,name, rank } = req.body;
     Counsellor.findOneAndUpdate({ service_id },{
         name, rank
@@ -68,7 +70,7 @@ router.put("/update", (req, res) => {
 })
 
 
-router.delete("/delete", (req, res) => {
+router.delete("/delete",verifyToken, (req, res) => {
     console.log(req.query)
     const service_id  = req.query.service_id;
     Counsellor.findOneAndDelete({ service_id }).then(data => {
@@ -86,11 +88,14 @@ router.delete("/delete", (req, res) => {
     })
 })
 
-router.put("/addCounseleeList", async (req, res) => {
+router.put("/addCounseleeList",verifyToken, async (req, res) => {
 
     const { counselee_list, counsellor_service_id } = req.body;
 
-
+    Counsellor.findOne({ service_id: counsellor_service_id}).then(data=>{
+        if(!data)
+        return res.status(404).json({error:"Counsellor not found"})
+    })
     var promises = counselee_list.map(element => {
         const { name, rank, service_id } = element
         return Counsellor.findOne({ service_id: counsellor_service_id, counselee_list: { $nin: [service_id] } }).then(data => {
@@ -101,7 +106,7 @@ router.put("/addCounseleeList", async (req, res) => {
     Promise.all(promises).then(async (result) => {
         var alreadyExist = result.filter(service_id => service_id != undefined)
         if (alreadyExist.length > 0)
-            return res.json({ error: "Already Existing: " + alreadyExist.join(", ") })
+            return res.status(422).json({ error: "Already Existing: " + alreadyExist.join(", ") })
         else {
             var result = await addCounselee(counselee_list, counsellor_service_id)
             if (result.length == counselee_list.length)

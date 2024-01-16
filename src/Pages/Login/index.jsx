@@ -7,20 +7,31 @@ import { Col, Container, Row, Spinner, Toast } from 'react-bootstrap';
 import { Alert, Snackbar } from '@mui/material';
 import { sha256 } from 'js-sha256';
 import axios from 'axios';
+import { connect, useDispatch } from 'react-redux';
+import { setType, setServiceId, setToken } from '../../Reducers/loginReducer';
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = (props) => {
     const [inputFields, setInputFields] = useState({ service_id: "", password: "", type: "admin" });
     const [errors, setErrors] = useState({});
+    
+  const [message, setMessage] = useState({ message: null, error: null })
     const [submitting, setSubmitting] = useState(false);
+    const { setToken, setType, setServiceId } = props
+    const navigate = useNavigate();
+
+
+    const dispatch = useDispatch()
+
     const validateValues = (inputValues) => {
-        let errors = {};
         if (inputValues.service_id.length != 5) {
-            errors.service_id = "Service ID should be 5 digits long";
-            return errors;
+            
+            setMessage({ error: "Service ID should be 5 digits long", message: null })
+            return true;
         }
         if (inputValues.password.length < 5) {
-            errors.password = "Password is too short";
-            return errors;
+            setMessage({ error: "Password is too short", message: null })
+            return true;
         }
 
     }
@@ -31,32 +42,40 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         var error = validateValues(inputFields)
-        if (error?.service_id || error?.password)
-            return setErrors(error);
+        if (error || error)
+            return;
         setSubmitting(true);
         axios.post("/login", {
             service_id: inputFields.service_id, password: sha256(inputFields.password), type: inputFields.type
         }).then(data => {
             console.log(data)
             setSubmitting(false)
+
+            localStorage.setItem("token", data.data.token)
+            setToken(true)
+            setType(inputFields.type)
+            setServiceId(inputFields.service_id)
+            navigate("/")
+            setSubmitting(false)
         }).catch(err => {
             console.log(err)
+            err = err?.response?.data
+            setMessage({ error: err?.error, message: null })
+            
             setSubmitting(false)
         })
     }
-    const finishSubmit = () => {
-        console.log(inputFields);
-    };
 
 
     return (
         <div className='box'>
             <Container className='h-100'>
-                {<Snackbar open={errors.service_id || errors.password} autoHideDuration={6000} onClose={() => setErrors({})} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-                    <Alert severity="error">{errors.service_id || errors.password ? (
-                        <p className="error">{errors.service_id || errors.password}</p>
-                    ) : null}</Alert>
-                </Snackbar>}
+            {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+        <Alert severity="error">
+          <p className="error">{message.error}</p>
+        </Alert>
+
+      </Snackbar>}
                 {Object.keys(errors).length === 0 && submitting ? (
                     <span className="success">Successfully submitted ✓</span>
                 ) : null}
@@ -108,5 +127,35 @@ const Login = () => {
         </div>
     )
 };
+const mapStateToProps = state => {
+    return {
+        token: state.loginDetails.token
+    }
+}
 
-export default Login
+const mapDispatchToProps = dispatch => {
+    return {
+        setToken: data => {
+            dispatch({
+                type: 'SET_TOKEN',
+                token: data,
+            })
+        },
+        setServiceId: data => {
+            dispatch({
+                type: 'SET_SERVICE_ID',
+                service_id: data,
+            })
+        },
+        setType: data => {
+            dispatch({
+                type: 'SET_TYPE',
+                userType: data,
+            })
+        }
+    }
+}
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

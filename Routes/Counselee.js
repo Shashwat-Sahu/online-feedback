@@ -3,9 +3,10 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
+const verifyToken = require("../Middleware/VerifyToken")
 
 
-router.put("/update", (req, res) => {
+router.put("/update",verifyToken, (req, res) => {
     const { service_id, name, rank } = req.body;
     Counselee.findOneAndUpdate({ service_id }, {
         name, rank
@@ -20,8 +21,8 @@ router.put("/update", (req, res) => {
 })
 
 
-router.delete("/delete", (req, res) => {
-    const { service_id, counsellor_service_id } = req.body;
+router.delete("/delete",verifyToken, (req, res) => {
+    const { service_id, counsellor_service_id } = req.query;
     Counselee.findOneAndDelete({ service_id }).then(data => {
         if (!data)
             return res.status(404).json({ error: "Not Found " + service_id })
@@ -38,6 +39,15 @@ router.delete("/delete", (req, res) => {
     })
 })
 
-
+router.get("/getCounselees", (req, res) => {
+    const service_id = req.query.service_id;
+    Counsellor.find({ service_id }).select("counselee_list").then((data) => {
+        if (data.length > 0)
+            Counselee.find({ "service_id": { $in: data[0].counselee_list } }).select("-_id -__v").then(data => {
+                console.log(data)
+                return res.send(data)
+            })
+    })
+})
 
 module.exports = router

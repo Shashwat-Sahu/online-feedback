@@ -6,10 +6,14 @@ import '../../commonStyles.css'
 import axios from "axios";
 import { Alert, Snackbar } from "@mui/material";
 import { sha256 } from "js-sha256";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 // import '../Login/login.css'
 const AddUser = () => {
     const [data, setData] = useState({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" });
     const [message, setMessage] = useState({ message: null, error: null })
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
     const handleChange = (e) => {
         console.log(e)
         setData({ ...data, [e.target.name]: e.target.value });
@@ -20,13 +24,22 @@ const AddUser = () => {
             return setMessage({ ...message, error: "Few fields are empty" })
         if (data.service_id.length != 5)
             return setMessage({ ...message, error: "Service ID must be 5 digits" })
-        axios.post('/counsellor/add', { ...data, password: sha256(data.password) }).then(data => {
+        axios.post('/counsellor/add', { ...data, password: sha256(data.password) },{
+            headers:{
+              Authorization:`Bearer ${localStorage.getItem("token")}`
+            }
+          }).then(data => {
             console.log(data)
             setMessage({ message: data?.data?.message, error: null })
 
         }).catch(err => {
             err = err.response.data
             setMessage({ error: err?.error, message: null })
+            if(err.error=="Not Authorized")
+            setTimeout(() => {
+                window.location.reload()  
+            }, 2000);
+            
         })
     }
     return (

@@ -8,31 +8,77 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import '../../commonStyles.css'
 import axios from 'axios';
 import { Snackbar } from '@mui/material';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 const AddStudent = () => {
     const [data, setData] = useState([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }]);
     const [message, setMessage] = useState({ message: null, error: null })
-    const handleChange = (e) => {
-        console.log(e)
-        setData({ ...data, [e.target.name]: e.target.value });
+    const token = useSelector(state => state.login.token)
+    const dispatch = useDispatch()
+    const navigate = useNavigate();
+
+    console.log(token)
+    const { counselId } = useParams()
+    const handleChange = (e, index) => {
+        const newArray = data.map((item, i) => {
+            if (index === i) {
+                return { ...item, [e.target.name]: e.target.value };
+            } else {
+                return item;
+            }
+        });
+        setData(newArray);
     };
 
-    const handleIncreaseStudent = () =>{
-        setData([...data,{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
+    const handleIncreaseStudent = () => {
+        setData([...data, { rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
+    }
+
+    const handleDelete = (index) => {
+        console.log(index, data)
+        const filtered = data.filter((value, ind) => {
+            if (ind != index)
+                return value
+        })
+        console.log(filtered)
+        setData(filtered)
+
+    }
+
+    function isUnique(value, index, array) {
+        return array.indexOf(value) === array.lastIndexOf(value);
     }
 
     const handleSubmit = () => {
-        if (!data.name || !data.rank || !data.service_id || !data.password)
-            return setMessage({ ...message, error: "Few fields are empty" })
-        if (data.service_id.length != 5)
-            return setMessage({ ...message, error: "Service ID must be 5 digits" })
-        axios.post('/counsellor/add', data).then(data => {
+        var service_ids = data.map(function (obj) {
+            return obj.service_id;
+        })
+        if (!service_ids.every(isUnique))
+            return setMessage({ ...message, error: "Service ID should be unique" })
+        data.forEach((data) => {
+            if (!data.name || !data.rank || !data.service_id)
+                return setMessage({ ...message, error: "Few fields are empty" })
+            if (data.service_id.length != 5)
+                return setMessage({ ...message, error: "Service ID must be 5 digits for " + data.service_id })
+        })
+        console.log(counselId)
+        axios.put('/counsellor/addCounseleeList', {
+            counselee_list: data, counsellor_service_id: counselId
+        }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        }).then(data => {
             console.log(data)
             setMessage({ message: data?.data?.message, error: null })
 
         }).catch(err => {
             err = err.response.data
             setMessage({ error: err?.error, message: null })
+            if(err.error=="Not Authorized")
+            setTimeout(() => {
+                window.location.reload()  
+            }, 2000);
         })
     }
     return (
@@ -58,14 +104,17 @@ const AddStudent = () => {
                 </Row>
                 <Row>
                     <div className="text-end">
-                        <Button id="submit-Btn" variant="contained" color="info" onClick={()=>handleIncreaseStudent()} endIcon={<AddIcon/>} size="medium"> Add More </Button>
+
+                        <Button id="submit-Btn" className='mx-2' variant="contained" color="info" onClick={() => handleIncreaseStudent()} endIcon={<AddIcon />} size="medium"> Add More </Button>
+                        <Button id="submit-Btn" variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
+
                     </div>
                 </Row>
                 <Row>
-                    <Col md={12} sm={8} xs={10} className="m-auto">
-                        {data.map((index, data) => {
+                    <Col xs={12} className="d-flex justify-content-center flex-wrap">
+                        {data.map((data, index) => {
                             return (
-                                <Form className="table-user d-inline-block" style={{minWidth:"40%"}}>
+                                <Form className="table-user d-inline-block mx-1" style={{ minWidth: "30%" }}>
                                     <FloatingLabel
                                         controlId="floatingInput"
                                         label="Name"
@@ -73,7 +122,7 @@ const AddStudent = () => {
                                         style={{ color: "white" }}
                                         id="input-field"
                                     >
-                                        <Form.Control type="text" placeholder="User Name" name="name" onChange={handleChange} index={index} />
+                                        <Form.Control type="text" placeholder="User Name" name="name" value={data.name} onChange={(e) => handleChange(e, index)} index={index} />
                                         {!data.name &&
                                             <Form.Text className="text-danger">
                                                 *Name can't be empty
@@ -83,7 +132,7 @@ const AddStudent = () => {
                                         controlId="floatingInput"
                                         label="Service ID"
                                         className="mb-3" style={{ color: "white" }}>
-                                        <Form.Control id="input-field" type="number" placeholder="Enter Service ID" index={index} name="service_id" onChange={handleChange} />
+                                        <Form.Control id="input-field" type="number" placeholder="Enter Service ID" value={data.service_id} index={index} name="service_id" onChange={(e) => handleChange(e, index)} />
                                         {!data.service_id &&
                                             <Form.Text className="text-danger">
                                                 *Service ID can't be empty
@@ -93,7 +142,7 @@ const AddStudent = () => {
                                         controlId="floatingInput"
                                         label="Rank"
                                         className="mb-3">
-                                        <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={handleChange} index={index}>
+                                        <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={(e) => handleChange(e, index)} index={index}>
 
                                             <option style={{ color: "black" }} value="Marshal of the Indian Air Force">Marshal of the Indian Air Force</option>
 
@@ -123,11 +172,9 @@ const AddStudent = () => {
                                                 *Rank can't be empty
                                             </Form.Text>}
                                     </FloatingLabel>
-                                    <div className="text-center">
-                                        <Button id="submit-Btn" variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
-                                    </div>
+
                                     <div className='text-end'>
-                                        <DeleteIcon style={{color:"white"}}/>
+                                        <DeleteIcon style={{ color: "white" }} onClick={() => handleDelete(index)} />
                                     </div>
                                 </Form>
                             )
