@@ -21,8 +21,8 @@ const ViewCounseleeList = () => {
 
 
     const [counselees, setCounselees] = useState([])
-    const handleShow = (counsellor) => {
-        setEditCounsellor(counsellor)
+    const handleShow = (counselee) => {
+        setEditCounsellor({...counselee,type:"counselee"})
 
         setShow(true)
     }
@@ -107,16 +107,16 @@ const ViewCounseleeList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {counselees.map((counsellor) => {
+                                {counselees.map((counselee) => {
                                     return (
                                         <tr>
-                                            <th scope="row">{counsellor.service_id}</th>
-                                            <td>{counsellor.name}</td>
-                                            <td>{counsellor.rank}</td>
-                                            <td><Button variant="primary" onClick={() => handleShow(counsellor)}>
+                                            <th scope="row">{counselee.service_id}</th>
+                                            <td>{counselee.name}</td>
+                                            <td>{counselee.rank}</td>
+                                            <td><Button variant="primary" onClick={() => handleShow(counselee)}>
                                                 <EditIcon />
                                             </Button></td>
-                                            <td><IconButton aria-label="delete" onClick={() => { handleDelete(counsellor.service_id) }}>
+                                            <td><IconButton aria-label="delete" onClick={() => { handleDelete(counselee.service_id) }}>
                                                 <DeleteIcon />
                                             </IconButton></td>
 

@@ -21,15 +21,15 @@ const Routing = (props) => {
   }, [])
   return (
     <>
-      {!token ? <Routes>
+      {!token && <Routes>
         <Route path="/" Component={Login} />
-      </Routes> : userType == "admin" ?
+      </Routes>} {userType == "admin"&& token&&
         <Routes>
           <Route path="/" Component={AdminDashboard} />
           <Route path="/admin/adduser" Component={AddUser} />
           <Route path="/admin/addstudent/:counselId" Component={AddStudent} />
           <Route path="/admin/viewcounseleelist/:counselId" Component={ViewCounseleeList} />
-        </Routes> :
+        </Routes> }{userType == "user"&&token&&
         <Routes>
 
           <Route path="/" Component={FeedbackFrom} />

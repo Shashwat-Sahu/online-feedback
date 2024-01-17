@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const FeedbackForm = () => {
   const navigate = useNavigate()
   const [counselees, setCounselees] = useState([])
+  const [counsellor,setCounsellor] = useState({})
   const [selectedCounselee, setSelectedcounselee] = useState({})
   const [formData, setFormData] = useState({
     "Academics": "",
@@ -20,12 +21,13 @@ const FeedbackForm = () => {
 })
   var counselId = 12345;
   useEffect(() => {
-    axios.get("/counselee/getCounselees?service_id=" + (counselId), {
+    axios.get("/counselee/getCounselees?", {
       headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
       }}).then(data => {
       console.log(data)
-      setCounselees(data.data)
+      setCounselees(data.data.data)
+      setCounsellor(data.data.counsellor)
     }).catch(err => {
       err = err.response.data
             // setMessage({ error: err?.error, message: null })
@@ -50,13 +52,13 @@ const FeedbackForm = () => {
         <div class="col col-auto min-vh-100" style={{ backgroundColor: "#0d6efd40" }}>
           <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
           <h2 style={{ marginBottom: "0" }}>
-            <small class="text-muted">Samiksha Sahu</small>
+            <small class="text-muted">{counsellor?.name}</small>
           </h2>
           <p style={{ marginBottom: "0" }}>
-            <small class="text-muted">Service ID:13342</small>
+            <small class="text-muted">Service ID :{counsellor?.service_id}</small>
           </p>
           <p >
-            <small class="text-muted">Rank:Flying Officer</small>
+            <small class="text-muted">Rank : {counsellor?.rank}</small>
           </p>
           <select class="form-select" aria-label="Select Counselee" onChange={(e) => { console.log(counselees[e.target.value]);setSelectedcounselee(counselees[e.target.value]) }}>
             <option selected disabled>Select Counselee</option>

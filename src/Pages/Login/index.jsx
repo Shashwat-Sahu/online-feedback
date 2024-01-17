@@ -59,6 +59,7 @@ const Login = (props) => {
             setSubmitting(false)
         }).catch(err => {
             console.log(err)
+            localStorage.clear()
             err = err?.response?.data
             setMessage({ error: err?.error, message: null })
             

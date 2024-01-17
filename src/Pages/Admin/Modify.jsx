@@ -17,6 +17,7 @@ const Modify = (props) => {
   const handleSubmit = () => {
     if (!data.name || !data.rank)
       return window.alert("Name or Rank can't be empty")
+    console.log(data.type)
     axios.put(data.type == "counsellor" ? '/counsellor/update' : '/counselee/update', {
       service_id: data.service_id,
       name: data.name,

@@ -42,11 +42,11 @@ router.delete("/delete", verifyToken, (req, res) => {
 })
 
 router.get("/getCounselees", verifyTokenUser, (req, res) => {
-    const data = req.counselee_list;
-    const service_id = req.query.service_id;
-    if (data.length > 0)
-        Counselee.find({ "service_id": { $in: data } }).select("-_id -__v").then(data => {
-            return res.send(data)
+    const user = req.user;
+    console.log(user)
+    if (user)
+        Counselee.find({ "service_id": { $in: user.counselee_list } }).select("-_id -__v").then(data => {
+            return res.status(200).json({counsellor:user,data})
         })
 
 })

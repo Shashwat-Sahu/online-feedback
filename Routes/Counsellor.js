@@ -56,6 +56,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
 }
 
 router.put("/update",verifyToken, (req, res) => {
+    console.log(req.body)
     const { service_id,name, rank } = req.body;
     Counsellor.findOneAndUpdate({ service_id },{
         name, rank

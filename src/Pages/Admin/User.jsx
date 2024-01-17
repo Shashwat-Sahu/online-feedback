@@ -23,7 +23,7 @@ const User = () => {
   const [counsellors, setCounsellors] = useState([])
 
   const handleShow = (counsellor) => {
-    setEditCounsellor(counsellor)
+    setEditCounsellor({...counsellor,type:"counsellor"})
     
     setShow(true)
   }
@@ -62,6 +62,7 @@ const User = () => {
         console.log(data)
         setCounsellors(data.data)
       }).catch(err => {
+        console.log(err)
         err = err?.response?.data
         if (err.error == "Not Authorized")
                 {

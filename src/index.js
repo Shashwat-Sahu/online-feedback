@@ -12,7 +12,7 @@ import Reducer from "./Reducers/loginReducer"
 const store = createStore(Reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 const token = localStorage.getItem('token')
-const userType = localStorage.getItem("type")
+const userType = localStorage.getItem("userType")
 // Extract token to check for authorization
 if (token)
   {

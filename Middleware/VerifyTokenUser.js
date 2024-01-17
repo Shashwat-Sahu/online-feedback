@@ -16,10 +16,10 @@ module.exports = (req, res, next) => {
             return res.status(401).json({ error: "Not Authorized" })
         }
         const { service_id } = payload
-        Counsellor.find({ service_id }).then(userData => {
+        Counsellor.find({ service_id }).select("-password -_id -__v").then(userData => {
             if (userData)
                 {
-                    req["counselee_list"] = userData[0].counselee_list
+                    req.user = userData[0]
                     next()
                 }
             else
