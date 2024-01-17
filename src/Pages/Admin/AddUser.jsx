@@ -74,9 +74,9 @@ const AddUser = () => {
                                 label="Name"
                                 className="mb-3"
                                 style={{ color: "white" }}
-                                id="input-field"
+                               
                             >
-                                <Form.Control type="text" placeholder="User Name" name="name" onChange={handleChange} />
+                                <Form.Control type="text"  id="input-field" placeholder="User Name" name="name" onChange={handleChange} />
                                 {!data.name &&
                                     <Form.Text className="text-danger">
                                         *Name can't be empty
@@ -132,10 +132,9 @@ const AddUser = () => {
                                 controlId="floatingInput"
                                 label="Set Password"
                                 className="mb-3"
-                                id="input-field"
                                 style={{ color: "white" }}
                             >
-                                <Form.Control type="password" placeholder="Set Password" name="password" onChange={handleChange} />
+                                <Form.Control type="password"  id="input-field" placeholder="Set Password" name="password" onChange={handleChange} />
 
                                 {!data.password &&
                                     <Form.Text className="text-danger">

@@ -78,7 +78,7 @@ const ViewCounseleeList = () => {
 
                 <Row>
                     <Col>
-                        <h1 className="text-center">All Counselee under {counselId}</h1>
+                        <h1 className="text-center" style={{color:"white"}}>All Counselee under: {counselId}</h1>
                     </Col>
                 </Row>
                 <Row>
