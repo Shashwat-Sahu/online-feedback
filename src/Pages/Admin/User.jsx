@@ -42,10 +42,13 @@ const User = () => {
       console.log(err)
       err = err.response.data
       setMessage({ error: err?.error, message: null })
-      if(err.error=="Not Authorized")
-      setTimeout(() => {
-          window.location.reload()  
-      }, 2000);
+      if (err.error == "Not Authorized")
+                {
+                    localStorage.clear()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+                }
     })
   }
 
@@ -60,10 +63,13 @@ const User = () => {
         setCounsellors(data.data)
       }).catch(err => {
         err = err?.response?.data
-        if(err.error=="Not Authorized")
-        setTimeout(() => {
-            window.location.reload()  
-        }, 2000);
+        if (err.error == "Not Authorized")
+                {
+                    localStorage.clear()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+                }
       })
   }, [show, message])
 

@@ -3,7 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
-const verifyToken = require("../Middleware/VerifyToken")
+const verifyToken = require("../Middleware/VerifyTokenAdmin")
 
 router.get("/getCounsellors", verifyToken, (req, res) => {
     Counsellor.find().select("-password -_id -counselee_list -__v").then((data) => {

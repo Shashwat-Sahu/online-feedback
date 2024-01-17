@@ -28,21 +28,23 @@ const ViewCounseleeList = () => {
     }
     const handleDelete = (service_id) => {
         console.log(service_id)
-        axios.delete(`/counselee/delete?service_id=${service_id}&counsellor_service_id=${counselId}`).then(data => {
-            console.log(data)
-            setMessage({ message: data?.data?.message, error: null })
-        }, {
+        axios.delete(`/counselee/delete?service_id=${service_id}&counsellor_service_id=${counselId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        }).catch(err => {
+            }}).then(data => {
+            console.log(data)
+            setMessage({ message: data?.data?.message, error: null })
+        }
+        ).catch(err => {
             console.log(err)
             err = err.response.data
             setMessage({ error: err?.error, message: null })
             if (err.error == "Not Authorized")
+            {localStorage.clear()
                 setTimeout(() => {
                     window.location.reload()
                 }, 2000);
+            }
         })
     }
 
@@ -61,11 +63,13 @@ const ViewCounseleeList = () => {
                 setCounselees(data.data)
             }).catch(err => {
                 err = err.response.data
-
                 if (err.error == "Not Authorized")
+                {
+                    localStorage.clear()
                     setTimeout(() => {
                         window.location.reload()
                     }, 2000);
+                }
             })
     }, [show, message])
     return (

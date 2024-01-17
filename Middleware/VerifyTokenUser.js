@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
-const AdminAuth = mongoose.model("AdminAuth")
+const Counsellor = mongoose.model("Counsellor")
 
 module.exports = (req, res, next) => {
 
@@ -11,14 +11,17 @@ module.exports = (req, res, next) => {
         res.status(401).json({ error: "Not Authorized" })
     }
     const token = authorization.replace("Bearer ", "")
-    jwt.verify(token, process.env.JWT_KEY, (err, payload) => {
+    jwt.verify(token, process.env.JWT_USER_KEY, (err, payload) => {
         if (err) {
             return res.status(401).json({ error: "Not Authorized" })
         }
         const { service_id } = payload
-        AdminAuth.find({ service_id }).then(userData => {
+        Counsellor.find({ service_id }).then(userData => {
             if (userData)
-                next()
+                {
+                    req["counselee_list"] = userData[0].counselee_list
+                    next()
+                }
             else
                 return res.status(401).json({ error: "Not Authorized" })
         })

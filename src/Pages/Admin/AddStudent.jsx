@@ -13,11 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 const AddStudent = () => {
     const [data, setData] = useState([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }]);
     const [message, setMessage] = useState({ message: null, error: null })
-    const token = useSelector(state => state.login.token)
     const dispatch = useDispatch()
     const navigate = useNavigate();
-
-    console.log(token)
     const { counselId } = useParams()
     const handleChange = (e, index) => {
         const newArray = data.map((item, i) => {
@@ -75,10 +72,13 @@ const AddStudent = () => {
         }).catch(err => {
             err = err.response.data
             setMessage({ error: err?.error, message: null })
-            if(err.error=="Not Authorized")
-            setTimeout(() => {
-                window.location.reload()  
-            }, 2000);
+            if (err.error == "Not Authorized")
+                {
+                    localStorage.clear()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+                }
         })
     }
     return (

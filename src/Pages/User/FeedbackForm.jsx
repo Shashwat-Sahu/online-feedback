@@ -20,11 +20,21 @@ const FeedbackForm = () => {
 })
   var counselId = 12345;
   useEffect(() => {
-    axios.get("/counselee/getCounselees?service_id=" + (counselId)).then(data => {
+    axios.get("/counselee/getCounselees?service_id=" + (counselId), {
+      headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+      }}).then(data => {
       console.log(data)
       setCounselees(data.data)
     }).catch(err => {
       err = err.response.data
+            // setMessage({ error: err?.error, message: null })
+            if (err.error == "Not Authorized")
+            {localStorage.clear()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+            }
     })
   }, [])
 

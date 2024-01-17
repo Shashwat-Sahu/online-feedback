@@ -17,7 +17,7 @@ router.post("/login", (req, res) => {
             console.log(cryptedPassword, data)
             if (data.length>0)
                 {
-                const token = jwt.sign({ service_id ,time:new Date().toDateString()}, process.env.JWT_KEY, { expiresIn: '1h' })
+                const token = jwt.sign({ service_id ,time:new Date().toDateString()}, process.env.JWT_ADMIN_KEY, { expiresIn: '1h' })
                 res.json({ message: "Logged in successfully", token, service_id, type })
             }else
             res.status(401).json({ error: "Wrong service ID or password" })
@@ -30,7 +30,7 @@ router.post("/login", (req, res) => {
         Counsellor.find({ "service_id": service_id, password: cryptedPassword }).then(data => {
             console.log(cryptedPassword, data)
             if (data.length>0){
-                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_KEY, { expiresIn: '1h' })
+                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_USER_KEY, { expiresIn: '1h' })
                 res.json({ message: "Logged in successfully", token, service_id, type })
             }else
             res.status(401).json({ error: "Wrong service ID or password" })

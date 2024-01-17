@@ -3,7 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
-const verifyToken = require("../Middleware/VerifyToken")
+const verifyToken = require("../Middleware/VerifyTokenAdmin")
 const sha256 = require('sha256');
 
 router.post("/add",verifyToken, (req, res) => {

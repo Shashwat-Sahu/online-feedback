@@ -33,10 +33,13 @@ const Modify = (props) => {
       console.log(err)
       err = err?.response?.data
       setMessage({ error: err?.error, message: null })
-      if(err.error=="Not Authorized")
-      setTimeout(() => {
-          window.location.reload()  
-      }, 2000);
+      if (err.error == "Not Authorized")
+                {
+                    localStorage.clear()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 2000);
+                }
     })
   }
 
