@@ -17,7 +17,7 @@ const AdminDashboard = () => {
 
             <Row>
                 <Col>
-                    <h1 className="text-center">Admin Dashboard</h1>
+                    <h1 className="text-center" style={{color:"white"}}>Admin Dashboard</h1>
                 </Col>
             </Row>
             <Row className="flex-grow-1 mt-5">

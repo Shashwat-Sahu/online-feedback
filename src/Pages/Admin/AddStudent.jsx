@@ -120,9 +120,9 @@ const AddStudent = () => {
                                         label="Name"
                                         className="mb-3"
                                         style={{ color: "white" }}
-                                        id="input-field"
+                                        
                                     >
-                                        <Form.Control type="text" placeholder="User Name" name="name" value={data.name} onChange={(e) => handleChange(e, index)} index={index} />
+                                        <Form.Control type="text" id="input-field" placeholder="User Name" name="name" value={data.name} onChange={(e) => handleChange(e, index)} index={index} />
                                         {!data.name &&
                                             <Form.Text className="text-danger">
                                                 *Name can't be empty

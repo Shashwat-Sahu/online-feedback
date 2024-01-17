@@ -89,35 +89,35 @@ const FeedbackForm = () => {
           </table>
           <div class="input-group mb-2">
             <span class="input-group-text">Academics</span>
-            <textarea class="form-control" name="Academics" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Academics" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Projects</span>
-            <textarea class="form-control" name="Projects" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Projects" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Sick Report</span>
-            <textarea class="form-control" name="Sick Report" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Sick Report" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">OLQ</span>
-            <textarea class="form-control" name="OLQ" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="OLQ" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Games</span>
-            <textarea class="form-control" name="Games" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Games" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Cultural</span>
-            <textarea class="form-control" name="Cultural" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Cultural" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Financial</span>
-            <textarea class="form-control" name="Financial" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Financial" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div class="input-group">
             <span class="input-group-text">Personal</span>
-            <textarea class="form-control" name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd" }}></textarea>
+            <textarea class="form-control" name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd",color:"black" }}></textarea>
           </div>
           <div className='text-center mt-4'>
             <Button onClick={()=>navigate("/feedbackpageprint",{state:{...selectedCounselee,...formData}})}>Submit</Button>

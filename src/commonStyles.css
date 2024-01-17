@@ -10,12 +10,7 @@
     cursor: pointer;
     transition: .3s;
 }
-/* #input-field{
-    border-radius: 3rem;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
-    width: auto;
-    margin: 0 auto;
-} */
+
 .counsellor-box{
     background-image: url("https://wallpaperset.com/w/full/0/d/6/39864.jpg");
     background-size: cover;
@@ -31,15 +26,9 @@
     padding: 2rem 2rem;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
 }
-.form-control,.form-floating>.form-control{
+.in put-field,.form-floating>.form-control{
    background-color: transparent;
    border-radius: 1rem;
    border-color: white;
    color: white;
 }
-/* 
-.input-field .input[type=number]::-webkit-outer-spin-button,.input-field .input[type=number]::-webkit-inner-spin-button
-{
-    -webkit-appearance: none;
-    margin: 0;
-} */
