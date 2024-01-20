@@ -28,9 +28,6 @@ const FeedbackPage = (details) => {
             <div ref={reportTemplateRef}>
                 <Container>
                     <Row>
-
-
-
                         {Object.keys(location.state).map((item) => {
                             return (<p>{item} : {location.state[item]}</p>)
                         })}

@@ -3,12 +3,15 @@ import { Col, Container, Form, Row, Dropdown, FloatingLabel } from "react-bootst
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import '../../commonStyles.css'
+import LogoutIcon from '@mui/icons-material/Logout';
 import axios from "axios";
 import { Alert, Snackbar } from "@mui/material";
 import { sha256 } from "js-sha256";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-// import '../Login/login.css'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import Fab from '@mui/material/Fab';
+
 const AddUser = () => {
     const [data, setData] = useState({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" });
     const [message, setMessage] = useState({ message: null, error: null })
@@ -24,25 +27,24 @@ const AddUser = () => {
             return setMessage({ ...message, error: "Few fields are empty" })
         if (data.service_id.length != 5)
             return setMessage({ ...message, error: "Service ID must be 5 digits" })
-        axios.post('/counsellor/add', { ...data, password: sha256(data.password) },{
-            headers:{
-              Authorization:`Bearer ${localStorage.getItem("token")}`
+        axios.post('/counsellor/add', { ...data, password: sha256(data.password) }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
             }
-          }).then(data => {
+        }).then(data => {
             console.log(data)
-            setMessage({ message: data?.data?.message, error: null })
+            setMessage({ message: data?.data?.message, error: null });
 
         }).catch(err => {
             err = err.response.data
             setMessage({ error: err?.error, message: null })
-            if (err.error == "Not Authorized")
-                {
-                    localStorage.clear()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-                }
-            
+            if (err.error == "Not Authorized") {
+                localStorage.clear()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+            }
+
         })
     }
     return (
@@ -67,6 +69,20 @@ const AddUser = () => {
 
                 </Row>
                 <Row>
+                    <Col>
+                        <Fab variant="extended" onClick={() => { navigate("/") }}>
+                            <KeyboardArrowLeftIcon sx={{ mr: 1 }} />
+                            Back to Dashboard
+                        </Fab>
+                    </Col>
+                    <Col className="text-end" >
+                        <Fab variant="extended" onClick={() => { navigate("/") }} endIcon={<LogoutIcon />}>
+                            Logout
+                            <LogoutIcon sx={{ ml: 1 }} />
+                        </Fab>
+                    </Col>
+                </Row>
+                <Row>
                     <Col md={5} sm={8} xs={10} className="m-auto">
                         <Form className="table-user">
                             <FloatingLabel
@@ -74,9 +90,9 @@ const AddUser = () => {
                                 label="Name"
                                 className="mb-3"
                                 style={{ color: "white" }}
-                               
+
                             >
-                                <Form.Control type="text"  id="input-field" placeholder="User Name" name="name" onChange={handleChange} />
+                                <Form.Control type="text" id="input-field" placeholder="User Name" name="name" onChange={handleChange} />
                                 {!data.name &&
                                     <Form.Text className="text-danger">
                                         *Name can't be empty
@@ -134,7 +150,7 @@ const AddUser = () => {
                                 className="mb-3"
                                 style={{ color: "white" }}
                             >
-                                <Form.Control type="password"  id="input-field" placeholder="Set Password" name="password" onChange={handleChange} />
+                                <Form.Control type="password" id="input-field" placeholder="Set Password" name="password" onChange={handleChange} />
 
                                 {!data.password &&
                                     <Form.Text className="text-danger">
