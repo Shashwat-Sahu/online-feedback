@@ -3,6 +3,7 @@ import {Card, Col, Container, Row } from "react-bootstrap";
 import User from './User'
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import { useDispatch, useSelector } from "react-redux";
@@ -21,8 +22,11 @@ const AdminDashboard = () => {
                 </Col>
             </Row>
             <Row className="flex-grow-1 mt-5">
-                <Col xs={4} className="d-flex" style={{padding:"0"}}>
+                <Col xs={4} className="d-flex">
                     <Button  style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<AddIcon />} onClick={()=>{navigate("/admin/adduser")}} size="large">Add Counsellor</Button>
+                </Col>
+                <Col  className="text-end" >
+                <Button style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<LogoutIcon/>} onClick={()=>{navigate("/admin/adduser")}} size="large">Logout</Button>
                 </Col>
             </Row>
             <Row>

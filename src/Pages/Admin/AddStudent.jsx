@@ -3,13 +3,16 @@ import { Col, Container, Form, Row, Dropdown, FloatingLabel, Alert } from "react
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import '../../commonStyles.css'
 import axios from 'axios';
 import { Snackbar } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import Fab from '@mui/material/Fab';
+
 const AddStudent = () => {
     const [data, setData] = useState([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }]);
     const [message, setMessage] = useState({ message: null, error: null })
@@ -102,13 +105,23 @@ const AddStudent = () => {
                     <h1 className="text-center" style={{ color: "white", marginTop: "1rem" }}>Add Counselee</h1>
 
                 </Row>
+                
                 <Row>
-                    <div className="text-end">
-
+                
+                    <Col>
+                       <Fab variant="extended" onClick={() => { navigate("/") }}>
+                        <KeyboardArrowLeftIcon sx={{ mr: 1 }} />
+                        Back to Dashboard
+                    </Fab>
+                    </Col>
+                    <Col className='text-end'>
                         <Button id="submit-Btn" className='mx-2' variant="contained" color="info" onClick={() => handleIncreaseStudent()} endIcon={<AddIcon />} size="medium"> Add More </Button>
                         <Button id="submit-Btn" variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
-
-                    </div>
+                        <Fab sx={{ml:1}} variant="extended" onClick={() => { navigate("/") }} endIcon={<LogoutIcon />}>
+                            Logout
+                            <LogoutIcon sx={{ ml: 1 }} />
+                        </Fab>
+                        </Col>
                 </Row>
                 <Row>
                     <Col xs={12} className="d-flex justify-content-center flex-wrap">

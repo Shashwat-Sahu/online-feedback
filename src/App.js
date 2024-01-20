@@ -29,6 +29,7 @@ const Routing = (props) => {
           <Route path="/admin/adduser" Component={AddUser} />
           <Route path="/admin/addstudent/:counselId" Component={AddStudent} />
           <Route path="/admin/viewcounseleelist/:counselId" Component={ViewCounseleeList} />
+          
         </Routes> }{userType == "user"&&token&&
         <Routes>
 

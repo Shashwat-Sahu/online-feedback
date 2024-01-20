@@ -19,9 +19,16 @@ const User = () => {
   const [editCounsellor, setEditCounsellor] = useState({})
   const [message, setMessage] = useState({ message: null, error: null })
   const dispatch = useDispatch()
+   const [counsellors, setCounsellors] = useState([])
+   const [currentPage,setCurrentPage]=useState(1);
+   const recordsPerPage=5;
+   const lastIndex=currentPage*recordsPerPage;
+   const firstIndex=lastIndex-recordsPerPage;
+   const records=counsellors.slice(firstIndex,lastIndex);
+   const npage=Math.ceil(counsellors.length/recordsPerPage);
+   const numbers=[...Array(npage+1).keys()].slice(1);
 
-  const [counsellors, setCounsellors] = useState([])
-
+ 
   const handleShow = (counsellor) => {
     setEditCounsellor({...counsellor,type:"counsellor"})
     
@@ -74,6 +81,7 @@ const User = () => {
       })
   }, [show, message])
 
+  
   return (
     <div className='table-responsive'>
 
@@ -89,7 +97,7 @@ const User = () => {
         </Alert>
 
       </Snackbar>}
-      <table class="table table-hover table-bordered mt-4">
+      <table class="table table-hover table-bordered mt-4 table-sm">
         <thead>
           <tr>
             <th scope="col">Service ID</th>
@@ -102,7 +110,7 @@ const User = () => {
           </tr>
         </thead>
         <tbody>
-          {counsellors.map((counsellor) => {
+          {records.map((counsellor) => {
             return (
               <tr>
                 <th scope="row">{counsellor.service_id}</th>
@@ -124,9 +132,47 @@ const User = () => {
 
         </tbody>
       </table>
+      <nav>
+  <ul className="pagination justify-content-end">
+  <li className='page-item'>
+<a href="#" className='page-link' onClick={prePage}>
+Prev
+</a>
+    </li>
+    {
+      numbers.map((n,i)=>(
+        <li className={`page-item ${currentPage===n? 'active':''}`} key={i}>
+<a href="#" className='page-link' onClick={()=>changeCPage(n)}>{n}
+
+</a>
+        </li>
+
+      ))
+    }
+    <li className='page-item'>
+<a href="#" className='page-link' onClick={nextPage}>
+Next
+</a>
+    </li>
+  </ul>
+</nav>
       <Modify details={editCounsellor} show={show} setShow={setShow} />
+      
     </div>
   )
+  function prePage(){
+    if(currentPage!==firstIndex){
+      setCurrentPage(currentPage-1)
+    }
+
+  }
+  function changeCPage(id=counsellors.service_id){
+setCurrentPage(id)
+  }
+  function nextPage(){
+if(currentPage!==lastIndex)
+setCurrentPage(currentPage+1)
+  }
 }
 
 export default User
