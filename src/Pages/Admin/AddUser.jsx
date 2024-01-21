@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
+import { logout } from "../../Comtrollers/logoutController";
 
 const AddUser = () => {
     const [data, setData] = useState({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" });
@@ -34,6 +35,7 @@ const AddUser = () => {
         }).then(data => {
             console.log(data)
             setMessage({ message: data?.data?.message, error: null });
+            setData({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" })
 
         }).catch(err => {
             err = err.response.data
@@ -76,7 +78,7 @@ const AddUser = () => {
                         </Fab>
                     </Col>
                     <Col className="text-end" >
-                        <Fab variant="extended" onClick={() => { navigate("/") }} endIcon={<LogoutIcon />}>
+                        <Fab variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
                             Logout
                             <LogoutIcon sx={{ ml: 1 }} />
                         </Fab>
@@ -92,7 +94,7 @@ const AddUser = () => {
                                 style={{ color: "white" }}
 
                             >
-                                <Form.Control type="text" id="input-field" placeholder="User Name" name="name" onChange={handleChange} />
+                                <Form.Control type="text" id="input-field" placeholder="User Name" value={data.name} name="name" onChange={handleChange} />
                                 {!data.name &&
                                     <Form.Text className="text-danger">
                                         *Name can't be empty
@@ -104,7 +106,7 @@ const AddUser = () => {
                                 controlId="floatingInput"
                                 label="Service ID"
                                 className="mb-3" style={{ color: "white" }}>
-                                <Form.Control id="input-field" type="number" placeholder="Enter Service ID" name="service_id" onChange={handleChange} />
+                                <Form.Control id="input-field" type="number" placeholder="Enter Service ID" value={data.service_id} name="service_id" onChange={handleChange} />
                                 {!data.service_id &&
                                     <Form.Text className="text-danger">
                                         *Service ID can't be empty
@@ -150,7 +152,7 @@ const AddUser = () => {
                                 className="mb-3"
                                 style={{ color: "white" }}
                             >
-                                <Form.Control type="password" id="input-field" placeholder="Set Password" name="password" onChange={handleChange} />
+                                <Form.Control type="password" id="input-field" placeholder="Set Password" value={data.password} name="password" onChange={handleChange} />
 
                                 {!data.password &&
                                     <Form.Text className="text-danger">

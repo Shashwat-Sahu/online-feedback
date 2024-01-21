@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
+import { logout } from '../../Comtrollers/logoutController';
 
 const AddStudent = () => {
     const [data, setData] = useState([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }]);
@@ -71,6 +72,7 @@ const AddStudent = () => {
         }).then(data => {
             console.log(data)
             setMessage({ message: data?.data?.message, error: null })
+            setData([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
 
         }).catch(err => {
             err = err.response.data
@@ -117,7 +119,7 @@ const AddStudent = () => {
                     <Col className='text-end'>
                         <Button id="submit-Btn" className='mx-2' variant="contained" color="info" onClick={() => handleIncreaseStudent()} endIcon={<AddIcon />} size="medium"> Add More </Button>
                         <Button id="submit-Btn" variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
-                        <Fab sx={{ml:1}} variant="extended" onClick={() => { navigate("/") }} endIcon={<LogoutIcon />}>
+                        <Fab sx={{ml:1}} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
                             Logout
                             <LogoutIcon sx={{ ml: 1 }} />
                         </Fab>

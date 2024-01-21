@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import { useDispatch, useSelector } from "react-redux";
 import { setServiceId } from "../../Reducers/loginReducer";
+import { logout } from "../../Comtrollers/logoutController";
 
 const AdminDashboard = () => {
     
@@ -26,7 +27,7 @@ const AdminDashboard = () => {
                     <Button  style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<AddIcon />} onClick={()=>{navigate("/admin/adduser")}} size="large">Add Counsellor</Button>
                 </Col>
                 <Col  className="text-end" >
-                <Button style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<LogoutIcon/>} onClick={()=>{navigate("/admin/adduser")}} size="large">Logout</Button>
+                <Button style={{backgroundColor: "#0a58ca",color: "white"}} variant="contained" endIcon={<LogoutIcon/>} onClick={() => { logout(navigate) }} size="large">Logout</Button>
                 </Col>
             </Row>
             <Row>

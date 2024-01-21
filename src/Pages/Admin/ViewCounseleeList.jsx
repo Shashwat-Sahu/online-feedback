@@ -14,6 +14,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { useDispatch } from "react-redux";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
+import { logout } from "../../Comtrollers/logoutController";
 
 const ViewCounseleeList = () => {
     const navigate = useNavigate();
@@ -100,7 +101,7 @@ const ViewCounseleeList = () => {
                     </Fab>
                     </Col>
                     <Col className="text-end">
-                    <Fab sx={{ml:1}} variant="extended" onClick={() => { navigate("/") }} endIcon={<LogoutIcon />}>
+                    <Fab sx={{ml:1}} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
                             Logout
                             <LogoutIcon sx={{ ml: 1 }} />
                         </Fab>
