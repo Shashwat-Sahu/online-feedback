@@ -24,11 +24,19 @@ require("./Model/AdminAuth.js");
 
 app.use(require("./Routes/Admin.js"))
 app.use(require("./Routes/Login.js"))
-app.use("/counsellor",require("./Routes/Counsellor.js"))
-app.use("/counselee",require("./Routes/Counselee.js"))
+app.use("/counsellor", require("./Routes/Counsellor.js"))
+app.use("/counselee", require("./Routes/Counselee.js"))
 
 const PORT = process.env.PORT || 8000
 
-app.listen(PORT,()=>{
+
+app.use(express.static('./build'))
+const path = require('path')
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+})
+
+
+app.listen(PORT, () => {
     console.log(`Server running on port:${PORT}`)
 })
