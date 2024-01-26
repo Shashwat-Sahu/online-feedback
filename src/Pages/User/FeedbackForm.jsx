@@ -7,6 +7,8 @@ import "./Feedbackform.css";
 import { Fab } from '@mui/material';
 import { logout } from '../../Comtrollers/logoutController';
 import LogoutIcon from '@mui/icons-material/Logout';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const FeedbackForm = () => {
   const navigate = useNavigate()
@@ -50,6 +52,21 @@ const FeedbackForm = () => {
     console.log(formData)
   }
 
+
+  const ExportCSV = () => {
+    var fileName = `${selectedCounselee.name} ${new Date().toLocaleString()}`;
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+
+
+    const ws = XLSX.utils.json_to_sheet([formData]);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(data, fileName + fileExtension);
+
+  }
+
   return (
 
     <div class="container">
@@ -87,15 +104,15 @@ const FeedbackForm = () => {
         <div class="col-md-9 offset-md-2 col-xs-12">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
-              <div className='row mt-2 mb-2'>
-                <div className='col-6'>
-                  <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
-                </div><div className='col-6'>
-                  <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
-                    Logout
-                    <LogoutIcon sx={{ ml: 1 }} />
-                  </Fab>
-                </div></div>
+            <div className='row mt-2 mb-2'>
+              <div className='col-6'>
+                <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
+              </div><div className='col-6'>
+                <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
+                  Logout
+                  <LogoutIcon sx={{ ml: 1 }} />
+                </Fab>
+              </div></div>
             <div className='col-12'>
               <h2 style={{ marginBottom: "0" }}>
                 <small class="text-muted">{counsellor?.name}</small>
@@ -167,7 +184,7 @@ const FeedbackForm = () => {
             <textarea class="form-control" name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
           </div>
           <div className='text-center mt-4 mb-4'>
-            <Button onClick={() => navigate("/feedbackpageprint", { state: { ...selectedCounselee, ...formData } })}>Submit</Button>
+            <Button onClick={ExportCSV}>Export</Button>
           </div>
         </div>
       </div>
