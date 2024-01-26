@@ -5,7 +5,7 @@
 }
 
 .box{
-    background-image: url("https://wallpapercave.com/dwp2x/wp6676998.jpg");
+    background-image: url("https://wallpaperaccess.com/full/1905591.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -39,7 +39,7 @@ header{
     width: 60%;
     border: 1px solid #cfe2ff45;
     border-radius: 30px;
-    color: #fff;
+    color: black;
     padding: 0 0 0 1rem;
     background: rgba(255, 255, 255, 0.3);
     display: flex;
@@ -47,7 +47,7 @@ header{
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
 }
 .input-field .input{
-    color: #fff;
+    color: black;
     outline: none;
     background-color: transparent;
     border: none;
@@ -66,7 +66,7 @@ i{
     color: #fff;
 }
 ::-webkit-input-placeholder{
-    color: #fff;
+    color: black;
 }
 .submit{
     border: none;

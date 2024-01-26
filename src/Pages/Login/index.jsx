@@ -14,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
 const Login = (props) => {
     const [inputFields, setInputFields] = useState({ service_id: "", password: "", type: "admin" });
     const [errors, setErrors] = useState({});
-    
-  const [message, setMessage] = useState({ message: null, error: null })
+
+    const [message, setMessage] = useState({ message: null, error: null })
     const [submitting, setSubmitting] = useState(false);
     const { setToken, setType, setServiceId } = props
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Login = (props) => {
 
     const validateValues = (inputValues) => {
         if (inputValues.service_id.length != 5) {
-            
+
             setMessage({ error: "Service ID should be 5 digits long", message: null })
             return true;
         }
@@ -62,7 +62,7 @@ const Login = (props) => {
             localStorage.clear()
             err = err?.response?.data
             setMessage({ error: err?.error, message: null })
-            
+
             setSubmitting(false)
         })
     }
@@ -71,21 +71,32 @@ const Login = (props) => {
     return (
         <div className='box'>
             <Container className='h-100'>
-            {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-        <Alert severity="error">
-          <p className="error">{message.error}</p>
-        </Alert>
+                {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                    <Alert severity="error">
+                        <p className="error">{message.error}</p>
+                    </Alert>
 
-      </Snackbar>}
+                </Snackbar>}
                 {Object.keys(errors).length === 0 && submitting ? (
                     <span className="success">Successfully submitted ✓</span>
                 ) : null}
                 <Row className='h-100'>
+                <div style={{
+                                    fontSize: "30px",
+                                    color: '#00000075',
+                                    whiteSpace: "nowrap",
+                                    textAlign: "center",
+                                    textTransform:"uppercase",
+                                    fontWeight:"bold"
+                                }}>Trainee Online Integrated Management System</div>
                     <Col md={6} xs={12} className="m-auto">
+                    
                         <Form action='' onSubmit={handleSubmit}>
                             <div class="container">
+                               
                                 <div class="top-header">
-                                    <span>Have an account?</span>
+                                    {/* <span>Have an account?</span> */}
+                                    
                                     <header>Login</header>
                                 </div>
                                 <div class="input-field">

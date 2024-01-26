@@ -26,8 +26,6 @@ const AddUser = () => {
     const handleSubmit = () => {
         if (!data.name || !data.rank || !data.service_id || !data.password)
             return setMessage({ ...message, error: "Few fields are empty" })
-        if (data.service_id.length != 5)
-            return setMessage({ ...message, error: "Service ID must be 5 digits" })
         axios.post('/counsellor/add', { ...data, password: sha256(data.password) }, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -116,29 +114,14 @@ const AddUser = () => {
                                 controlId="floatingInput"
                                 label="Rank"
                                 className="mb-3">
-                                <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={handleChange}>
-
-                                    <option style={{ color: "black" }} value="Marshal of the Indian Air Force">Marshal of the Indian Air Force</option>
-
-                                    <option style={{ color: "black" }} value="Air chief marshal">Air chief marshal</option>
-
-                                    <option style={{ color: "black" }} value="Air marshal">Air marshal</option>
-
-                                    <option style={{ color: "black" }} value="Air vice marshal">Air vice marshal</option>
-
-                                    <option style={{ color: "black" }} value="Air commodore">Air commodore</option>
-
+                                <Form.Select  style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={handleChange}>
+                                <option selected disabled style={{ color: "black" }} value="Select">Select</option>
                                     <option style={{ color: "black" }} value="Group captain">Group captain</option>
 
                                     <option style={{ color: "black" }} value="Wing commander">Wing commander</option>
 
                                     <option style={{ color: "black" }} value="Squadron leader">Squadron leader</option>
 
-                                    <option style={{ color: "black" }} value="Flight lieutenant">Flight lieutenant</option>
-
-                                    <option style={{ color: "black" }} value="Flying officer">Flying officer</option>
-
-                                    <option style={{ color: "black" }} value="Flight cadet">Flight cadet</option>
 
                                 </Form.Select>
                                 {!data.rank &&
