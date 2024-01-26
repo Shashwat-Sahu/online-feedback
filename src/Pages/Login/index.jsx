@@ -92,11 +92,10 @@ const Login = (props) => {
                     <Col md={6} xs={12} className="m-auto">
                     
                         <Form action='' onSubmit={handleSubmit}>
-                            <div class="container">
+                            <div class="container" style={{marginBottom:"13rem"}}>
                                
                                 <div class="top-header">
-                                    {/* <span>Have an account?</span> */}
-                                    
+                                  
                                     <header>Login</header>
                                 </div>
                                 <div class="input-field">
