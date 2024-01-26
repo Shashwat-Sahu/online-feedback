@@ -78,7 +78,7 @@ const Login = (props) => {
 
                 </Snackbar>}
                 {Object.keys(errors).length === 0 && submitting ? (
-                    <span className="success">Successfully submitted ✓</span>
+                    <span className="success" style={{color:"green",fontWeight:"bold",float:"right"}}>Successfully submitted ✓</span>
                 ) : null}
                 <Row className='h-100'>
                 <div style={{
