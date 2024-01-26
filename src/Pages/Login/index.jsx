@@ -71,6 +71,14 @@ const Login = (props) => {
     return (
         <div className='box'>
             <Container className='h-100'>
+                <div style={{
+                    fontSize: "30px",
+                    color: '#00000075',
+                    whiteSpace: "nowrap",
+                    textAlign: "center",
+                    textTransform: "uppercase",
+                    fontWeight: "bold"
+                }}>Trainee Online Integrated Management System</div>
                 {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
                     <Alert severity="error">
                         <p className="error">{message.error}</p>
@@ -78,24 +86,17 @@ const Login = (props) => {
 
                 </Snackbar>}
                 {Object.keys(errors).length === 0 && submitting ? (
-                    <span className="success" style={{color:"green",fontWeight:"bold",float:"right"}}>Successfully submitted ✓</span>
+                    <span className="success" style={{ color: "green", fontWeight: "bold", float: "right" }}>Successfully submitted ✓</span>
                 ) : null}
                 <Row className='h-100'>
-                <div style={{
-                                    fontSize: "30px",
-                                    color: '#00000075',
-                                    whiteSpace: "nowrap",
-                                    textAlign: "center",
-                                    textTransform:"uppercase",
-                                    fontWeight:"bold"
-                                }}>Trainee Online Integrated Management System</div>
+
                     <Col md={6} xs={12} className="m-auto">
-                    
+
                         <Form action='' onSubmit={handleSubmit}>
-                            <div class="container" style={{marginBottom:"13rem"}}>
-                               
+                            <div class="container" style={{ marginBottom: "13rem" }}>
+
                                 <div class="top-header">
-                                  
+
                                     <header>Login</header>
                                 </div>
                                 <div class="input-field">
