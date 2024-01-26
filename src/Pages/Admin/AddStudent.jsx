@@ -59,8 +59,6 @@ const AddStudent = () => {
         data.forEach((data) => {
             if (!data.name || !data.rank || !data.service_id)
                 return setMessage({ ...message, error: "Few fields are empty" })
-            if (data.service_id.length != 5)
-                return setMessage({ ...message, error: "Service ID must be 5 digits for " + data.service_id })
         })
         console.log(counselId)
         axios.put('/counsellor/addCounseleeList', {
@@ -159,24 +157,7 @@ const AddStudent = () => {
                                         className="mb-3">
                                         <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={(e) => handleChange(e, index)} index={index}>
 
-                                            <option style={{ color: "black" }} value="Marshal of the Indian Air Force">Marshal of the Indian Air Force</option>
-
-                                            <option style={{ color: "black" }} value="Air chief marshal">Air chief marshal</option>
-
-                                            <option style={{ color: "black" }} value="Air marshal">Air marshal</option>
-
-                                            <option style={{ color: "black" }} value="Air vice marshal">Air vice marshal</option>
-
-                                            <option style={{ color: "black" }} value="Air commodore">Air commodore</option>
-
-                                            <option style={{ color: "black" }} value="Group captain">Group captain</option>
-
-                                            <option style={{ color: "black" }} value="Wing commander">Wing commander</option>
-
-                                            <option style={{ color: "black" }} value="Squadron leader">Squadron leader</option>
-
-                                            <option style={{ color: "black" }} value="Flight lieutenant">Flight lieutenant</option>
-
+                                        <option selected disabled style={{ color: "black" }} value="Select">Select</option>
                                             <option style={{ color: "black" }} value="Flying officer">Flying officer</option>
 
                                             <option style={{ color: "black" }} value="Flight cadet">Flight cadet</option>

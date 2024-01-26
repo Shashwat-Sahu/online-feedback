@@ -96,16 +96,7 @@ const Modify = (props) => {
               <Col sm="10">
                 <Form.Select value={data.rank} onChange={(event) => setData({ ...data, rank: event.target.value })}>
 
-                  <option value="Marshal of the Indian Air Force">Marshal of the Indian Air Force</option>
-
-                  <option value="Air chief marshal">Air chief marshal</option>
-
-                  <option value="Air marshal">Air marshal</option>
-
-                  <option value="Air vice marshal">Air vice marshal</option>
-
-                  <option value="Air commodore">Air commodore</option>
-
+          
                   <option value="Group captain">Group captain</option>
 
                   <option value="Wing commander">Wing commander</option>
