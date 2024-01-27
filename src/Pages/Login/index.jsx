@@ -24,9 +24,9 @@ const Login = (props) => {
     const dispatch = useDispatch()
 
     const validateValues = (inputValues) => {
-        if (inputValues.service_id.length != 5) {
+        if (!inputValues.service_id) {
 
-            setMessage({ error: "Service ID should be 5 digits long", message: null })
+            setMessage({ error: "Service ID is empty ", message: null })
             return true;
         }
         if (inputValues.password.length < 5) {
@@ -42,7 +42,7 @@ const Login = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         var error = validateValues(inputFields)
-        if (error || error)
+        if (error)
             return;
         setSubmitting(true);
         axios.post("/login", {
