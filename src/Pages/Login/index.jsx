@@ -74,7 +74,6 @@ const Login = (props) => {
                 <div style={{
                     fontSize: "30px",
                     color: '#00000075',
-                    whiteSpace: "nowrap",
                     textAlign: "center",
                     textTransform: "uppercase",
                     fontWeight: "bold"
