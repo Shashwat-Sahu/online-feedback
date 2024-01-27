@@ -19,19 +19,19 @@ const User = () => {
   const [editCounsellor, setEditCounsellor] = useState({})
   const [message, setMessage] = useState({ message: null, error: null })
   const dispatch = useDispatch()
-   const [counsellors, setCounsellors] = useState([])
-   const [currentPage,setCurrentPage]=useState(1);
-   const recordsPerPage=5;
-   const lastIndex=currentPage*recordsPerPage;
-   const firstIndex=lastIndex-recordsPerPage;
-   const records=counsellors.slice(firstIndex,lastIndex);
-   const npage=Math.ceil(counsellors.length/recordsPerPage);
-   const numbers=[...Array(npage+1).keys()].slice(1);
+  const [counsellors, setCounsellors] = useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
+  const lastIndex = currentPage * recordsPerPage;
+  const firstIndex = lastIndex - recordsPerPage;
+  const records = counsellors.slice(firstIndex, lastIndex);
+  const npage = Math.ceil(counsellors.length / recordsPerPage);
+  const numbers = [...Array(npage + 1).keys()].slice(1);
 
- 
+
   const handleShow = (counsellor) => {
-    setEditCounsellor({...counsellor,type:"counsellor"})
-    
+    setEditCounsellor({ ...counsellor, type: "counsellor" })
+
     setShow(true)
   }
 
@@ -49,13 +49,12 @@ const User = () => {
       console.log(err)
       err = err.response.data
       setMessage({ error: err?.error, message: null })
-      if (err.error == "Not Authorized")
-                {
-                    localStorage.clear()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-                }
+      if (err.error == "Not Authorized") {
+        localStorage.clear()
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000);
+      }
     })
   }
 
@@ -71,17 +70,16 @@ const User = () => {
       }).catch(err => {
         console.log(err)
         err = err?.response?.data
-        if (err.error == "Not Authorized")
-                {
-                    localStorage.clear()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-                }
+        if (err.error == "Not Authorized") {
+          localStorage.clear()
+          setTimeout(() => {
+            window.location.reload()
+          }, 2000);
+        }
       })
   }, [show, message])
 
-  
+
   return (
     <div className='table-responsive'>
 
@@ -133,45 +131,45 @@ const User = () => {
         </tbody>
       </table>
       <nav>
-  <ul className="pagination justify-content-end">
-  <li className='page-item'>
-<a href="#" className='page-link' onClick={prePage}>
-Prev
-</a>
-    </li>
-    {
-      numbers.map((n,i)=>(
-        <li className={`page-item ${currentPage===n? 'active':''}`} key={i}>
-<a href="#" className='page-link' onClick={()=>changeCPage(n)}>{n}
+        <ul className="pagination justify-content-end">
+          <li className='page-item'>
+            <a href="#" className='page-link' onClick={prePage}>
+              Prev
+            </a>
+          </li>
+          {
+            numbers.map((n, i) => (
+              <li className={`page-item ${currentPage === n ? 'active' : ''}`} key={i}>
+                <a href="#" className='page-link' onClick={() => changeCPage(n)}>{n}
 
-</a>
-        </li>
+                </a>
+              </li>
 
-      ))
-    }
-    <li className='page-item'>
-<a href="#" className='page-link' onClick={nextPage}>
-Next
-</a>
-    </li>
-  </ul>
-</nav>
+            ))
+          }
+          <li className='page-item'>
+            <a href="#" className='page-link' onClick={nextPage}>
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
       <Modify details={editCounsellor} show={show} setShow={setShow} />
-      
+
     </div>
   )
-  function prePage(){
-    if(currentPage!==firstIndex){
-      setCurrentPage(currentPage-1)
+  function prePage() {
+    if (currentPage !== firstIndex) {
+      setCurrentPage(currentPage - 1)
     }
 
   }
-  function changeCPage(id=counsellors.service_id){
-setCurrentPage(id)
+  function changeCPage(id = counsellors.service_id) {
+    setCurrentPage(id)
   }
-  function nextPage(){
-if(currentPage!==lastIndex)
-setCurrentPage(currentPage+1)
+  function nextPage() {
+    if (currentPage !== lastIndex)
+      setCurrentPage(currentPage + 1)
   }
 }
 
