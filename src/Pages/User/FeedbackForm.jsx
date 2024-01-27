@@ -305,7 +305,7 @@ const FeedbackForm = () => {
             </Fab>
           </div>
 
-          <div className='table-responsive-lg'>
+          <div className='table-responsive'>
             {prevReport?.length > 0 && <table class="table table-hover table-bordered mt-4 table-sm">
               <thead>
                 <tr>
