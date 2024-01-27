@@ -98,6 +98,19 @@ const FeedbackForm = () => {
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const dataFile = new Blob([excelBuffer], { type: fileType });
       FileSaver.saveAs(dataFile, fileName + fileExtension);
+      setFormData({
+        "Academics": "",
+        "Projects": "",
+        "Sick Report": "",
+        "OLQ": "",
+        "Games": "",
+        "Cultural": "",
+        "Financial": "",
+        "Personal": "",
+        "HOF's comments": "",
+        "CI's comments": "",
+        "COMMANDANT'S comments": ""
+      })
     }).catch(err => {
       err = err.response.data
       setMessage({ error: err?.error, message: null })
