@@ -70,26 +70,24 @@ const Login = (props) => {
 
     return (
         <div className='box'>
-            <Container className='h-100'>
-                {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
-                    <Alert severity="error">
-                        <p className="error">{message.error}</p>
-                    </Alert>
 
-                </Snackbar>}
-                {Object.keys(errors).length === 0 && submitting ? (
-                    <span className="success" style={{ color: "green", fontWeight: "bold", float: "right" }}>Successfully submitted ✓</span>
-                ) : null}
+            {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                <Alert severity="error">
+                    <p className="error">{message.error}</p>
+                </Alert>
+
+            </Snackbar>}
+            <Container className='h-100'>
                 <Row className='h-100'>
                     <Col xs={12}>
-                    
-                <div style={{
-                    fontSize: "30px",
-                    color: '#00000075',
-                    textAlign: "center",
-                    textTransform: "uppercase",
-                    fontWeight: "bold"
-                }}>Trainee Online Integrated Management System</div>
+
+                        <div style={{
+                            fontSize: "30px",
+                            color: '#00000075',
+                            textAlign: "center",
+                            textTransform: "uppercase",
+                            fontWeight: "bold"
+                        }}>Trainee Online Integrated Management System</div>
                     </Col>
                     <Col md={6} xs={12} className="m-auto">
 
