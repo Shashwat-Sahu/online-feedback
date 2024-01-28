@@ -99,13 +99,14 @@ router.put("/addCounseleeList",verifyToken, async (req, res) => {
     })
     var promises = counselee_list.map(element => {
         const { name, rank, service_id } = element
-        return Counsellor.findOne({ service_id: counsellor_service_id, counselee_list: { $nin: [service_id] } }).then(data => {
-            if (!data)
+        return Counsellor.findOne({ counselee_list: { $in: [service_id] } }).then(data => {
+            if (data)
                 return service_id
         })
     })
     Promise.all(promises).then(async (result) => {
-        var alreadyExist = result.filter(service_id => service_id != undefined)
+        console.log(result)
+        var alreadyExist = result
         if (alreadyExist.length > 0)
             return res.status(422).json({ error: "Already Existing: " + alreadyExist.join(", ") })
         else {

@@ -36,12 +36,10 @@ const AddStudent = () => {
     }
 
     const handleDelete = (index) => {
-        console.log(index, data)
         const filtered = data.filter((value, ind) => {
             if (ind != index)
                 return value
         })
-        console.log(filtered)
         setData(filtered)
 
     }
@@ -60,7 +58,6 @@ const AddStudent = () => {
             if (!data.name || !data.rank || !data.service_id)
                 return setMessage({ ...message, error: "Few fields are empty" })
         })
-        console.log(counselId)
         axios.put('/counsellor/addCounseleeList', {
             counselee_list: data, counsellor_service_id: counselId
         }, {
@@ -68,7 +65,6 @@ const AddStudent = () => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         }).then(data => {
-            console.log(data)
             setMessage({ message: data?.data?.message, error: null })
             setData([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
 

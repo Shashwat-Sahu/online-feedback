@@ -39,17 +39,14 @@ const ViewCounseleeList = () => {
         setShow(true)
     }
     const handleDelete = (service_id) => {
-        console.log(service_id)
         axios.delete(`/counselee/delete?service_id=${service_id}&counsellor_service_id=${counselId}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         }).then(data => {
-            console.log(data)
             setMessage({ message: data?.data?.message, error: null })
         }
         ).catch(err => {
-            console.log(err)
             err = err.response.data
             setMessage({ error: err?.error, message: null })
             if (err.error == "Not Authorized") {
@@ -72,7 +69,6 @@ const ViewCounseleeList = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             }).then(data => {
-                console.log(data)
                 setCounselees(data.data)
             }).catch(err => {
                 err = err.response.data

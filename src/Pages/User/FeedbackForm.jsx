@@ -10,6 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 const FeedbackForm = () => {
@@ -39,7 +40,6 @@ const FeedbackForm = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setCounselees(data.data.data)
       setCounsellor(data.data.counsellor)
     }).catch(err => {
@@ -56,11 +56,9 @@ const FeedbackForm = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
-    console.log(formData)
   }
 
-
-  const ExportCSV = () => {
+  const SubmitReport = () => {
     if (!selectedCounselee?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
     if (!counsellor?.service_id) {
@@ -89,15 +87,6 @@ const FeedbackForm = () => {
       }
     }).then(data => {
       setMessage({ message: data?.data?.message, error: null });
-
-      var fileName = `${selectedCounselee.service_id}_${selectedCounselee.name}_${new Date().toLocaleString()}`;
-      const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-      const fileExtension = '.xlsx';
-      const ws = XLSX.utils.json_to_sheet([formData]);
-      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const dataFile = new Blob([excelBuffer], { type: fileType });
-      FileSaver.saveAs(dataFile, fileName + fileExtension);
       setFormData({
         "Academics": "",
         "Projects": "",
@@ -111,6 +100,7 @@ const FeedbackForm = () => {
         "CI's comments": "",
         "COMMANDANT'S comments": ""
       })
+      ExportCSV(formData,new Date())
     }).catch(err => {
       err = err.response.data
       setMessage({ error: err?.error, message: null })
@@ -122,6 +112,18 @@ const FeedbackForm = () => {
       }
 
     })
+  }
+  const ExportCSV = (reportData,date) => {
+
+    var fileName = `${selectedCounselee.service_id}_${selectedCounselee.name}_${date?.toLocaleString()}`;
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+    const ws = XLSX.utils.json_to_sheet([reportData]);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const dataFile = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(dataFile, fileName + fileExtension);
+
   }
   const GetPrevReport = () => {
     if (!selectedCounselee?.service_id)
@@ -138,7 +140,6 @@ const FeedbackForm = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setPrevReport(data?.data)
     })
   }
@@ -181,11 +182,6 @@ const FeedbackForm = () => {
           <div className='row mt-2 mb-3'>
             <div className='col-3'>
               <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
-            </div><div className='col-9 text-end'>
-              <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
-                Logout
-                <LogoutIcon sx={{ ml: 1 }} />
-              </Fab>
             </div></div>
           <h2 style={{ marginBottom: "0" }}>
             <small class="text-muted">{counsellor?.name}</small>
@@ -196,7 +192,7 @@ const FeedbackForm = () => {
           <p >
             <small class="text-muted">Rank : {counsellor?.rank}</small>
           </p>
-          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]); setSelectedcounselee(counselees[e.target.value]) }}>
+          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]);setPrevReport([]); setSelectedcounselee(counselees[e.target.value]) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
               counselees.map((elem, index) => {
@@ -207,7 +203,7 @@ const FeedbackForm = () => {
             }
           </select>
         </div>
-        <div class="col-md-10 offset-md-2 col-xs-12">
+        <div class="col-md-12 offset-md-1 col-xs-12">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
             <div className='row mt-2 mb-2'>
@@ -243,6 +239,8 @@ const FeedbackForm = () => {
               </select>
             </div>
           </div>
+          <div class="row">
+            <div className='col-6'>
           <table class="table table-bordered" style={{ width: "auto" }}>
             <tbody>
 
@@ -257,6 +255,16 @@ const FeedbackForm = () => {
 
             </tbody>
           </table>
+          </div>
+            <div className='col-6'>
+          <div className='text-end d-none d-md-block'>
+              <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
+                Logout
+                <LogoutIcon sx={{ ml: 1 }} />
+              </Fab>
+            </div>
+          </div>
+            </div>
           <div class="input-group mb-2">
             <span class="input-group-text">Academics</span>
             <textarea class="form-control" name="Academics" value={formData["Academics"]} aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
@@ -303,15 +311,15 @@ const FeedbackForm = () => {
           </div>
 
           <div className='text-center mt-4 mb-4'>
-            <Fab sx={{ mr: 1,mb:1 }} variant="extended" onClick={Reset} endIcon={<RestartAltIcon />} color="error">
+            <Fab sx={{ mr: 1, mb: 1 }} variant="extended" onClick={Reset} endIcon={<RestartAltIcon />} color="error">
               Reset
               <RestartAltIcon sx={{ ml: 1 }} />
             </Fab>
-            <Fab sx={{ mr: 1,mb:1 }} variant="extended" onClick={GetPrevReport} endIcon={<LogoutIcon />} color="primary">
+            <Fab sx={{ mr: 1, mb: 1 }} variant="extended" onClick={GetPrevReport} endIcon={<LogoutIcon />} color="primary">
               Last Feedback reports
               <LogoutIcon sx={{ ml: 1 }} />
             </Fab>
-            <Fab sx={{mb:1}} variant="extended" onClick={ExportCSV} color="success" >
+            <Fab sx={{ mb: 1 }} variant="extended" onClick={SubmitReport} color="success" >
 
               Generate Report
               <KeyboardArrowRightIcon sx={{ ml: 1 }} />
@@ -334,6 +342,7 @@ const FeedbackForm = () => {
                   <th scope="col">HOF's comments</th>
                   <th scope="col">CI's comments</th>
                   <th scope="col">COMMANDANT's comments</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -352,6 +361,21 @@ const FeedbackForm = () => {
                       <td>{report?.hof_comments}</td>
                       <td>{report?.ci_comments}</td>
                       <td>{report?.commandant_comments}</td>
+                      <td>
+                        <DownloadIcon onClick={() => ExportCSV({
+                        "Academics": report?.academics,
+                        "Projects": report?.projects,
+                        "Sick Report": report?.sick_report,
+                        "OLQ": report?.olq,
+                        "Games": report?.games,
+                        "Cultural": report?.cultural,
+                        "Financial": report?.financial,
+                        "Personal": report?.personal,
+                        "HOF's comments": report?.hof_comments,
+                        "CI's comments": report?.ci_comments,
+                        "COMMANDANT'S comments": report?.commandant_comments,
+                      },new Date(report?.created_at))}/>
+                      </td>
                     </tr>
                   )
                 })}

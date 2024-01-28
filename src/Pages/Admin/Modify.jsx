@@ -17,7 +17,6 @@ const Modify = (props) => {
   const handleSubmit = () => {
     if (!data.name || !data.rank)
       return window.alert("Name or Rank can't be empty")
-    console.log(data.type)
     axios.put(data.type == "counsellor" ? '/counsellor/update' : '/counselee/update', {
       service_id: data.service_id,
       name: data.name,
@@ -27,11 +26,9 @@ const Modify = (props) => {
         Authorization:`Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setMessage({ message: data?.data?.message, error: null })
       handleClose()
     }).catch(err => {
-      console.log(err)
       err = err?.response?.data
       setMessage({ error: err?.error, message: null })
       if (err.error == "Not Authorized")
@@ -69,7 +66,6 @@ const Modify = (props) => {
         backdrop="static"
         keyboard={false}
       >
-        {console.log(props)}
         <Modal.Header closeButton>
           <Modal.Title>Update Counsellor : {data.service_id}</Modal.Title>
         </Modal.Header>

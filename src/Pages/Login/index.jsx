@@ -36,7 +36,6 @@ const Login = (props) => {
 
     }
     const handleChange = (e) => {
-        console.log(e)
         setInputFields({ ...inputFields, [e.target.name]: e.target.value });
     };
     const handleSubmit = (e) => {
@@ -48,7 +47,6 @@ const Login = (props) => {
         axios.post("/login", {
             service_id: inputFields.service_id, password: sha256(inputFields.password), type: inputFields.type
         }).then(data => {
-            console.log(data)
             setSubmitting(false)
 
             localStorage.setItem("token", data.data.token)
@@ -58,7 +56,6 @@ const Login = (props) => {
             navigate("/")
             setSubmitting(false)
         }).catch(err => {
-            console.log(err)
             localStorage.clear()
             err = err?.response?.data
             setMessage({ error: err?.error, message: null })

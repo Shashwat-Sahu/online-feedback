@@ -19,7 +19,6 @@ const AddUser = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const handleChange = (e) => {
-        console.log(e)
         setData({ ...data, [e.target.name]: e.target.value });
     };
 
@@ -31,7 +30,6 @@ const AddUser = () => {
                 Authorization: `Bearer ${localStorage.getItem("token")}`
             }
         }).then(data => {
-            console.log(data)
             setMessage({ message: data?.data?.message, error: null });
             setData({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" })
 

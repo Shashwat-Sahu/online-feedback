@@ -36,17 +36,14 @@ const User = () => {
   }
 
   const handleDelete = (service_id) => {
-    console.log(service_id)
     axios.delete("/counsellor/delete?service_id=" + service_id, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }
     ).then(data => {
-      console.log(data)
       setMessage({ message: data?.data?.message, error: null })
     }).catch(err => {
-      console.log(err)
       err = err.response.data
       setMessage({ error: err?.error, message: null })
       if (err.error == "Not Authorized") {
@@ -65,10 +62,8 @@ const User = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       }).then(data => {
-        console.log(data)
         setCounsellors(data.data)
       }).catch(err => {
-        console.log(err)
         err = err?.response?.data
         if (err.error == "Not Authorized") {
           localStorage.clear()
