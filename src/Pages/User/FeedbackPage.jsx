@@ -22,7 +22,6 @@ const FeedbackPage = (details) => {
             },
         });
     };
-    console.log(location)
     return (
         <>
             <div ref={reportTemplateRef}>
