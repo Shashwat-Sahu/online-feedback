@@ -1,7 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './Pages/Login';
-import FeedbackFrom from './Pages/User/FeedbackForm'
+import FeedbackForm from './Pages/User/FeedbackForm'
+import FeedbackFromHof from './Pages/Hof/FeedbackForm';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import AdminDashboard from './Pages/Admin';
@@ -33,7 +34,12 @@ const Routing = (props) => {
         </Routes> }{userType == "user"&&token&&
         <Routes>
 
-          <Route path="/" Component={FeedbackFrom} />
+          <Route path="/" Component={FeedbackForm} />
+          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
+          {userType == "hof"&&token&&
+        <Routes>
+
+          <Route path="/" Component={FeedbackFromHof} />
           <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
     </>
   )

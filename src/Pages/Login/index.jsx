@@ -117,7 +117,7 @@ const Login = (props) => {
                                     </div>
                                     <div id="user" class="left">
                                         <input type="radio" checked={inputFields.type == "user"} name="type" onChange={handleChange} value="user" />
-                                        <label for="check"> User</label>
+                                        <label for="check"> DS</label>
                                     </div>
                                     <div id="user" class="left">
                                         <input type="radio" checked={inputFields.type == "hof"} name="type" onChange={handleChange} value="hof" />

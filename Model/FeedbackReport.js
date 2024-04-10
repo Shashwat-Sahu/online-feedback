@@ -32,19 +32,21 @@ const feedBackReport = new mongoose.Schema({
         type:String
     },
     "hof_comments":{
-        type:String
+        type:String,
+        default:""
     },
     "ci_comments":{
-        type:String
+        type:String,
+        default:""
     },
-    "commandant_comments":{
+    "ds_comments":{
         type:String
     },
     "report_hof":{
-        type:String
+        type:Number
     },
     "report_ci":{
-        type:String
+        type:Number
     }
 },{
     timestamps:{ createdAt: 'created_at', updatedAt: 'updated_at' }

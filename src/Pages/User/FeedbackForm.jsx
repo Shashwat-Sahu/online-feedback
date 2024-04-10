@@ -18,6 +18,7 @@ const FeedbackForm = () => {
   const [counselees, setCounselees] = useState([])
   const [counsellor, setCounsellor] = useState({})
   const [prevReport, setPrevReport] = useState([])
+  const [allHof,setAllHof] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
   const [selectedCounselee, setSelectedcounselee] = useState({})
   const [formData, setFormData] = useState({
@@ -29,9 +30,8 @@ const FeedbackForm = () => {
     "Cultural": "",
     "Financial": "",
     "Personal": "",
-    "HOF's comments": "",
-    "CI's comments": "",
-    "COMMANDANT'S comments": ""
+    "report_hof":"",
+    "DS's comments": ""
   })
   var counselId = 12345;
   useEffect(() => {
@@ -42,6 +42,24 @@ const FeedbackForm = () => {
     }).then(data => {
       setCounselees(data.data.data)
       setCounsellor(data.data.counsellor)
+    }).catch(err => {
+      err = err.response.data
+      // setMessage({ error: err?.error, message: null })
+      if (err.error == "Not Authorized") {
+        localStorage.clear()
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000);
+      }
+    })
+
+    axios.get("/user/getAllHof", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then(data => {
+      console.log(data)
+      setAllHof(data.data.HOF)
     }).catch(err => {
       err = err.response.data
       // setMessage({ error: err?.error, message: null })
@@ -78,9 +96,9 @@ const FeedbackForm = () => {
       cultural: formData["Cultural"],
       financial: formData["Financial"],
       personal: formData["Personal"],
-      hof_comments: formData["HOF's comments"],
-      ci_comments: formData["CI's comments"],
-      commandant_comments: formData["COMMANDANT'S comments"]
+      
+    "report_hof": formData["report_hof"],
+      ds_comments: formData["DS's comments"]
     }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -96,9 +114,8 @@ const FeedbackForm = () => {
         "Cultural": "",
         "Financial": "",
         "Personal": "",
-        "HOF's comments": "",
-        "CI's comments": "",
-        "COMMANDANT'S comments": ""
+        "report_hof": "",
+        "DS's comments": ""
       })
       ExportCSV(formData,new Date())
     }).catch(err => {
@@ -155,9 +172,8 @@ const FeedbackForm = () => {
       "Cultural": "",
       "Financial": "",
       "Personal": "",
-      "HOF's comments": "",
-      "CI's comments": "",
-      "COMMANDANT'S comments": ""
+      "report_hof": "",
+      "DS's comments": ""
     })
     setPrevReport([])
   }
@@ -298,17 +314,29 @@ const FeedbackForm = () => {
             <textarea class="form-control" value={formData["Personal"]} name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
           </div>
           <div class="input-group mb-2">
+            <span class="input-group-text">DS's comments</span>
+            <textarea class="form-control" value={formData["DS's comments"]} name="DS's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+          </div>
+          <div className='input-group mb-2'>
+          <select class="form-select" aria-label="Select HOF" name="report_hof" onChange={ handleChange } value={formData.report_hof}>
+                <option selected disabled value="">Select HOF</option>
+                {
+                  allHof.map((elem, index) => {
+                    return (
+                      <option value={elem.service_id}>{elem.name} : {elem.service_id}</option>
+                    )
+                  })
+                }
+              </select>
+          </div>
+          {/* <div class="input-group mb-2">
             <span class="input-group-text">HOF's comments</span>
             <textarea class="form-control" value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
           </div>
           <div class="input-group mb-2">
             <span class="input-group-text">CI's comments</span>
             <textarea class="form-control" value={formData["CI's comments"]} name="CI's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group">
-            <span class="input-group-text">COMMANDANT'S comments</span>
-            <textarea class="form-control" value={formData["COMMANDANT'S comments"]} name="COMMANDANT'S comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
+          </div> */}
 
           <div className='text-center mt-4 mb-4'>
             <Fab sx={{ mr: 1, mb: 1 }} variant="extended" onClick={Reset} endIcon={<RestartAltIcon />} color="error">
@@ -341,7 +369,7 @@ const FeedbackForm = () => {
                   <th scope="col">Personal</th>
                   <th scope="col">HOF's comments</th>
                   <th scope="col">CI's comments</th>
-                  <th scope="col">COMMANDANT's comments</th>
+                  <th scope="col">DS's comments</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -360,7 +388,7 @@ const FeedbackForm = () => {
                       <td>{report?.personal}</td>
                       <td>{report?.hof_comments}</td>
                       <td>{report?.ci_comments}</td>
-                      <td>{report?.commandant_comments}</td>
+                      <td>{report?.ds_comments}</td>
                       <td>
                         <DownloadIcon onClick={() => ExportCSV({
                         "Academics": report?.academics,
@@ -373,7 +401,7 @@ const FeedbackForm = () => {
                         "Personal": report?.personal,
                         "HOF's comments": report?.hof_comments,
                         "CI's comments": report?.ci_comments,
-                        "COMMANDANT'S comments": report?.commandant_comments,
+                        "DS's comments": report?.ds_comments,
                       },new Date(report?.created_at))}/>
                       </td>
                     </tr>
