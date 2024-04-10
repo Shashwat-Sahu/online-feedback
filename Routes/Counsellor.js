@@ -106,7 +106,7 @@ router.put("/addCounseleeList",verifyToken, async (req, res) => {
     })
     Promise.all(promises).then(async (result) => {
         console.log(result)
-        var alreadyExist = result
+        var alreadyExist = result.filter(ele=>ele!=undefined)
         if (alreadyExist.length > 0)
             return res.status(422).json({ error: "Already Existing: " + alreadyExist.join(", ") })
         else {
