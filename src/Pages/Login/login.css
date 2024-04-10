@@ -92,14 +92,15 @@ i{
 }
 .left{
     display: flex;
+    margin: auto 1rem;
 }
 label a{
     color: #fff;
     text-decoration: none;
 }
-#admin{
+/* #admin{
     margin-right: 2rem;
-}
+} */
 
 .icon{
     color: #58151ca6;

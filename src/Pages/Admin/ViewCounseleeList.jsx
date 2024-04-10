@@ -14,7 +14,7 @@ import { Alert, Snackbar } from "@mui/material";
 import { useDispatch } from "react-redux";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
-import { logout } from "../../Comtrollers/logoutController";
+import { logout } from "../../Controllers/logoutController";
 
 const ViewCounseleeList = () => {
     const navigate = useNavigate();

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "./Feedbackform.css";
 import { Alert, Fab, Snackbar } from '@mui/material';
-import { logout } from '../../Comtrollers/logoutController';
+import { logout } from '../../Controllers/logoutController';
 import LogoutIcon from '@mui/icons-material/Logout';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';

@@ -22,6 +22,8 @@ require("./Model/Counsellor.js");
 require("./Model/Counselee.js");
 require("./Model/AdminAuth.js");
 require("./Model/FeedbackReport.js");
+require("./Model/HOF.js");
+require("./Model/CI.js");
 
 
 app.use(require("./Routes/Admin.js"))

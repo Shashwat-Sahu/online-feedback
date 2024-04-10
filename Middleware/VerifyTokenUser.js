@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
         res.status(401).json({ error: "Not Authorized" })
     }
     const token = authorization.replace("Bearer ", "")
-    jwt.verify(token, process.env.JWT_USER_KEY, (err, payload) => {
+    jwt.verify(token, process.env.JWT_DS_KEY, (err, payload) => {
         if (err) {
             return res.status(401).json({ error: "Not Authorized" })
         }

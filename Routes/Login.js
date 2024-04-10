@@ -3,6 +3,8 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const AdminAuth = mongoose.model("AdminAuth")
 const Counsellor = mongoose.model("Counsellor")
+const HOF = mongoose.model("HOF");
+const CI = mongoose.model("CI");
 const jwt = require('jsonwebtoken');
 const sha256 = require('sha256');
 
@@ -24,13 +26,26 @@ router.post("/login", (req, res) => {
             
         })
     }
-    else {
+    else if (type == "user"){
         const cryptedPassword = sha256(password)
         console.log("user",service_id,password,cryptedPassword)
         Counsellor.find({ "service_id": service_id, password: cryptedPassword }).then(data => {
             console.log(cryptedPassword, data)
             if (data.length>0){
-                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_USER_KEY, { expiresIn: '1h' })
+                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_DS_KEY, { expiresIn: '1h' })
+                res.json({ message: "Logged in successfully", token, service_id, type })
+            }else
+            res.status(401).json({ error: "Wrong service ID or password" })
+            
+        })
+    }
+    else if (type == "hof"){
+        const cryptedPassword = sha256(password)
+        console.log("hof",service_id,password,cryptedPassword)
+        HOF.find({ "service_id": service_id, password: cryptedPassword }).then(data => {
+            console.log(cryptedPassword, data)
+            if (data.length>0){
+                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_HOF_KEY, { expiresIn: '1h' })
                 res.json({ message: "Logged in successfully", token, service_id, type })
             }else
             res.status(401).json({ error: "Wrong service ID or password" })

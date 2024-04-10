@@ -119,6 +119,14 @@ const Login = (props) => {
                                         <input type="radio" checked={inputFields.type == "user"} name="type" onChange={handleChange} value="user" />
                                         <label for="check"> User</label>
                                     </div>
+                                    <div id="user" class="left">
+                                        <input type="radio" checked={inputFields.type == "hof"} name="type" onChange={handleChange} value="hof" />
+                                        <label for="check"> HOF</label>
+                                    </div>
+                                    <div id="user" class="left">
+                                        <input type="radio" checked={inputFields.type == "ci"} name="type" onChange={handleChange} value="ci" />
+                                        <label for="check"> CI</label>
+                                    </div>
                                 </div>
                                 <div class="input-field mt-4">
                                     <input type="submit" class="submit" value="Login" />

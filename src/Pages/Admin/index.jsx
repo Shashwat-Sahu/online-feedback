@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Stack from '@mui/material/Stack';
 import { useDispatch, useSelector } from "react-redux";
 import { setServiceId } from "../../Reducers/loginReducer";
-import { logout } from "../../Comtrollers/logoutController";
+import { logout } from "../../Controllers/logoutController";
 
 const AdminDashboard = () => {
     
