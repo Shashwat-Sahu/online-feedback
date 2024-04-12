@@ -52,6 +52,19 @@ router.post("/login", (req, res) => {
             
         })
     }
+    else if (type == "ci"){
+        const cryptedPassword = sha256(password)
+        console.log("ci",service_id,password,cryptedPassword)
+        CI.find({ "service_id": service_id, password: cryptedPassword }).then(data => {
+            console.log(cryptedPassword, data)
+            if (data.length>0){
+                const token = jwt.sign({ service_id,time:new Date().toDateString() }, process.env.JWT_CI_KEY, { expiresIn: '1h' })
+                res.json({ message: "Logged in successfully", token, service_id, type })
+            }else
+            res.status(401).json({ error: "Wrong service ID or password" })
+            
+        })
+    }
 })
 
 

@@ -13,14 +13,14 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DownloadIcon from '@mui/icons-material/Download';
 
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-const FeedbackForm = () => {
+const FeedbackFormCi = () => {
   const navigate = useNavigate()
-  const [counselees, setCounselees] = useState([])
-  const [counsellor, setCounsellor] = useState({})
+  const [reports, setReports] = useState([])
+  const [hof, setHof] = useState({})
   const [prevReport, setPrevReport] = useState([])
-  const [allHof,setAllHof] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
-  const [selectedCounselee, setSelectedcounselee] = useState({})
+  const [selectedReport, setSelectedReport] = useState({})
+  const [allCI,setAllCI] = useState([])
   const [formData, setFormData] = useState({
     "Academics": "",
     "Projects": "",
@@ -30,18 +30,20 @@ const FeedbackForm = () => {
     "Cultural": "",
     "Financial": "",
     "Personal": "",
-    "report_hof":"",
-    "DS's comments": ""
+    "HOF's comments":"",
+    "DS's comments": "",
+    "CI's comments":""
   })
   var counselId = 12345;
   useEffect(() => {
-    axios.get("/counselee/getCounselees?", {
+    axios.get("/ci/getReports?", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      setCounselees(data.data.data)
-      setCounsellor(data.data.counsellor)
+      setHof(data.data.ci)
+      setReports(data.data.reports)
+
     }).catch(err => {
       err = err.response.data
       // setMessage({ error: err?.error, message: null })
@@ -53,23 +55,8 @@ const FeedbackForm = () => {
       }
     })
 
-    axios.get("/user/getAllHof", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    }).then(data => {
-      console.log(data)
-      setAllHof(data.data.HOF)
-    }).catch(err => {
-      err = err.response.data
-      // setMessage({ error: err?.error, message: null })
-      if (err.error == "Not Authorized") {
-        localStorage.clear()
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000);
-      }
-    })
+
+
   }, [])
 
   const handleChange = (e) => {
@@ -77,46 +64,35 @@ const FeedbackForm = () => {
   }
 
   const SubmitReport = () => {
-    if (!selectedCounselee?.service_id)
+    if (!selectedReport?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
-    if (!counsellor?.service_id) {
+    if (!hof?.service_id) {
       setMessage({ ...message, error: "Counsellor Service ID is empty" })
       return setTimeout(() => {
         return window.location.href = "/"
       }, 2000);
     }
-    axios.post("/user/feedbackreport", {
-      service_id: selectedCounselee.service_id,
-      counsellor_service_id: counsellor?.service_id,
-      academics: formData.Academics,
-      projects: formData.Projects,
-      sick_report: formData["Sick Report"],
-      olq: formData["OLQ"],
-      games: formData["Games"],
-      cultural: formData["Cultural"],
-      financial: formData["Financial"],
-      personal: formData["Personal"],
-      
-    "report_hof": formData["report_hof"],
-      ds_comments: formData["DS's comments"]
+    axios.put("/ci/updateReport", {
+      report_id:selectedReport._id,
+      ci_comments:formData["CI's comments"],
     }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
       setMessage({ message: data?.data?.message, error: null });
-      setFormData({
-        "Academics": "",
-        "Projects": "",
-        "Sick Report": "",
-        "OLQ": "",
-        "Games": "",
-        "Cultural": "",
-        "Financial": "",
-        "Personal": "",
-        "report_hof": "",
-        "DS's comments": ""
-      })
+      const report = data.data.report;
+      formData.Academics = report.academics;
+      formData.Cultural = report.cultural;
+      formData['DS\'s comments'] = report.ds_comments;
+      formData.Financial = report.financial;
+      formData.Games = report.games;
+      formData['HOF\'s comments'] = report.hof_comments;
+      formData['CI\'s comments'] = report.ci_comments;
+      formData.OLQ = report.olq;
+      formData.Personal = report.personal;
+      formData.Projects = report.projects;
+      formData['Sick Report'] = report.sick_report;
       ExportCSV(formData,new Date())
     }).catch(err => {
       err = err.response.data
@@ -132,7 +108,7 @@ const FeedbackForm = () => {
   }
   const ExportCSV = (reportData,date) => {
 
-    var fileName = `${selectedCounselee.service_id}_${selectedCounselee.name}_${date?.toLocaleString()}`;
+    var fileName = `${selectedReport.service_id}_${date?.toLocaleString()}`;
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
     const ws = XLSX.utils.json_to_sheet([reportData]);
@@ -143,26 +119,27 @@ const FeedbackForm = () => {
 
   }
   const GetPrevReport = () => {
-    if (!selectedCounselee?.service_id)
+    if (!selectedReport?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
-    if (!counsellor?.service_id) {
+    if (!hof?.service_id) {
       setMessage({ ...message, error: "Counsellor Service ID is empty" })
       return setTimeout(() => {
         return window.location.href = "/"
       }, 2000);
     }
 
-    axios.get(`/user/getfeedback?service_id=${selectedCounselee?.service_id}&counsellor_service_id=${counsellor?.service_id}`, {
+    axios.get(`/ci/getfeedback?service_id=${selectedReport?.service_id}&ci_service_id=${hof?.service_id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
+      console.log(data)
       setPrevReport(data?.data)
     })
   }
 
   const Reset = () => {
-    setSelectedcounselee({})
+    setSelectedReport({})
     setFormData({
       "Academics": "",
       "Projects": "",
@@ -173,7 +150,10 @@ const FeedbackForm = () => {
       "Financial": "",
       "Personal": "",
       "report_hof": "",
-      "DS's comments": ""
+      "DS's comments": "",
+      
+    "HOF's comments":"",
+    "CI's comments":""
     })
     setPrevReport([])
   }
@@ -200,26 +180,23 @@ const FeedbackForm = () => {
               <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
             </div></div>
           <h2 style={{ marginBottom: "0" }}>
-            <small class="text-muted">{counsellor?.name}</small>
+            <small class="text-muted">{hof?.name}</small>
           </h2>
           <p style={{ marginBottom: "0" }}>
-            <small class="text-muted">Service ID :{counsellor?.service_id}</small>
+            <small class="text-muted">Service ID :{hof?.service_id}</small>
           </p>
-          <p >
-            <small class="text-muted">Rank : {counsellor?.rank}</small>
-          </p>
-          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]);setPrevReport([]); setSelectedcounselee(counselees[e.target.value]) }}>
+          <select class="form-select" aria-label="Select Counselee" value={reports ? reports.indexOf(selectedReport) : -1} onChange={(e) => { console.log(reports[e.target.value]);setPrevReport([]); setSelectedReport(reports[e.target.value]);  setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
-              counselees.map((elem, index) => {
+              reports.map((elem, index) => {
                 return (
-                  <option value={index}>{elem.name} : {elem.service_id}</option>
+                  <option value={index}>{elem.service_id} : {new Date(elem.created_at).toLocaleString()}</option>
                 )
               })
             }
           </select>
         </div>
-        <div class="col-md-12 offset-md-1 col-xs-12 feedbackFormContainer">
+        <div class="col-md-12 offset-md-1 col-xs-12">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
             <div className='row mt-2 mb-2'>
@@ -233,22 +210,19 @@ const FeedbackForm = () => {
               </div></div>
             <div className='col-12'>
               <h2 style={{ marginBottom: "0" }}>
-                <small class="text-muted">{counsellor?.name}</small>
+                <small class="text-muted">{hof?.name}</small>
               </h2>
               <p style={{ marginBottom: "0" }}>
-                <small class="text-muted">Service ID :{counsellor?.service_id}</small>
-              </p>
-              <p >
-                <small class="text-muted">Rank : {counsellor?.rank}</small>
+                <small class="text-muted">Service ID :{hof?.service_id}</small>
               </p>
             </div>
             <div class="col-12">
-              <select class="form-select" aria-label="Select Counselee" onChange={(e) => { console.log(counselees[e.target.value]); setSelectedcounselee(counselees[e.target.value]) }}>
+              <select class="form-select" aria-label="Select Counselee" onChange={(e) => { console.log(reports[e.target.value]); setSelectedReport(reports[e.target.value]); setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
                 <option selected disabled>Select Counselee</option>
                 {
-                  counselees.map((elem, index) => {
+                  reports.map((elem, index) => {
                     return (
-                      <option value={index}>{elem.name} : {elem.service_id}</option>
+                      <option value={index}>{elem.service_id} : {new Date(elem.created_at).toLocaleString()}</option>
                     )
                   })
                 }
@@ -261,12 +235,8 @@ const FeedbackForm = () => {
             <tbody>
 
               <tr>
-                <th scope="row">Counselee Name</th>
-                <td>{selectedCounselee?.name}</td>
-              </tr>
-              <tr>
                 <th scope="row">Service ID</th>
-                <td>{selectedCounselee?.service_id}</td>
+                <td>{selectedReport?.service_id}</td>
               </tr>
 
             </tbody>
@@ -281,58 +251,52 @@ const FeedbackForm = () => {
             </div>
           </div>
             </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Academics</span>
-            <textarea class="form-control" name="Academics" value={formData["Academics"]} aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+          <div class="mb-2">
+            Academics
+            : {selectedReport["academics"]} 
+          </div>
+          <div class="mb-2">
+            Projects
+            : {selectedReport["projects"]}  
+          </div>
+          <div class="mb-2">
+            Sick Report
+            : {selectedReport["sick_report"]}  
+          </div>
+          <div class="mb-2">
+            OLQ
+            : {selectedReport["olq"]}  
+          </div>
+          <div class="mb-2">
+            Games
+            : {selectedReport["games"]} 
+          </div>
+          <div class="mb-2">
+            Cultural
+            : {selectedReport["cultural"]}  
+          </div>
+          <div class="mb-2">
+            Financial
+            : {selectedReport["financial"]}  
+          </div>
+          <div class="mb-2">
+            Personal
+            : {selectedReport["personal"]} 
+          </div>
+          <div class="mb-2">
+            DS's comments
+            : {selectedReport["ds_comments"]} 
+          </div>
+          <div class="mb-2">
+            HOF's comments
+            : {selectedReport["hof_comments"]} 
           </div>
           <div class="input-group mb-2">
-            <span class="input-group-text">Projects</span>
-            <textarea class="form-control" value={formData["Projects"]} name="Projects" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+            <span class="input-group-text">CI's comments</span>
+            <textarea class="form-control" disabled={selectedReport["ci_comments"]?.length>0} value={formData["CI's comments"]} name="CI's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
           </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Sick Report</span>
-            <textarea class="form-control" value={formData["Sick Report"]} name="Sick Report" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">OLQ</span>
-            <textarea class="form-control" value={formData["OLQ"]} name="OLQ" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Games</span>
-            <textarea class="form-control" value={formData["Games"]} name="Games" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Cultural</span>
-            <textarea class="form-control" value={formData["Cultural"]} name="Cultural" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Financial</span>
-            <textarea class="form-control" value={formData["Financial"]} name="Financial" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Personal</span>
-            <textarea class="form-control" value={formData["Personal"]} name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">DS's comments</span>
-            <textarea class="form-control" value={formData["DS's comments"]} name="DS's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div className='input-group mb-2'>
-          <select class="form-select" aria-label="Select HOF" name="report_hof" onChange={ handleChange } value={formData.report_hof}>
-                <option selected disabled value="">Select HOF</option>
-                {
-                  allHof.map((elem, index) => {
-                    return (
-                      <option value={elem.service_id}>{elem.name} : {elem.service_id}</option>
-                    )
-                  })
-                }
-              </select>
-          </div>
-          {/* <div class="input-group mb-2">
-            <span class="input-group-text">HOF's comments</span>
-            <textarea class="form-control" value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
+          
+          {/*
           <div class="input-group mb-2">
             <span class="input-group-text">CI's comments</span>
             <textarea class="form-control" value={formData["CI's comments"]} name="CI's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
@@ -390,19 +354,21 @@ const FeedbackForm = () => {
                       <td>{report?.ci_comments}</td>
                       <td>{report?.ds_comments}</td>
                       <td>
-                        <DownloadIcon onClick={() => ExportCSV({
-                        "Academics": report?.academics,
-                        "Projects": report?.projects,
-                        "Sick Report": report?.sick_report,
-                        "OLQ": report?.olq,
-                        "Games": report?.games,
-                        "Cultural": report?.cultural,
-                        "Financial": report?.financial,
-                        "Personal": report?.personal,
-                        "HOF's comments": report?.hof_comments,
-                        "CI's comments": report?.ci_comments,
-                        "DS's comments": report?.ds_comments,
-                      },new Date(report?.created_at))}/>
+                        <DownloadIcon onClick={() =>{ navigate("/feedbackpageprint",{
+                          state:{
+                            "Academics": report?.academics,
+                            "Projects": report?.projects,
+                            "Sick Report": report?.sick_report,
+                            "OLQ": report?.olq,
+                            "Games": report?.games,
+                            "Cultural": report?.cultural,
+                            "Financial": report?.financial,
+                            "Personal": report?.personal,
+                            "HOF's comments": report?.hof_comments,
+                            "CI's comments": report?.ci_comments,
+                            "DS's comments": report?.ds_comments,
+                          }
+                        }) }}/>
                       </td>
                     </tr>
                   )
@@ -418,4 +384,4 @@ const FeedbackForm = () => {
   )
 }
 
-export default FeedbackForm
+export default FeedbackFormCi

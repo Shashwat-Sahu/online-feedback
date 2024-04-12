@@ -20,6 +20,7 @@ const FeedbackFormHof = () => {
   const [prevReport, setPrevReport] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
   const [selectedReport, setSelectedReport] = useState({})
+  const [allCI,setAllCI] = useState([])
   const [formData, setFormData] = useState({
     "Academics": "",
     "Projects": "",
@@ -30,7 +31,8 @@ const FeedbackFormHof = () => {
     "Financial": "",
     "Personal": "",
     "HOF's comments":"",
-    "DS's comments": ""
+    "DS's comments": "",
+    "report_ci":""
   })
   var counselId = 12345;
   useEffect(() => {
@@ -42,6 +44,25 @@ const FeedbackFormHof = () => {
       setHof(data.data.hof)
       setReports(data.data.reports)
 
+    }).catch(err => {
+      err = err.response.data
+      // setMessage({ error: err?.error, message: null })
+      if (err.error == "Not Authorized") {
+        localStorage.clear()
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000);
+      }
+    })
+
+
+    axios.get("/hof/getAllCi", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then(data => {
+      console.log(data)
+      setAllCI(data.data.CI)
     }).catch(err => {
       err = err.response.data
       // setMessage({ error: err?.error, message: null })
@@ -70,7 +91,8 @@ const FeedbackFormHof = () => {
     }
     axios.put("/hof/updateReport", {
       report_id:selectedReport._id,
-      hof_comments:formData["HOF's comments"]
+      hof_comments:formData["HOF's comments"],
+      "report_ci":formData["report_ci"]
     }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -147,7 +169,8 @@ const FeedbackFormHof = () => {
       "report_hof": "",
       "DS's comments": "",
       
-    "HOF's comments":""
+    "HOF's comments":"",
+    "report_ci":""
     })
     setPrevReport([])
   }
@@ -184,7 +207,7 @@ const FeedbackFormHof = () => {
             {
               reports.map((elem, index) => {
                 return (
-                  <option value={index}>{elem.service_id}</option>
+                  <option value={index}>{elem.service_id} : {new Date(elem.created_at).toLocaleString()}</option>
                 )
               })
             }
@@ -216,7 +239,7 @@ const FeedbackFormHof = () => {
                 {
                   reports.map((elem, index) => {
                     return (
-                      <option value={index}>{elem.service_id}</option>
+                      <option value={index}>{elem.service_id} : {new Date(elem.created_at).toLocaleString()}</option>
                     )
                   })
                 }
@@ -281,9 +304,26 @@ const FeedbackFormHof = () => {
             DS's comments
             : {selectedReport["ds_comments"]} 
           </div>
+          {selectedReport["ci_comments"]?.length>0&&<div class="mb-2">
+            CI's comments
+            : {selectedReport["ci_comments"]} 
+          </div>}
           <div class="input-group mb-2">
             <span class="input-group-text">HOF's comments</span>
-            <textarea class="form-control" value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+            <textarea class="form-control" disabled={selectedReport["ci_comments"]?.length>0} value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+          </div>
+          
+          <div className='input-group mb-2'>
+          <select class="form-select"  disabled={selectedReport["ci_comments"]?.length>0} aria-label="Select CI" name="report_ci" onChange={ handleChange } value={formData.report_ci}>
+                <option selected disabled value="">Select CI</option>
+                {
+                  allCI.map((elem, index) => {
+                    return (
+                      <option value={elem.service_id}>{elem.name} : {elem.service_id}</option>
+                    )
+                  })
+                }
+              </select>
           </div>
           {/*
           <div class="input-group mb-2">

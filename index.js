@@ -32,6 +32,7 @@ app.use("/counsellor", require("./Routes/Counsellor.js"))
 app.use("/counselee", require("./Routes/Counselee.js"))
 app.use("/user", require("./Routes/User.js"))
 app.use("/hof",require("./Routes/HOF.js"))
+app.use("/ci",require("./Routes/CI.js"))
 
 
 const PORT = process.env.PORT || 8000
