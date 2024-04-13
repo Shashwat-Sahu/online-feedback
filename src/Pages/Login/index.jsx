@@ -135,9 +135,11 @@ const Login = (props) => {
                                 {submitting && <div className=' mt-3 d-flex justify-content-center'>
                                     <Spinner animation="border" variant="light" className='m-auto' />
                                 </div>}
+                                <p style={{textAlign:"center", position:'absolute',bottom:"0px", left:"0px", right:"0px"}}>Developed by AFTC</p>
                             </div>
+                            
                         </Form>
-                        <p style={{textAlign:"center"}}>Developed by AFTC</p>
+                        
                     </Col>
                     
                 </Row>
