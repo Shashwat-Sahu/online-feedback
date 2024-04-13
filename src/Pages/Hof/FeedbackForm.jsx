@@ -177,7 +177,7 @@ const FeedbackFormHof = () => {
 
   return (
 
-    <div class="container">
+    <div class="container-fluid">
       {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
         <Alert severity="error">
           <p className="error">{message.error}</p>
@@ -191,7 +191,7 @@ const FeedbackFormHof = () => {
 
       </Snackbar>}
       <div class="row align-items-start">
-        <div class="col-2 col-auto min-vh-100" id="sidebarfeedback-md">
+        <div class="col-md-2 col-auto min-vh-100" id="sidebarfeedback-md">
           <div className='row mt-2 mb-3'>
             <div className='col-3'>
               <AccountCircleIcon style={{ fontSize: "xxx-large" }} />
@@ -213,7 +213,7 @@ const FeedbackFormHof = () => {
             }
           </select>
         </div>
-        <div class="col-md-12 offset-md-1 col-xs-12">
+        <div class="col-md-10 offset-md-2 col-xs-12">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
             <div className='row mt-2 mb-2'>

@@ -76,15 +76,16 @@ const Login = (props) => {
             </Snackbar>}
             <Container className='h-100'>
                 <Row className='h-100'>
-                    <Col xs={12}>
+                    <Col xs={12} className='d-flex justify-content-center'>
 
-                        <div style={{
+                        {/* <div style={{
                             fontSize: "30px",
                             color: '#00000075',
                             textAlign: "center",
                             textTransform: "uppercase",
                             fontWeight: "bold"
-                        }}>Trainee Online Integrated Management System</div>
+                        }}>Trainee Online Integrated Management System</div> */}
+                        <img src={require("../../assets/training.png")} className='mt-3' style={{width:"70%"}}/>
                     </Col>
                     <Col md={6} xs={12} className="m-auto">
 
@@ -136,9 +137,10 @@ const Login = (props) => {
                                 </div>}
                             </div>
                         </Form>
+                        <p style={{textAlign:"center"}}>Developed by AFTC</p>
                     </Col>
+                    
                 </Row>
-
             </Container>
         </div>
     )

@@ -93,7 +93,23 @@ const FeedbackFormCi = () => {
       formData.Personal = report.personal;
       formData.Projects = report.projects;
       formData['Sick Report'] = report.sick_report;
-      ExportCSV(formData,new Date())
+      setTimeout(()=>{
+        navigate("/feedbackpageprint",{
+          state:{
+            "Academics": report?.academics,
+            "Projects": report?.projects,
+            "Sick Report": report?.sick_report,
+            "OLQ": report?.olq,
+            "Games": report?.games,
+            "Cultural": report?.cultural,
+            "Financial": report?.financial,
+            "Personal": report?.personal,
+            "HOF's comments": report?.hof_comments,
+            "CI's comments": report?.ci_comments,
+            "DS's comments": report?.ds_comments,
+          }
+        })
+      },2000)
     }).catch(err => {
       err = err.response.data
       setMessage({ error: err?.error, message: null })
@@ -160,7 +176,7 @@ const FeedbackFormCi = () => {
 
   return (
 
-    <div class="container">
+    <div class="container-fluid">
       {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
         <Alert severity="error">
           <p className="error">{message.error}</p>
@@ -196,7 +212,7 @@ const FeedbackFormCi = () => {
             }
           </select>
         </div>
-        <div class="col-md-12 offset-md-1 col-xs-12">
+        <div class="col-md-10 offset-md-2 col-xs-12">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
             <div className='row mt-2 mb-2'>

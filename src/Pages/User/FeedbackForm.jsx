@@ -180,7 +180,7 @@ const FeedbackForm = () => {
 
   return (
 
-    <div class="container">
+    <div class="container-fluid">
       {<Snackbar open={message?.error} autoHideDuration={6000} onClose={() => setMessage({ message: null, error: null })} anchorOrigin={{ vertical: "top", horizontal: "right" }}>
         <Alert severity="error">
           <p className="error">{message.error}</p>
@@ -219,7 +219,7 @@ const FeedbackForm = () => {
             }
           </select>
         </div>
-        <div class="col-md-12 offset-md-1 col-xs-12 feedbackFormContainer">
+        <div class="col-md-10 offset-md-2 col-xs-12 feedbackFormContainer">
           <h1 className='mb-3 text-center'>Feedback Form</h1>
           <div className='row mb-3 p-3 position-sticky' id="sidebarfeedback-xs" style={{ backgroundColor: "#0d6efd40" }}>
             <div className='row mt-2 mb-2'>
