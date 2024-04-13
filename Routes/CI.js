@@ -18,10 +18,10 @@ router.get("/getReports",verifyToken,(req,res)=>{
     })
 })
 
-router.get("/getReport",verifyToken,(req,res)=>{
-    const report_id = req.query._id
-    FeedbackReport.findById(report_id).then(data=>{
-        res.send(data)
+router.get("/getHofName",verifyToken,(req,res)=>{
+    const report_hof = req.query.report_hof
+    HOF.find({service_id:report_hof}).select("name").then(data=>{
+        res.send(data[0])
     })
 })
 

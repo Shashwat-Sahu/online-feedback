@@ -20,6 +20,7 @@ const FeedbackFormCi = () => {
   const [prevReport, setPrevReport] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
   const [selectedReport, setSelectedReport] = useState({})
+  const [HofName,setHofName] = useState("")
   const [allCI,setAllCI] = useState([])
   const [formData, setFormData] = useState({
     "Academics": "",
@@ -32,7 +33,7 @@ const FeedbackFormCi = () => {
     "Personal": "",
     "HOF's comments":"",
     "DS's comments": "",
-    "CI's comments":""
+    "CI's comments":"",
   })
   var counselId = 12345;
   useEffect(() => {
@@ -172,8 +173,17 @@ const FeedbackFormCi = () => {
     "CI's comments":""
     })
     setPrevReport([])
+    setHofName("")
   }
-
+  const getHofName=(report)=>{
+    axios.get(`/ci/getHofName?report_hof=${report?.report_hof}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    }).then(data=>{
+      setHofName(data?.data?.name)
+    })
+  }
   return (
 
     <div class="container-fluid">
@@ -201,7 +211,7 @@ const FeedbackFormCi = () => {
           <p style={{ marginBottom: "0" }}>
             <small class="text-muted">Service ID :{hof?.service_id}</small>
           </p>
-          <select class="form-select" aria-label="Select Counselee" value={reports ? reports.indexOf(selectedReport) : -1} onChange={(e) => { console.log(reports[e.target.value]);setPrevReport([]); setSelectedReport(reports[e.target.value]);  setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
+          <select class="form-select" aria-label="Select Counselee" value={reports ? reports.indexOf(selectedReport) : -1} onChange={(e) => { getHofName(reports[e.target.value]);;setPrevReport([]); setSelectedReport(reports[e.target.value]);  setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
               reports.map((elem, index) => {
@@ -233,7 +243,7 @@ const FeedbackFormCi = () => {
               </p>
             </div>
             <div class="col-12">
-              <select class="form-select" aria-label="Select Counselee" onChange={(e) => { console.log(reports[e.target.value]); setSelectedReport(reports[e.target.value]); setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
+              <select class="form-select" aria-label="Select Counselee" onChange={(e) => { getHofName(reports[e.target.value]); setSelectedReport(reports[e.target.value]); setFormData({...formData,"CI's comments":reports[e.target.value].ci_comments}) }}>
                 <option selected disabled>Select Counselee</option>
                 {
                   reports.map((elem, index) => {
@@ -253,6 +263,10 @@ const FeedbackFormCi = () => {
               <tr>
                 <th scope="row">Service ID</th>
                 <td>{selectedReport?.service_id}</td>
+              </tr>
+              <tr>
+                <th scope="row">HOF Name</th>
+                <td>{HofName}</td>
               </tr>
 
             </tbody>
