@@ -79,6 +79,8 @@ const FeedbackForm = () => {
   const SubmitReport = () => {
     if (!selectedCounselee?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
+      if (!formData["report_hof"])
+      return setMessage({ ...message, error: "HOF must be selected" })
     if (!counsellor?.service_id) {
       setMessage({ ...message, error: "Counsellor Service ID is empty" })
       return setTimeout(() => {

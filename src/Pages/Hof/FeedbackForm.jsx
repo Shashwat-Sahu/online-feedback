@@ -83,6 +83,10 @@ const FeedbackFormHof = () => {
   const SubmitReport = () => {
     if (!selectedReport?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
+      if (!formData["HOF's comments"])
+      return setMessage({ ...message, error: "Comment is empty" })
+      if (!formData["report_ci"])
+      return setMessage({ ...message, error: "CI must be selected" })
     if (!hof?.service_id) {
       setMessage({ ...message, error: "Counsellor Service ID is empty" })
       return setTimeout(() => {
@@ -309,7 +313,7 @@ const FeedbackFormHof = () => {
             : {selectedReport["ci_comments"]} 
           </div>}
           <div class="input-group mb-2">
-            <span class="input-group-text">HOF's comments</span>
+            <span class="input-group-text">HOF's comments*</span>
             <textarea class="form-control" disabled={selectedReport["ci_comments"]?.length>0} value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
           </div>
           
