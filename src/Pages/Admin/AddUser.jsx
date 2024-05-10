@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
-import { logout } from "../../Comtrollers/logoutController";
+import { logout } from "../../Controllers/logoutController";
 
 const AddUser = () => {
     const [data, setData] = useState({ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" });

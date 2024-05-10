@@ -76,15 +76,16 @@ const Login = (props) => {
             </Snackbar>}
             <Container className='h-100'>
                 <Row className='h-100'>
-                    <Col xs={12}>
+                    <Col xs={12} className='d-flex justify-content-center'>
 
-                        <div style={{
+                        {/* <div style={{
                             fontSize: "30px",
                             color: '#00000075',
                             textAlign: "center",
                             textTransform: "uppercase",
                             fontWeight: "bold"
-                        }}>Trainee Online Integrated Management System</div>
+                        }}>Trainee Online Integrated Management System</div> */}
+                        <img src={require("../../assets/training.png")} className='mt-3' style={{width:"70%"}}/>
                     </Col>
                     <Col md={6} xs={12} className="m-auto">
 
@@ -117,7 +118,15 @@ const Login = (props) => {
                                     </div>
                                     <div id="user" class="left">
                                         <input type="radio" checked={inputFields.type == "user"} name="type" onChange={handleChange} value="user" />
-                                        <label for="check"> User</label>
+                                        <label for="check"> DS</label>
+                                    </div>
+                                    <div id="user" class="left">
+                                        <input type="radio" checked={inputFields.type == "hof"} name="type" onChange={handleChange} value="hof" />
+                                        <label for="check"> HOF</label>
+                                    </div>
+                                    <div id="user" class="left">
+                                        <input type="radio" checked={inputFields.type == "ci"} name="type" onChange={handleChange} value="ci" />
+                                        <label for="check"> CI</label>
                                     </div>
                                 </div>
                                 <div class="input-field mt-4">
@@ -126,11 +135,14 @@ const Login = (props) => {
                                 {submitting && <div className=' mt-3 d-flex justify-content-center'>
                                     <Spinner animation="border" variant="light" className='m-auto' />
                                 </div>}
+                                <p style={{textAlign:"center", position:'absolute',bottom:"0px", left:"0px", right:"0px"}}>Developed by AFTC</p>
                             </div>
+                            
                         </Form>
+                        
                     </Col>
+                    
                 </Row>
-
             </Container>
         </div>
     )

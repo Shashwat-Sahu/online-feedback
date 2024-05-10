@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Modify = (props) => {
+  console.log(props)
   const [data, setData] = useState({});
   const [message, setMessage] = useState({ message: null, error: null })
   const handleClose = () => props.setShow(false);
@@ -85,7 +86,7 @@ const Modify = (props) => {
                 </Form.Text>
               </Col>}
             </Form.Group>
-            <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
+            {props?.details?.type=="counsellor"&&<Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
               <Form.Label column sm="2">
                 Rank
               </Form.Label>
@@ -112,7 +113,7 @@ const Modify = (props) => {
                   *Rank can't be empty
                 </Form.Text>
               </Col>}
-            </Form.Group>
+            </Form.Group>}
           </Form>
         </Modal.Body>
         <Modal.Footer>

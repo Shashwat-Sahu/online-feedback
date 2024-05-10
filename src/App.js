@@ -1,7 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './Pages/Login';
-import FeedbackFrom from './Pages/User/FeedbackForm'
+import FeedbackForm from './Pages/User/FeedbackForm'
+import FeedbackFromHof from './Pages/Hof/FeedbackForm';
+
+import FeedbackFromCi from './Pages/CI/FeedbackForm';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import AdminDashboard from './Pages/Admin';
@@ -10,7 +13,7 @@ import AddStudent from './Pages/Admin/AddStudent';
 import ViewCounseleeList from './Pages/Admin/ViewCounseleeList';
 import { useEffect, useState } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import FeedbackPage from './Pages/User/FeedbackPage';
+import FeedbackPage from './Pages/CI/FeedbackPage';
 
 const Routing = (props) => {
   const navigate = useNavigate()
@@ -33,7 +36,17 @@ const Routing = (props) => {
         </Routes> }{userType == "user"&&token&&
         <Routes>
 
-          <Route path="/" Component={FeedbackFrom} />
+          <Route path="/" Component={FeedbackForm} />
+          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
+          {userType == "hof"&&token&&
+        <Routes>
+
+          <Route path="/" Component={FeedbackFromHof} />
+          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
+          {userType == "ci"&&token&&
+        <Routes>
+
+          <Route path="/" Component={FeedbackFromCi} />
           <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
     </>
   )

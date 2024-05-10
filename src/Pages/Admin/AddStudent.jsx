@@ -12,10 +12,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
-import { logout } from '../../Comtrollers/logoutController';
+import { logout } from '../../Controllers/logoutController';
 
 const AddStudent = () => {
-    const [data, setData] = useState([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }]);
+    const [data, setData] = useState([{ rank: "Flying officer", name: "", service_id: "", password: "" }]);
     const [message, setMessage] = useState({ message: null, error: null })
     const dispatch = useDispatch()
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const AddStudent = () => {
     };
 
     const handleIncreaseStudent = () => {
-        setData([...data, { rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
+        setData([...data, { rank: "Flying officer", name: "", service_id: "", password: "" }])
     }
 
     const handleDelete = (index) => {

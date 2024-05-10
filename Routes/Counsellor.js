@@ -3,6 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
+const HOF = mongoose.model("HOF")
 const verifyToken = require("../Middleware/VerifyTokenAdmin")
 const sha256 = require('sha256');
 
@@ -105,8 +106,8 @@ router.put("/addCounseleeList",verifyToken, async (req, res) => {
         })
     })
     Promise.all(promises).then(async (result) => {
-        console.log(result)
-        var alreadyExist = result
+        console.log("found counselleee",result)
+        var alreadyExist = result.filter(ele=>ele!=undefined)
         if (alreadyExist.length > 0)
             return res.status(422).json({ error: "Already Existing: " + alreadyExist.join(", ") })
         else {
@@ -116,5 +117,7 @@ router.put("/addCounseleeList",verifyToken, async (req, res) => {
         }
     })
 })
+
+
 
 module.exports = router
