@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import * as XLSX from "xlsx"
 import { Col, Container, Form, Row, Dropdown, FloatingLabel, Alert } from "react-bootstrap";
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DownloadIcon from '@mui/icons-material/Download';
+import UploadIcon from '@mui/icons-material/Upload';
 import '../../commonStyles.css'
 import axios from 'axios';
 import { Snackbar } from '@mui/material';
@@ -15,13 +18,29 @@ import Fab from '@mui/material/Fab';
 import { logout } from '../../Controllers/logoutController';
 
 const AddStudent = () => {
-    const [data, setData] = useState([{ rank: "Flying officer", name: "", service_id: "", password: "" }]);
+    const [data, setData] = useState([{
+        rank: "Flying officer",
+        name: "", service_id: "",
+        password: "", gender: "",
+        dob: "",
+        mo_name: "",
+        m_occ: "",
+        fo_name: "",
+        f_occ: "",
+        si_name: "",
+        si_occ: "",
+        qualification: "",
+        academic_marks:0,
+        pro_extra_co_marks:0
+    }]);
     const [message, setMessage] = useState({ message: null, error: null })
     const dispatch = useDispatch()
     const navigate = useNavigate();
     const { counselId } = useParams()
     const handleChange = (e, index) => {
+        console.log(e)
         const newArray = data.map((item, i) => {
+            console.log(e.target.name)
             if (index === i) {
                 return { ...item, [e.target.name]: e.target.value };
             } else {
@@ -32,7 +51,70 @@ const AddStudent = () => {
     };
 
     const handleIncreaseStudent = () => {
-        setData([...data, { rank: "Flying officer", name: "", service_id: "", password: "" }])
+        setData([...data, {
+            rank: "Flying officer",
+            name: "", service_id: "",
+            password: "", gender: "",
+            dob: "",
+            mo_name: "",
+            m_occ: "",
+            fo_name: "",
+            f_occ: "",
+            si_name: "",
+            si_occ: "",
+            qualification: "",
+            
+        academic_marks:0,
+        pro_extra_co_marks:0
+        }])
+    }
+
+    const handleUploadInput = (e) =>{
+        console.log(e)
+    }
+
+    const handleUpload = () =>{
+        var fileInput = document.getElementById("uploadexcel")
+        fileInput.click()
+    }
+
+    const handleDownloadTemplate = () => {
+        const worksheet = XLSX.utils.json_to_sheet([{
+            service_id: "",name: "",
+             gender: "",
+            dob: "",
+            mo_name: "",
+            m_occ: "",
+            fo_name: "",
+            f_occ: "",
+            si_name: "",
+            si_occ: "",
+            qualification: "",
+        academic_marks:0,
+        pro_extra_co_marks:0
+        }])
+
+        const workbook = XLSX.utils.book_new();
+        var columns = ["Service ID","name", "gender",
+            "dob (dd-mm-yyyy)",
+            "mother name",
+            "mother occupation",
+            "father name",
+            "father occupation",
+            "sibling name",
+            "sibling occupation",
+            "qualification",
+            "academic marks",
+            "project & extra co-curricular marks"]
+//             const max_width = columns.reduce((w, r) => Math.max(w, r.length), 10);
+//   worksheet["!cols"] = [ { wch: max_width } ];
+        XLSX.utils.sheet_add_aoa(worksheet, [columns], { origin: "A1" });
+
+            
+        XLSX.utils.book_append_sheet(workbook, worksheet, "counselee1");
+
+        /* create an XLSX file and try to save to Presidents.xlsx */
+        XLSX.writeFile(workbook, "Counselee List.xlsx");
     }
 
     const handleDelete = (index) => {
@@ -71,13 +153,12 @@ const AddStudent = () => {
         }).catch(err => {
             err = err.response.data
             setMessage({ error: err?.error, message: null })
-            if (err.error == "Not Authorized")
-                {
-                    localStorage.clear()
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 2000);
-                }
+            if (err.error == "Not Authorized") {
+                localStorage.clear()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 2000);
+            }
         })
     }
     return (
@@ -101,42 +182,32 @@ const AddStudent = () => {
                     <h1 className="text-center" style={{ color: "white", marginTop: "1rem" }}>Add Counselee</h1>
 
                 </Row>
-                
+
                 <Row>
-                
-                    <Col>
-                       <Fab variant="extended" onClick={() => { navigate("/") }}>
-                        <KeyboardArrowLeftIcon sx={{ mr: 1 }} />
-                        Back to Dashboard
-                    </Fab>
+
+                    <Col xs={3}>
+                        <Fab variant="extended" onClick={() => { navigate("/") }}>
+                            <KeyboardArrowLeftIcon sx={{ mr: 1 }} />
+                            Back to Dashboard
+                        </Fab>
                     </Col>
                     <Col className='text-end'>
                         <Button id="submit-Btn" className='mx-2' variant="contained" color="info" onClick={() => handleIncreaseStudent()} endIcon={<AddIcon />} size="medium"> Add More </Button>
-                        <Button id="submit-Btn" variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
-                        <Fab sx={{ml:1}} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
+                        <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleDownloadTemplate} color="info" endIcon={<DownloadIcon />} size="medium"> Download Excel Template</Button>
+                        <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleUpload} color="info" endIcon={<UploadIcon />} size="medium"> Upload Excel</Button>
+                        <input id="uploadexcel" type='file' style={{display:"none"}} onChange={handleUploadInput}/>
+                        <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
+                        <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
                             Logout
                             <LogoutIcon sx={{ ml: 1 }} />
                         </Fab>
-                        </Col>
+                    </Col>
                 </Row>
                 <Row>
                     <Col xs={12} className="d-flex justify-content-center flex-wrap">
                         {data.map((data, index) => {
                             return (
                                 <Form className="table-user d-inline-block mx-1" style={{ minWidth: "30%" }}>
-                                    <FloatingLabel
-                                        controlId="floatingInput"
-                                        label="Name"
-                                        className="mb-3"
-                                        style={{ color: "white" }}
-                                        
-                                    >
-                                        <Form.Control type="text" id="input-field" placeholder="User Name" name="name" value={data.name} onChange={(e) => handleChange(e, index)} index={index} />
-                                        {!data.name &&
-                                            <Form.Text className="text-danger">
-                                                *Name can't be empty
-                                            </Form.Text>}
-                                    </FloatingLabel>
                                     <FloatingLabel
                                         controlId="floatingInput"
                                         label="Service ID"
@@ -147,13 +218,186 @@ const AddStudent = () => {
                                                 *Service ID can't be empty
                                             </Form.Text>}
                                     </FloatingLabel>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Name"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="User Name" name="name" value={data.name} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.name &&
+                                                    <Form.Text className="text-danger">
+                                                        *Name can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Gender"
+                                                className="mb-3">
+                                                <Form.Select style={{ background: "transparent", color: "white" }} value={data.gender} name="gender" onChange={(e) => handleChange(e, index)} index={index}>
+
+                                                    <option selected disabled style={{ color: "black" }} value="Select">Select</option>
+                                                    <option style={{ color: "black" }} value="Male">Male</option>
+
+                                                    <option style={{ color: "black" }} value="Female">Female</option>
+
+                                                    <option style={{ color: "black" }} value="Other">Other</option>
+                                                </Form.Select>
+                                                {!data.gender &&
+                                                    <Form.Text className="text-danger">
+                                                        *Gender can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                    </Row>
                                     <FloatingLabel
+                                        controlId="floatingInput"
+                                        label="DOB"
+                                        className="mb-3">
+                                        <Form.Control id="input-field" className='text-dark bg-light' type="date" placeholder="Enter Date of Birth" value={data.dob} index={index} name="dob" onChange={(e) => handleChange(e, index)} />
+                                        {!data.service_id &&
+                                            <Form.Text className="text-danger">
+                                                *Date of birth can't be empty
+                                            </Form.Text>}
+                                    </FloatingLabel>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Mother's Name"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="User Name" name="mo_name" value={data.mo_name} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.mo_name &&
+                                                    <Form.Text className="text-danger">
+                                                        *Mother's name can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Mother's Occupation"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="Mother's Occupation" name="m_occ" value={data.m_occ} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.m_occ &&
+                                                    <Form.Text className="text-danger">
+                                                        *Mother's Occupation can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Father's Name"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="Father's Name" name="fo_name" value={data.fo_name} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.fo_name &&
+                                                    <Form.Text className="text-danger">
+                                                        *Father's name can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Father's Occupation"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="Father's Occupation" name="f_occ" value={data.f_occ} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.f_occ &&
+                                                    <Form.Text className="text-danger">
+                                                        *Father's Occupation can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Sibling's Name"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="Sibling's Name" name="si_name" value={data.si_name} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.si_name &&
+                                                    <Form.Text className="text-danger">
+                                                        *Sibling's name can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Sibling's Occupation"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+                                            >
+                                                <Form.Control type="text" id="input-field" placeholder="Father's Occupation" name="si_occ" value={data.si_occ} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {!data.f_occ &&
+                                                    <Form.Text className="text-danger">
+                                                        *Sibling's Occupation can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Academic Marks"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="number" id="input-field" placeholder="Academic Marks" name="academic_marks" value={data.academic_marks>=0?data.academic_marks:data.academic_marks=0} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {data.academic_marks==0 &&
+                                                    <Form.Text className="text-danger">
+                                                        *Academic marks can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                        <Col>
+                                        <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Project & Extra Curricular Marks"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
+
+                                            >
+                                                <Form.Control type="number" id="input-field" placeholder="Project & Extra Curricular Marks" name="pro_extra_co_marks" value={data.pro_extra_co_marks>=0?data.pro_extra_co_marks:data.pro_extra_co_marks=0} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {data.pro_extra_co_marks==0 &&
+                                                    <Form.Text className="text-danger">
+                                                        *Project & Extra Curricular marks can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
+                                        </Col>
+                                    </Row>
+                                    {/* <FloatingLabel
                                         controlId="floatingInput"
                                         label="Rank"
                                         className="mb-3">
                                         <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={(e) => handleChange(e, index)} index={index}>
 
-                                        <option selected disabled style={{ color: "black" }} value="Select">Select</option>
+                                            <option selected disabled style={{ color: "black" }} value="Select">Select</option>
                                             <option style={{ color: "black" }} value="Flying officer">Flying officer</option>
 
                                             <option style={{ color: "black" }} value="Flight cadet">Flight cadet</option>
@@ -163,7 +407,7 @@ const AddStudent = () => {
                                             <Form.Text className="text-danger">
                                                 *Rank can't be empty
                                             </Form.Text>}
-                                    </FloatingLabel>
+                                    </FloatingLabel> */}
 
                                     <div className='text-end'>
                                         <DeleteIcon style={{ color: "white" }} onClick={() => handleDelete(index)} />

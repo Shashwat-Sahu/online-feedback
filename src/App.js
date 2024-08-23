@@ -20,11 +20,12 @@ const Routing = (props) => {
   const { token, userType } = props
   console.log(userType)
   useEffect(() => {
+   
     navigate("/")
   }, [])
   return (
     <>
-      {!token && <Routes>
+     {!token && <Routes>
         <Route path="/" Component={Login} />
       </Routes>} {userType == "admin"&& token&&
         <Routes>
