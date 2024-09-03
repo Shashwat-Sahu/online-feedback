@@ -21,7 +21,7 @@ const AddStudent = () => {
     const [data, setData] = useState([{
         rank: "Flying officer",
         name: "", service_id: "",
-        password: "", gender: "",
+         gender: "Male",
         dob: "",
         mo_name: "",
         m_occ: "",
@@ -29,7 +29,7 @@ const AddStudent = () => {
         f_occ: "",
         si_name: "",
         si_occ: "",
-        qualification: "",
+        qualification: "Graduate",
         academic_marks:0,
         pro_extra_co_marks:0
     }]);
@@ -54,7 +54,7 @@ const AddStudent = () => {
         setData([...data, {
             rank: "Flying officer",
             name: "", service_id: "",
-            password: "", gender: "",
+             gender: "Male",
             dob: "",
             mo_name: "",
             m_occ: "",
@@ -62,15 +62,47 @@ const AddStudent = () => {
             f_occ: "",
             si_name: "",
             si_occ: "",
-            qualification: "",
-            
-        academic_marks:0,
-        pro_extra_co_marks:0
+            qualification: "Graduate",
+            academic_marks:0,
+            pro_extra_co_marks:0
         }])
     }
 
-    const handleUploadInput = (e) =>{
-        console.log(e)
+    const handleUploadInput = async(e) =>{
+        const file = e.target.files[0];
+        const fileReader = await new FileReader()
+        fileReader.readAsArrayBuffer(file)
+    
+        fileReader.onload = (e) => {
+          const bufferArray = e?.target.result
+          const wb = XLSX.read(bufferArray, { type: "buffer" ,cellText:false,cellDates:true})
+          const wsname = wb.SheetNames[0]
+          const ws = wb.Sheets[wsname]
+    
+          const data = XLSX.utils.sheet_to_json(ws, {raw: false,dateNF:'yyyy-mm-dd'})
+          const fileName = file.name.split(".")[0]
+            const updateData = data.map(x=>{
+                return{
+                    
+            rank: "Flying officer",
+                    service_id:x["Service ID"],
+                    name:x["name"], 
+                    gender: x["gender"],
+                    dob:x["dob (dd-mm-yyyy)"],
+                    mo_name:x["mother name"],
+                    m_occ: x["mother occupation"],
+                    fo_name:x["father name"],
+                    f_occ:x["father occupation"],
+                    si_name: x["sibling name"],
+                    si_occ:x["sibling occupation"],
+                    qualification:x["qualification"],
+                    academic_marks:x["academic marks"],
+                    pro_extra_co_marks:x["project & extra co-curricular marks"]
+                }
+            })
+            setData(updateData)
+          console.log(data)
+        }
     }
 
     const handleUpload = () =>{
@@ -89,7 +121,7 @@ const AddStudent = () => {
             f_occ: "",
             si_name: "",
             si_occ: "",
-            qualification: "",
+            qualification: "Graduate",
         academic_marks:0,
         pro_extra_co_marks:0
         }])
@@ -137,7 +169,7 @@ const AddStudent = () => {
         if (!service_ids.every(isUnique))
             return setMessage({ ...message, error: "Service ID should be unique" })
         data.forEach((data) => {
-            if (!data.name || !data.rank || !data.service_id)
+            if (!data.name || !data.rank || !data.service_id || !data.f_occ || !data.fo_name || !data.gender|| !data.m_occ || !data.mo_name|| !data.qualification || data.academic_marks==0 || data.pro_extra_co_marks==0)
                 return setMessage({ ...message, error: "Few fields are empty" })
         })
         axios.put('/counsellor/addCounseleeList', {
@@ -148,7 +180,17 @@ const AddStudent = () => {
             }
         }).then(data => {
             setMessage({ message: data?.data?.message, error: null })
-            setData([{ rank: "Marshal of the Indian Air Force", name: "", service_id: "", password: "" }])
+            setData([{ rank: "Flying officer", name: "", service_id: "", gender: "Male",
+                dob: "",
+                mo_name: "",
+                m_occ: "",
+                fo_name: "",
+                f_occ: "",
+                si_name: "",
+                si_occ: "",
+                qualification: "",
+                academic_marks:0,
+                pro_extra_co_marks:0}])
 
         }).catch(err => {
             err = err.response.data
@@ -207,7 +249,7 @@ const AddStudent = () => {
                     <Col xs={12} className="d-flex justify-content-center flex-wrap">
                         {data.map((data, index) => {
                             return (
-                                <Form className="table-user d-inline-block mx-1" style={{ minWidth: "30%" }}>
+                                <Form className="table-user d-inline-block mx-1" style={{ minWidth:"30%" }}>
                                     <FloatingLabel
                                         controlId="floatingInput"
                                         label="Service ID"
@@ -359,6 +401,24 @@ const AddStudent = () => {
                                             </FloatingLabel>
                                         </Col>
                                     </Row>
+                                    <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="Qualification"
+                                                className="mb-3">
+                                                <Form.Select style={{ background: "transparent", color: "white" }} value={data.qualification} name="qualification" onChange={(e) => handleChange(e, index)} index={index}>
+
+                                                    <option selected disabled style={{ color: "black" }} value="Select">Select</option>
+                                                    <option style={{ color: "black" }} value="Graduate">Graduate</option>
+
+                                                    <option style={{ color: "black" }} value="Post Graduate">Post Graduate</option>
+
+                                                    <option style={{ color: "black" }} value="PHd">PHd</option>
+                                                </Form.Select>
+                                                {!data.qualification &&
+                                                    <Form.Text className="text-danger">
+                                                        *Qualification can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel>
                                     <Row>
                                         <Col>
                                             <FloatingLabel

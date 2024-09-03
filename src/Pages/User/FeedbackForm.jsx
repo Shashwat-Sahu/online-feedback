@@ -18,28 +18,29 @@ const FeedbackForm = () => {
   const [counselees, setCounselees] = useState([])
   const [counsellor, setCounsellor] = useState({})
   const [prevReport, setPrevReport] = useState([])
-  const [allHof,setAllHof] = useState([])
+  const [allHof, setAllHof] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
   const [selectedCounselee, setSelectedcounselee] = useState({})
+  const [totalSession, setTotalSession] = useState(0);
+  const [activeSession, setActiveSession] = useState(-1);
+  const [questions, setQuestions] = useState([])
   const [formData, setFormData] = useState({
-    "Academics": "",
-    "Projects": "",
-    "Sick Report": "",
-    "OLQ": "",
-    "Games": "",
-    "Cultural": "",
-    "Financial": "",
-    "Personal": "",
-    "report_hof":"",
-    "DS's comments": ""
+    service_id: "00000",
+    counsellor_service_id: "00000",
+    counselling_session: [
+      {
+        qna: [
+        ]
+      }
+    ]
   })
-  var counselId = 12345;
   useEffect(() => {
     axios.get("/counselee/getCounselees?", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
+      console.log(data)
       setCounselees(data.data.data)
       setCounsellor(data.data.counsellor)
     }).catch(err => {
@@ -53,34 +54,44 @@ const FeedbackForm = () => {
       }
     })
 
-    axios.get("/user/getAllHof", {
+
+    axios.get("/user/getQuestions", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
-      setAllHof(data.data.HOF)
+      setQuestions(data?.data)
     }).catch(err => {
       err = err.response.data
-      // setMessage({ error: err?.error, message: null })
+      setMessage({ error: err?.error, message: null })
       if (err.error == "Not Authorized") {
         localStorage.clear()
         setTimeout(() => {
           window.location.reload()
         }, 2000);
       }
+
     })
+
   }, [])
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  useEffect(() => {
+    GetPrevReport()
+  }, [selectedCounselee])
+
+  const handleChange = (e, questionIndex, type) => {
+    if (formData.counselling_session[activeSession]["qna"].length <= questionIndex)
+      formData.counselling_session[activeSession]["qna"].push({
+        question: "",
+        answer: ""
+      })
+    formData.counselling_session[activeSession]["qna"][questionIndex][type] = e.target.value;
+    setFormData({ ...formData, counselling_session: formData.counselling_session })
   }
 
   const SubmitReport = () => {
     if (!selectedCounselee?.service_id)
       return setMessage({ ...message, error: "Service ID is empty" })
-      if (!formData["report_hof"])
-      return setMessage({ ...message, error: "HOF must be selected" })
     if (!counsellor?.service_id) {
       setMessage({ ...message, error: "Counsellor Service ID is empty" })
       return setTimeout(() => {
@@ -88,19 +99,6 @@ const FeedbackForm = () => {
       }, 2000);
     }
     axios.post("/user/feedbackreport", {
-      service_id: selectedCounselee.service_id,
-      counsellor_service_id: counsellor?.service_id,
-      academics: formData.Academics,
-      projects: formData.Projects,
-      sick_report: formData["Sick Report"],
-      olq: formData["OLQ"],
-      games: formData["Games"],
-      cultural: formData["Cultural"],
-      financial: formData["Financial"],
-      personal: formData["Personal"],
-      
-    "report_hof": formData["report_hof"],
-      ds_comments: formData["DS's comments"]
     }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -108,18 +106,8 @@ const FeedbackForm = () => {
     }).then(data => {
       setMessage({ message: data?.data?.message, error: null });
       setFormData({
-        "Academics": "",
-        "Projects": "",
-        "Sick Report": "",
-        "OLQ": "",
-        "Games": "",
-        "Cultural": "",
-        "Financial": "",
-        "Personal": "",
-        "report_hof": "",
-        "DS's comments": ""
       })
-      ExportCSV(formData,new Date())
+      ExportCSV(formData, new Date())
     }).catch(err => {
       err = err.response.data
       setMessage({ error: err?.error, message: null })
@@ -132,7 +120,7 @@ const FeedbackForm = () => {
 
     })
   }
-  const ExportCSV = (reportData,date) => {
+  const ExportCSV = (reportData, date) => {
 
     var fileName = `${selectedCounselee.service_id}_${selectedCounselee.name}_${date?.toLocaleString()}`;
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
@@ -159,7 +147,10 @@ const FeedbackForm = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
+      console.log(data)
       setPrevReport(data?.data)
+      if (data?.data?.counselling_session)
+        setTotalSession(data?.data?.counselling_session?.length)
     })
   }
 
@@ -210,7 +201,7 @@ const FeedbackForm = () => {
           <p >
             <small class="text-muted">Rank : {counsellor?.rank}</small>
           </p>
-          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]);setPrevReport([]); setSelectedcounselee(counselees[e.target.value]) }}>
+          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]); setPrevReport([]); setSelectedcounselee(counselees[e.target.value]) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
               counselees.map((elem, index) => {
@@ -259,86 +250,77 @@ const FeedbackForm = () => {
           </div>
           <div class="row">
             <div className='col-6'>
-          <table class="table table-bordered" style={{ width: "auto" }}>
-            <tbody>
+              <table class="table table-bordered" style={{ width: "auto" }}>
+                <tbody>
 
-              <tr>
-                <th scope="row">Counselee Name</th>
-                <td>{selectedCounselee?.name}</td>
-              </tr>
-              <tr>
-                <th scope="row">Service ID</th>
-                <td>{selectedCounselee?.service_id}</td>
-              </tr>
+                  <tr>
+                    <th scope="row">Counselee Name</th>
+                    <td>{selectedCounselee?.name}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Service ID</th>
+                    <td>{selectedCounselee?.service_id}</td>
+                  </tr>
 
-            </tbody>
-          </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
             <div className='col-6'>
-          <div className='text-end d-none d-md-block'>
-              <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
-                Logout
-                <LogoutIcon sx={{ ml: 1 }} />
+              <div className='text-end d-none d-md-block'>
+                <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
+                  Logout
+                  <LogoutIcon sx={{ ml: 1 }} />
+                </Fab>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h3>Counselling sessions</h3>
+            <div className='counselling-container'>
+              {
+
+                [...Array(totalSession)].map((val, ind) => {
+                  return (
+                    <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color={activeSession == ind ? "primary" : "information"} onClick={() => setActiveSession(ind)}>
+                      {ind + 1}
+                    </Fab>
+                  )
+                })
+              }
+              <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color="secondary" onClick={() => setTotalSession(totalSession + 1)}>
+                +
               </Fab>
             </div>
           </div>
-            </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Academics</span>
-            <textarea class="form-control" name="Academics" value={formData["Academics"]} aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Projects</span>
-            <textarea class="form-control" value={formData["Projects"]} name="Projects" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Sick Report</span>
-            <textarea class="form-control" value={formData["Sick Report"]} name="Sick Report" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">OLQ</span>
-            <textarea class="form-control" value={formData["OLQ"]} name="OLQ" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Games</span>
-            <textarea class="form-control" value={formData["Games"]} name="Games" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Cultural</span>
-            <textarea class="form-control" value={formData["Cultural"]} name="Cultural" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Financial</span>
-            <textarea class="form-control" value={formData["Financial"]} name="Financial" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">Personal</span>
-            <textarea class="form-control" value={formData["Personal"]} name="Personal" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">DS's comments</span>
-            <textarea class="form-control" value={formData["DS's comments"]} name="DS's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div className='input-group mb-2'>
-          <select class="form-select" aria-label="Select HOF" name="report_hof" onChange={ handleChange } value={formData.report_hof}>
-                <option selected disabled value="">Select HOF</option>
+          {activeSession >= 0 &&
+            <div class="input-group mb-2">
+
+              <select class="form-select" aria-label="Select Question" name="qna" onChange={(e) => { handleChange(e, 0, "question") }} value={formData?.counselling_session[activeSession]?.qna[0]?.question}>
+                <option selected disabled value="">Select Question</option>
                 {
-                  allHof.map((elem, index) => {
+                  questions?.map((elem, index) => {
                     return (
-                      <option value={elem.service_id}>{elem.name} : {elem.service_id}</option>
+                      <option value={elem.question}>{elem.question}</option>
                     )
                   })
                 }
+                <option value="Other">Other</option>
               </select>
-          </div>
-          {/* <div class="input-group mb-2">
-            <span class="input-group-text">HOF's comments</span>
-            <textarea class="form-control" value={formData["HOF's comments"]} name="HOF's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div>
-          <div class="input-group mb-2">
-            <span class="input-group-text">CI's comments</span>
-            <textarea class="form-control" value={formData["CI's comments"]} name="CI's comments" aria-label="With textarea" onChange={handleChange} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-          </div> */}
+            </div>}
+          {
+            formData?.counselling_session[activeSession]?.qna[0]?.question == "Other" &&
+            <div class="input-group mb-2">
+              <span class="input-group-text">Question</span>
+              <textarea class="form-control" name="Academics" value={formData?.counselling_session[activeSession]?.qna[0]?.question} aria-label="With textarea" onChange={(e) => { handleChange(e, 0, "question") }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+
+            </div>
+          }
+          {activeSession >= 0 &&
+            <div class="input-group mb-2">
+              <span class="input-group-text">Answer</span>
+              <textarea class="form-control" name="Academics" value={formData?.counselling_session[activeSession]?.qna[0]?.answer} aria-label="With textarea" onChange={(e) => { handleChange(e, 0, "answer") }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+
+            </div>}
 
           <div className='text-center mt-4 mb-4'>
             <Fab sx={{ mr: 1, mb: 1 }} variant="extended" onClick={Reset} endIcon={<RestartAltIcon />} color="error">
@@ -393,18 +375,18 @@ const FeedbackForm = () => {
                       <td>{report?.ds_comments}</td>
                       <td>
                         <DownloadIcon onClick={() => ExportCSV({
-                        "Academics": report?.academics,
-                        "Projects": report?.projects,
-                        "Sick Report": report?.sick_report,
-                        "OLQ": report?.olq,
-                        "Games": report?.games,
-                        "Cultural": report?.cultural,
-                        "Financial": report?.financial,
-                        "Personal": report?.personal,
-                        "HOF's comments": report?.hof_comments,
-                        "CI's comments": report?.ci_comments,
-                        "DS's comments": report?.ds_comments,
-                      },new Date(report?.created_at))}/>
+                          "Academics": report?.academics,
+                          "Projects": report?.projects,
+                          "Sick Report": report?.sick_report,
+                          "OLQ": report?.olq,
+                          "Games": report?.games,
+                          "Cultural": report?.cultural,
+                          "Financial": report?.financial,
+                          "Personal": report?.personal,
+                          "HOF's comments": report?.hof_comments,
+                          "CI's comments": report?.ci_comments,
+                          "DS's comments": report?.ds_comments,
+                        }, new Date(report?.created_at))} />
                       </td>
                     </tr>
                   )

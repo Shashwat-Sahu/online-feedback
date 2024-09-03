@@ -3,7 +3,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const VerifyTokenUser = require('../Middleware/VerifyTokenUser')
 const FeedbackReport = mongoose.model("FeedbackReport")
-const HOF = mongoose.model("HOF")
+const Questions = mongoose.model("CounsellingQuestions");
 
 router.post("/feedbackreport",VerifyTokenUser, (req, res) => {
     const { service_id,
@@ -53,11 +53,9 @@ router.get("/getfeedback",VerifyTokenUser,(req,res)=>{
     })
 })
 
-
-router.get("/getAllHof",VerifyTokenUser,(req,res)=>{
-    HOF.find().select("-password").then(data=>{
-        console.log(data)
-        res.json({HOF:data})
+router.get("/getQuestions",VerifyTokenUser,(req,res)=>{
+    Questions.find().select("-_id").then(data=>{
+        res.send(data)
     })
 })
 

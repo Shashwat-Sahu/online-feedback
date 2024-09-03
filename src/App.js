@@ -34,7 +34,7 @@ const Routing = (props) => {
           <Route path="/admin/addstudent/:counselId" Component={AddStudent} />
           <Route path="/admin/viewcounseleelist/:counselId" Component={ViewCounseleeList} />
           
-        </Routes> }{userType == "user"&&token&&
+        </Routes> }{userType == "counsellor"&&token&&
         <Routes>
 
           <Route path="/" Component={FeedbackForm} />

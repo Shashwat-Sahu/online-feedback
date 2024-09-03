@@ -3,17 +3,16 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const Counsellor = mongoose.model("Counsellor")
 const Counselee = mongoose.model("Counselee")
-const HOF = mongoose.model("HOF")
 const verifyToken = require("../Middleware/VerifyTokenAdmin")
 const sha256 = require('sha256');
 
-router.post("/add",verifyToken, (req, res) => {
+router.post("/add", verifyToken, (req, res) => {
     const { name, rank, service_id, password } = req.body;
     Counsellor.findOne({ service_id }).then(data => {
         if (data)
             return res.status(422).json({ error: "Counsellor already exists" })
         const counsellor = new Counsellor({
-            name, rank, service_id, password:sha256(password), counselee_list: []
+            name, rank, service_id, password: sha256(password), counselee_list: []
         })
 
         counsellor.save().then(data => {
@@ -25,10 +24,32 @@ router.post("/add",verifyToken, (req, res) => {
 async function addCounselee(counselee_list, counsellor_service_id) {
 
     var added = counselee_list.map(element => {
-        const { name, rank, service_id } = element
+        const { name, rank, service_id,
+            gender,
+            dob,
+            mo_name,
+            m_occ,
+            fo_name,
+            f_occ,
+            si_name,
+            si_occ,
+            qualification,
+            academic_marks,
+            pro_extra_co_marks } = element
         return Counselee.findOneAndUpdate({ service_id }, {
             $set: {
-                name, rank, service_id
+                name, rank, service_id,
+                gender,
+                dob,
+                mo_name,
+                m_occ,
+                fo_name,
+                f_occ,
+                si_name,
+                si_occ,
+                qualification,
+                academic_marks,
+                pro_extra_co_marks,
             }
         }, {
             upsert: true,
@@ -36,6 +57,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
         }).then(data => {
             console.log(data)
             if (data) {
+                
                 return Counsellor.findOneAndUpdate({ service_id: counsellor_service_id, counselee_list: { $nin: [service_id] } }, {
                     $push: {
                         counselee_list: service_id
@@ -56,10 +78,10 @@ async function addCounselee(counselee_list, counsellor_service_id) {
 
 }
 
-router.put("/update",verifyToken, (req, res) => {
+router.put("/update", verifyToken, (req, res) => {
     console.log(req.body)
-    const { service_id,name, rank } = req.body;
-    Counsellor.findOneAndUpdate({ service_id },{
+    const { service_id, name, rank } = req.body;
+    Counsellor.findOneAndUpdate({ service_id }, {
         name, rank
     }).then(data => {
         if (!data)
@@ -72,9 +94,9 @@ router.put("/update",verifyToken, (req, res) => {
 })
 
 
-router.delete("/delete",verifyToken, (req, res) => {
+router.delete("/delete", verifyToken, (req, res) => {
     console.log(req.query)
-    const service_id  = req.query.service_id;
+    const service_id = req.query.service_id;
     Counsellor.findOneAndDelete({ service_id }).then(data => {
         if (!data)
             return res.status(404).json({ error: "Not Found " + service_id })
@@ -83,20 +105,20 @@ router.delete("/delete",verifyToken, (req, res) => {
                 return res.status(200).json({ message: "Deleted Successfully" })
             })
         }
-        else{
+        else {
             return res.status(200).json({ message: "Deleted Successfully" })
         }
 
     })
 })
 
-router.put("/addCounseleeList",verifyToken, async (req, res) => {
+router.put("/addCounseleeList", verifyToken, async (req, res) => {
 
     const { counselee_list, counsellor_service_id } = req.body;
 
-    Counsellor.findOne({ service_id: counsellor_service_id}).then(data=>{
-        if(!data)
-        return res.status(404).json({error:"Counsellor not found"})
+    Counsellor.findOne({ service_id: counsellor_service_id }).then(data => {
+        if (!data)
+            return res.status(404).json({ error: "Counsellor not found" })
     })
     var promises = counselee_list.map(element => {
         const { name, rank, service_id } = element
@@ -106,8 +128,8 @@ router.put("/addCounseleeList",verifyToken, async (req, res) => {
         })
     })
     Promise.all(promises).then(async (result) => {
-        console.log("found counselleee",result)
-        var alreadyExist = result.filter(ele=>ele!=undefined)
+        console.log("found counselleee", result)
+        var alreadyExist = result.filter(ele => ele != undefined)
         if (alreadyExist.length > 0)
             return res.status(422).json({ error: "Already Existing: " + alreadyExist.join(", ") })
         else {

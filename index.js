@@ -22,7 +22,7 @@ require("./Model/Counsellor.js");
 require("./Model/Counselee.js");
 require("./Model/AdminAuth.js");
 require("./Model/FeedbackReport.js");
-require("./Model/HOF.js");
+require("./Model/Questions.js");
 require("./Model/CI.js");
 
 
@@ -31,8 +31,6 @@ app.use(require("./Routes/Login.js"))
 app.use("/counsellor", require("./Routes/Counsellor.js"))
 app.use("/counselee", require("./Routes/Counselee.js"))
 app.use("/user", require("./Routes/User.js"))
-app.use("/hof",require("./Routes/HOF.js"))
-app.use("/ci",require("./Routes/CI.js"))
 
 
 const PORT = process.env.PORT || 8000

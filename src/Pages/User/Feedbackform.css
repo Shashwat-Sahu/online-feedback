@@ -17,3 +17,9 @@
         display: block;
     }
 }
+
+.counselling-container{
+    display: flex;
+    flex-direction: row;
+}
+
