@@ -8,11 +8,13 @@ const feedBackReport = new mongoose.Schema({
         type:Number
     },
     counselling_session: [
-        {
-            qna: [
+         [
                 {
                     question: {
                         type: String
+                    },
+                    other:{
+                        type:Boolean
                     },
                     answer: {
                         type: String
@@ -20,7 +22,7 @@ const feedBackReport = new mongoose.Schema({
                 }
 
             ]
-        }
+        
     ]
 },{
     timestamps:{ createdAt: 'created_at', updatedAt: 'updated_at' }

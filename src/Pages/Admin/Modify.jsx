@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const Modify = (props) => {
-  console.log(props)
   const [data, setData] = useState({});
   const [message, setMessage] = useState({ message: null, error: null })
   const handleClose = () => props.setShow(false);

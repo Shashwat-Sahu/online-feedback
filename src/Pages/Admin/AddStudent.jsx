@@ -38,9 +38,7 @@ const AddStudent = () => {
     const navigate = useNavigate();
     const { counselId } = useParams()
     const handleChange = (e, index) => {
-        console.log(e)
         const newArray = data.map((item, i) => {
-            console.log(e.target.name)
             if (index === i) {
                 return { ...item, [e.target.name]: e.target.value };
             } else {
@@ -101,7 +99,6 @@ const AddStudent = () => {
                 }
             })
             setData(updateData)
-          console.log(data)
         }
     }
 

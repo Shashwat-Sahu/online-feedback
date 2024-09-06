@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Col, Row, Container, Button } from "react-bootstrap";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import axios from 'axios';
@@ -17,7 +17,7 @@ const FeedbackForm = () => {
   const navigate = useNavigate()
   const [counselees, setCounselees] = useState([])
   const [counsellor, setCounsellor] = useState({})
-  const [prevReport, setPrevReport] = useState([])
+  const prevReport = useRef()
   const [allHof, setAllHof] = useState([])
   const [message, setMessage] = useState({ message: null, error: null })
   const [selectedCounselee, setSelectedcounselee] = useState({})
@@ -27,12 +27,7 @@ const FeedbackForm = () => {
   const [formData, setFormData] = useState({
     service_id: "00000",
     counsellor_service_id: "00000",
-    counselling_session: [
-      {
-        qna: [
-        ]
-      }
-    ]
+    counselling_session: []
   })
   useEffect(() => {
     axios.get("/counselee/getCounselees?", {
@@ -40,7 +35,6 @@ const FeedbackForm = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setCounselees(data.data.data)
       setCounsellor(data.data.counsellor)
     }).catch(err => {
@@ -77,15 +71,34 @@ const FeedbackForm = () => {
 
   useEffect(() => {
     GetPrevReport()
+    setFormData({...formData,service_id:selectedCounselee.service_id})
   }, [selectedCounselee])
 
+  const handleChangeOther = (e, questionIndex) => {
+    formData.counselling_session[activeSession][questionIndex].question = e.target.value
+    setFormData({ ...formData, counselling_session: formData.counselling_session })
+  }
+
   const handleChange = (e, questionIndex, type) => {
-    if (formData.counselling_session[activeSession]["qna"].length <= questionIndex)
-      formData.counselling_session[activeSession]["qna"].push({
+    if (formData.counselling_session[activeSession].length <= questionIndex)
+      formData.counselling_session[activeSession].push({
         question: "",
+        other: false,
         answer: ""
       })
-    formData.counselling_session[activeSession]["qna"][questionIndex][type] = e.target.value;
+    if (type == "question" && e.target.value == "Other") {
+      formData.counselling_session[activeSession][questionIndex].other = true
+      formData.counselling_session[activeSession][questionIndex].question = ""
+      formData.counselling_session[activeSession][questionIndex].answer = ""
+    }
+    else if (type == "question" && formData.counselling_session[activeSession][questionIndex].other == true) {
+      formData.counselling_session[activeSession][questionIndex].other = false
+      formData.counselling_session[activeSession][questionIndex].question = e.target.value
+    }
+    else {
+      formData.counselling_session[activeSession][questionIndex][type] = e.target.value;
+    }
+
     setFormData({ ...formData, counselling_session: formData.counselling_session })
   }
 
@@ -98,16 +111,22 @@ const FeedbackForm = () => {
         return window.location.href = "/"
       }, 2000);
     }
+    console.log(formData)
     axios.post("/user/feedbackreport", {
+      ...formData,
+      service_id:selectedCounselee.service_id,
+      counsellor_service_id:counsellor.service_id
     }, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
       setMessage({ message: data?.data?.message, error: null });
-      setFormData({
+      navigate("/feedbackpageprint",{
+        state:formData
       })
-      ExportCSV(formData, new Date())
+      // setFormData({
+      // })
     }).catch(err => {
       err = err.response.data
       setMessage({ error: err?.error, message: null })
@@ -147,8 +166,14 @@ const FeedbackForm = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
-      setPrevReport(data?.data)
+      
+      if(data?.data){
+      const val = JSON.parse(JSON.stringify(data?.data))
+      setFormData(val)
+      setTotalSession(data?.data?.counselling_session?.length)
+      setActiveSession(data?.data?.counselling_session?.length-1)
+      }
+      prevReport.current = data?.data
       if (data?.data?.counselling_session)
         setTotalSession(data?.data?.counselling_session?.length)
     })
@@ -168,7 +193,7 @@ const FeedbackForm = () => {
       "report_hof": "",
       "DS's comments": ""
     })
-    setPrevReport([])
+    prevReport.current = []
   }
 
   return (
@@ -201,7 +226,7 @@ const FeedbackForm = () => {
           <p >
             <small class="text-muted">Rank : {counsellor?.rank}</small>
           </p>
-          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { console.log(counselees[e.target.value]); setPrevReport([]); setSelectedcounselee(counselees[e.target.value]) }}>
+          <select class="form-select" aria-label="Select Counselee" value={counselees ? counselees.indexOf(selectedCounselee) : -1} onChange={(e) => { prevReport.current=[]; setSelectedcounselee(counselees[e.target.value]) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
               counselees.map((elem, index) => {
@@ -265,6 +290,7 @@ const FeedbackForm = () => {
                 </tbody>
               </table>
             </div>
+            
             <div className='col-6'>
               <div className='text-end d-none d-md-block'>
                 <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
@@ -278,49 +304,93 @@ const FeedbackForm = () => {
             <h3>Counselling sessions</h3>
             <div className='counselling-container'>
               {
-
                 [...Array(totalSession)].map((val, ind) => {
                   return (
-                    <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color={activeSession == ind ? "primary" : "information"} onClick={() => setActiveSession(ind)}>
+                    <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color={activeSession == ind ? "primary" : "information"} onClick={() => {
+                      setActiveSession(ind)
+
+                    }}>
                       {ind + 1}
                     </Fab>
                   )
                 })
               }
-              <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color="secondary" onClick={() => setTotalSession(totalSession + 1)}>
+              <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color="secondary" onClick={() => {
+                if (totalSession == 0) {
+                  setActiveSession(0)
+                }
+                setTotalSession(totalSession + 1);
+                formData.counselling_session.push(
+                  [
+                    {
+                      question: "",
+                      other: false,
+                      answer: ""
+                    }
+                  ]
+                )
+                
+                setFormData(formData)
+                
+              }}>
                 +
               </Fab>
             </div>
           </div>
-          {activeSession >= 0 &&
-            <div class="input-group mb-2">
-
-              <select class="form-select" aria-label="Select Question" name="qna" onChange={(e) => { handleChange(e, 0, "question") }} value={formData?.counselling_session[activeSession]?.qna[0]?.question}>
-                <option selected disabled value="">Select Question</option>
+          {formData?.counselling_session[activeSession]?.map((quesAns, i) => {
+            return (
+              <>
+                <div class="input-group mb-2">
+                  <select class="form-select" aria-label="Select Question" name="qna" disabled={prevReport.current?.counselling_session?.length>=activeSession&&prevReport.current?.counselling_session[activeSession]?true:false}  onChange={(e) => { handleChange(e, i, "question") }} value={
+                    quesAns?.other ? "Other" : quesAns?.question}>
+                    <option selected disabled value="">Select Question</option>
+                    {
+                      questions?.map((elem, index) => {
+                        return (
+                          <option value={elem.question}>{elem.question}</option>
+                        )
+                      })
+                    }
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
                 {
-                  questions?.map((elem, index) => {
-                    return (
-                      <option value={elem.question}>{elem.question}</option>
-                    )
-                  })
+                  quesAns?.other &&
+                  <div class="input-group mb-2">
+                    <span class="input-group-text">Question</span>
+                    <textarea class="form-control" name="question" value={quesAns?.question}  disabled={prevReport.current?.counselling_session?.length>=activeSession&&prevReport.current?.counselling_session[activeSession]?true:false} aria-label="With textarea" onChange={(e) => { handleChangeOther(e, i) }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+                  </div>
                 }
-                <option value="Other">Other</option>
-              </select>
-            </div>}
-          {
-            formData?.counselling_session[activeSession]?.qna[0]?.question == "Other" &&
-            <div class="input-group mb-2">
-              <span class="input-group-text">Question</span>
-              <textarea class="form-control" name="Academics" value={formData?.counselling_session[activeSession]?.qna[0]?.question} aria-label="With textarea" onChange={(e) => { handleChange(e, 0, "question") }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
+                {
+                  activeSession >= 0 &&
+                  <div class="input-group mb-2">
+                    <span class="input-group-text">Answer</span>
+                    <textarea class="form-control" name="Academics" value={quesAns?.answer}  disabled={prevReport.current?.counselling_session?.length>=activeSession&&prevReport.current?.counselling_session[activeSession]?true:false} aria-label="With textarea" onChange={(e) => { handleChange(e, i, "answer") }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
 
-            </div>
-          }
-          {activeSession >= 0 &&
-            <div class="input-group mb-2">
-              <span class="input-group-text">Answer</span>
-              <textarea class="form-control" name="Academics" value={formData?.counselling_session[activeSession]?.qna[0]?.answer} aria-label="With textarea" onChange={(e) => { handleChange(e, 0, "answer") }} style={{ borderColor: "#adb5bd", color: "black" }}></textarea>
-
-            </div>}
+                  </div>
+                }
+              </>
+            )
+          })}
+          
+          {activeSession>=0&& !(prevReport.current?.counselling_session?.length>=activeSession&&prevReport.current?.counselling_session[activeSession])&&
+          <Fab sx={{ mr: 1, mb: 1 }} variant="extended" color="secondary" onClick={() => {
+            var counsellingsession= formData.counselling_session
+            counsellingsession[activeSession] = [...counsellingsession[activeSession],{
+              
+                question: "",
+                other: false,
+                answer: ""
+              
+            }]
+            setFormData(prevData=>{
+              return {
+              ...prevData,
+                counselling_session:counsellingsession
+            }})
+          }}>
+            Add Questions +
+          </Fab>}
 
           <div className='text-center mt-4 mb-4'>
             <Fab sx={{ mr: 1, mb: 1 }} variant="extended" onClick={Reset} endIcon={<RestartAltIcon />} color="error">

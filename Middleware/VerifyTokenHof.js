@@ -6,7 +6,6 @@ module.exports = (req, res, next) => {
 
     const { authorization } = req.headers
     //authorisatin ===Bearer djbdbdjbdbd
-    console.log(authorization)
     if (!authorization) {
         res.status(401).json({ error: "Not Authorized" })
     }

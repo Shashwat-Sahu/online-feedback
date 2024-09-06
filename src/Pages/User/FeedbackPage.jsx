@@ -16,23 +16,37 @@ const FeedbackPage = (details) => {
         // Adding the fonts.
         doc.setFont('Inter-Regular', 'normal');
 
-        doc.html(reportTemplateRef.current, {
+        doc.html(reportTemplateRef.current,{
+            autoPaging:"text"
+        ,
+        margin:[2,8,4,8],
             async callback(doc) {
                 await doc.save('document');
             },
-        });
+        },);
     };
     return (
         <>
             <div ref={reportTemplateRef}>
-                <Container>
-                    <Row>
-                        {Object.keys(location.state).map((item) => {
-                            return (<p>{item} : {location.state[item]}</p>)
-                        })}
+            <h4>Service ID: {location.state?.service_id}</h4>
 
-                    </Row>
-                </Container>
+{location.state?.counselling_session?.map((session, ind) => {
+    return (
+        <div>
+            <h5>Counselling session : {ind + 1}</h5>
+            <>{
+                session.map(qna => {
+                    return (
+                        <>
+                            <p>Question : {qna.question}</p>
+                            <p>Answer : {qna.answer}</p>
+                        </>
+                    )
+                })
+            }</>
+        </div>
+    )
+})}
             </div>
             <button className="button" onClick={handleGeneratePdf}>
                 Generate PDF

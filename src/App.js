@@ -13,7 +13,7 @@ import AddStudent from './Pages/Admin/AddStudent';
 import ViewCounseleeList from './Pages/Admin/ViewCounseleeList';
 import { useEffect, useState } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import FeedbackPage from './Pages/CI/FeedbackPage';
+import FeedbackPage from './Pages/User/FeedbackPage';
 
 const Routing = (props) => {
   const navigate = useNavigate()
@@ -38,17 +38,9 @@ const Routing = (props) => {
         <Routes>
 
           <Route path="/" Component={FeedbackForm} />
-          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
-          {userType == "hof"&&token&&
-        <Routes>
-
-          <Route path="/" Component={FeedbackFromHof} />
-          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
-          {userType == "ci"&&token&&
-        <Routes>
-
-          <Route path="/" Component={FeedbackFromCi} />
-          <Route path="/feedbackpageprint" Component={FeedbackPage} /></Routes>}
+          <Route path="/feedbackpageprint" Component={FeedbackPage} />
+          </Routes>}
+          
     </>
   )
 

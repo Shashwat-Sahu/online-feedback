@@ -5,38 +5,23 @@ const VerifyTokenUser = require('../Middleware/VerifyTokenUser')
 const FeedbackReport = mongoose.model("FeedbackReport")
 const Questions = mongoose.model("CounsellingQuestions");
 
-router.post("/feedbackreport",VerifyTokenUser, (req, res) => {
+router.post("/feedbackreport", VerifyTokenUser, (req, res) => {
     const { service_id,
-        academics,
-        projects,
-        sick_report,
-        olq,
-        games,
-        cultural,
-        financial,
-        personal,
-        report_hof,
-        ds_comments,
-        counsellor_service_id } = req.body;
 
-        if(!service_id)
-        return res.status(422).json({error:"Service ID is empty"})
-    
+        counsellor_service_id, counselling_session } = req.body;
 
-    FeedbackReport.insertMany([{
+    if (!service_id)
+        return res.status(422).json({ error: "Service ID is empty" })
+
+
+    FeedbackReport.findOneAndUpdate({service_id,counsellor_service_id},{
         counsellor_service_id,
         service_id,
-        academics,
-        projects,
-        sick_report,
-        olq,
-        games,
-        cultural,
-        financial,
-        personal,
-        report_hof,
-        ds_comments
-    }]).then(data => {
+        counselling_session
+    },{
+        new:true,
+        upsert:true
+    }).then(data => {
 
         if (!data)
             return res.status(404).json({ error: "Not Found " + service_id })
@@ -45,16 +30,17 @@ router.post("/feedbackreport",VerifyTokenUser, (req, res) => {
     })
 })
 
-router.get("/getfeedback",VerifyTokenUser,(req,res)=>{
-    const service_id  = req.query.service_id
+router.get("/getfeedback", VerifyTokenUser, (req, res) => {
+    const service_id = req.query.service_id
     const counsellor_service_id = req.query.counsellor_service_id
-    FeedbackReport.find({service_id,counsellor_service_id}).then(data=>{
-        res.send(data)
+    FeedbackReport.find({ service_id, counsellor_service_id }).then(data => {
+        var val = data.length>0?data[0]:null
+        res.send(val)
     })
 })
 
-router.get("/getQuestions",VerifyTokenUser,(req,res)=>{
-    Questions.find().select("-_id").then(data=>{
+router.get("/getQuestions", VerifyTokenUser, (req, res) => {
+    Questions.find().select("-_id").then(data => {
         res.send(data)
     })
 })

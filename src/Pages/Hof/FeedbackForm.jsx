@@ -61,7 +61,6 @@ const FeedbackFormHof = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setAllCI(data.data.CI)
     }).catch(err => {
       err = err.response.data
@@ -154,7 +153,6 @@ const FeedbackFormHof = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setPrevReport(data?.data)
     })
   }
@@ -206,7 +204,7 @@ const FeedbackFormHof = () => {
           <p style={{ marginBottom: "0" }}>
             <small class="text-muted">Service ID :{hof?.service_id}</small>
           </p>
-          <select class="form-select" aria-label="Select Counselee" value={reports ? reports.indexOf(selectedReport) : -1} onChange={(e) => { console.log(reports[e.target.value]);setPrevReport([]); setSelectedReport(reports[e.target.value]);  setFormData({...formData,"HOF's comments":reports[e.target.value].hof_comments}) }}>
+          <select class="form-select" aria-label="Select Counselee" value={reports ? reports.indexOf(selectedReport) : -1} onChange={(e) => { setPrevReport([]); setSelectedReport(reports[e.target.value]);  setFormData({...formData,"HOF's comments":reports[e.target.value].hof_comments}) }}>
             <option selected disabled value={-1}>Select Counselee</option>
             {
               reports.map((elem, index) => {
@@ -238,7 +236,7 @@ const FeedbackFormHof = () => {
               </p>
             </div>
             <div class="col-12">
-              <select class="form-select" aria-label="Select Counselee" onChange={(e) => { console.log(reports[e.target.value]); setSelectedReport(reports[e.target.value]); setFormData({...formData,"HOF's comments":reports[e.target.value].hof_comments}) }}>
+              <select class="form-select" aria-label="Select Counselee" onChange={(e) => {  setSelectedReport(reports[e.target.value]); setFormData({...formData,"HOF's comments":reports[e.target.value].hof_comments}) }}>
                 <option selected disabled>Select Counselee</option>
                 {
                   reports.map((elem, index) => {

@@ -153,7 +153,6 @@ const FeedbackFormCi = () => {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     }).then(data => {
-      console.log(data)
       setPrevReport(data?.data)
     })
   }
