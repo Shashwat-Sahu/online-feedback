@@ -122,9 +122,12 @@ const FeedbackForm = () => {
       }
     }).then(data => {
       setMessage({ message: data?.data?.message, error: null });
-      navigate("/feedbackpageprint",{
-        state:formData
-      })
+      setTimeout(() => {
+        navigate("/feedbackpageprint",{
+          state:formData
+        })
+      }, 2000);
+      
       // setFormData({
       // })
     }).catch(err => {
