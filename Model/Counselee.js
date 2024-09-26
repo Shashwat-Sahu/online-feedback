@@ -43,6 +43,9 @@ const CounseleeSchema = new mongoose.Schema({
     },
     pro_extra_co_marks: {
         type: Number
+    },
+    kpi: {
+        type: Number
     }
 })
 

@@ -35,7 +35,8 @@ async function addCounselee(counselee_list, counsellor_service_id) {
             si_occ,
             qualification,
             academic_marks,
-            pro_extra_co_marks } = element
+            pro_extra_co_marks,
+        kpi } = element
         return Counselee.findOneAndUpdate({ service_id }, {
             $set: {
                 name, rank, service_id,
@@ -50,6 +51,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
                 qualification,
                 academic_marks,
                 pro_extra_co_marks,
+                kpi
             }
         }, {
             upsert: true,

@@ -16,12 +16,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
 import { logout } from '../../Controllers/logoutController';
+import * as excelJs from 'exceljs';
 
 const AddStudent = () => {
     const [data, setData] = useState([{
         rank: "Flying officer",
         name: "", service_id: "",
-         gender: "Male",
+        gender: "Male",
         dob: "",
         mo_name: "",
         m_occ: "",
@@ -30,8 +31,9 @@ const AddStudent = () => {
         si_name: "",
         si_occ: "",
         qualification: "Graduate",
-        academic_marks:0,
-        pro_extra_co_marks:0
+        academic_marks: 0,
+        pro_extra_co_marks: 0,
+        kpi: 0
     }]);
     const [message, setMessage] = useState({ message: null, error: null })
     const dispatch = useDispatch()
@@ -52,7 +54,7 @@ const AddStudent = () => {
         setData([...data, {
             rank: "Flying officer",
             name: "", service_id: "",
-             gender: "Male",
+            gender: "Male",
             dob: "",
             mo_name: "",
             m_occ: "",
@@ -61,70 +63,66 @@ const AddStudent = () => {
             si_name: "",
             si_occ: "",
             qualification: "Graduate",
-            academic_marks:0,
-            pro_extra_co_marks:0
+            academic_marks: 0,
+            pro_extra_co_marks: 0,
+            kpi: 0
         }])
     }
 
-    const handleUploadInput = async(e) =>{
+    const handleUploadInput = async (e) => {
         const file = e.target.files[0];
         const fileReader = await new FileReader()
         fileReader.readAsArrayBuffer(file)
-    
+
         fileReader.onload = (e) => {
-          const bufferArray = e?.target.result
-          const wb = XLSX.read(bufferArray, { type: "buffer" ,cellText:false,cellDates:true})
-          const wsname = wb.SheetNames[0]
-          const ws = wb.Sheets[wsname]
-    
-          const data = XLSX.utils.sheet_to_json(ws, {raw: false,dateNF:'yyyy-mm-dd'})
-          const fileName = file.name.split(".")[0]
-            const updateData = data.map(x=>{
-                return{
-                    
-            rank: "Flying officer",
-                    service_id:x["Service ID"],
-                    name:x["name"], 
+            const bufferArray = e?.target.result
+            const wb = XLSX.read(bufferArray, { type: "buffer", cellText: false, cellDates: true })
+            const wsname = wb.SheetNames[0]
+            const ws = wb.Sheets[wsname]
+
+            const data = XLSX.utils.sheet_to_json(ws, { raw: false, dateNF: 'yyyy-mm-dd' })
+            const fileName = file.name.split(".")[0]
+            const updateData = data.map(x => {
+                return {
+
+                    rank: "Flying officer",
+                    service_id: x["Service ID"],
+                    name: x["name"],
                     gender: x["gender"],
-                    dob:x["dob (dd-mm-yyyy)"],
-                    mo_name:x["mother name"],
+                    dob: x["dob (dd-mm-yyyy)"],
+                    mo_name: x["mother name"],
                     m_occ: x["mother occupation"],
-                    fo_name:x["father name"],
-                    f_occ:x["father occupation"],
+                    fo_name: x["father name"],
+                    f_occ: x["father occupation"],
                     si_name: x["sibling name"],
-                    si_occ:x["sibling occupation"],
-                    qualification:x["qualification"],
-                    academic_marks:x["academic marks"],
-                    pro_extra_co_marks:x["project & extra co-curricular marks"]
+                    si_occ: x["sibling occupation"],
+                    qualification: x["qualification"],
+                    academic_marks: x["academic marks"],
+                    pro_extra_co_marks: x["project & extra co-curricular marks"],
+                    kpi:x["KPI Marks"]
                 }
             })
             setData(updateData)
         }
     }
 
-    const handleUpload = () =>{
+    const handleUpload = () => {
         var fileInput = document.getElementById("uploadexcel")
         fileInput.click()
     }
 
-    const handleDownloadTemplate = () => {
-        const worksheet = XLSX.utils.json_to_sheet([{
-            service_id: "",name: "",
-             gender: "",
-            dob: "",
-            mo_name: "",
-            m_occ: "",
-            fo_name: "",
-            f_occ: "",
-            si_name: "",
-            si_occ: "",
-            qualification: "Graduate",
-        academic_marks:0,
-        pro_extra_co_marks:0
-        }])
+    const handleDownloadTemplate = async () => {
+       
+        const workbook = new excelJs.Workbook();
 
-        const workbook = XLSX.utils.book_new();
-        var columns = ["Service ID","name", "gender",
+        const ws = workbook.addWorksheet('Test Worksheet');
+        var gender = { options: [{ name: "Male" }, { name: "Female" }, { name: "Other" }] }
+        var qualification = { options: [{ name: "Graduate" }, { name: "Post Graduate" }, { name: "PHd" }] }
+        const options1 = [gender.options.map((opt) => opt.name)];
+        const options2 = [qualification.options.map((opt) => opt.name)];
+
+        // Add data to the worksheet
+        ws.addRow(["Service ID", "name", "gender",
             "dob (dd-mm-yyyy)",
             "mother name",
             "mother occupation",
@@ -134,16 +132,85 @@ const AddStudent = () => {
             "sibling occupation",
             "qualification",
             "academic marks",
-            "project & extra co-curricular marks"]
-//             const max_width = columns.reduce((w, r) => Math.max(w, r.length), 10);
-//   worksheet["!cols"] = [ { wch: max_width } ];
-        XLSX.utils.sheet_add_aoa(worksheet, [columns], { origin: "A1" });
+            "project & extra co-curricular marks",
+            "KPI Marks"]);
 
-            
-        XLSX.utils.book_append_sheet(workbook, worksheet, "counselee1");
 
-        /* create an XLSX file and try to save to Presidents.xlsx */
-        XLSX.writeFile(workbook, "Counselee List.xlsx");
+        ws.columns.map((col, index) => (col.width = 18));
+
+        // @ts-ignore
+        ws.dataValidations.add('C2:C99999', {
+            type: 'list',
+            allowBlank: false,
+            formulae: [`"${options1.join(',')}"`],
+        });
+
+        // @ts-ignore
+        ws.dataValidations.add('K2:K99999', {
+            type: 'list',
+            allowBlank: false,
+            formulae: [`"${options2.join(',')}"`],
+        });
+
+        ws.dataValidations.add('L2:L99999', {
+            type: 'whole',
+            operator: 'between',
+            allowBlank: true,
+            showInputMessage: true,
+            formulae: [0, 100],
+            promptTitle: 'Whole number',
+            prompt: 'The value must between 0 to 100'
+        });
+        ws.dataValidations.add('M2:M99999', {
+            type: 'whole',
+            operator: 'between',
+            allowBlank: true,
+            showInputMessage: true,
+            formulae: [0, 100],
+            promptTitle: 'Whole number',
+            prompt: 'The value must between 0 to 100'
+        });
+        
+        ws.dataValidations.add('N2:N99999', {
+            type: 'whole',
+            operator: 'between',
+            allowBlank: true,
+            showInputMessage: true,
+            formulae: [0, 100],
+            promptTitle: 'Whole number',
+            prompt: 'The value must between 0 to 100'
+        });
+        ws.getRow(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFADD8E6' },
+        };
+
+        ws.eachRow((row) => {
+            row.eachCell((cell) => {
+                cell.font = {
+                    name: 'Inter',
+                    size: 8,
+                };
+                cell.alignment = {
+                    horizontal: 'center',
+                };
+            });
+        });
+
+        const excelBlob = await workbook.xlsx.writeBuffer();
+        const excelUrl = URL.createObjectURL(
+            new Blob([excelBlob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        );
+
+        const link = document.createElement('a');
+        link.href = excelUrl;
+        link.download = 'template.xlsx';
+        document.body.appendChild(link);
+        link.click();
+
+        URL.revokeObjectURL(excelUrl);
+        document.body.removeChild(link);
     }
 
     const handleDelete = (index) => {
@@ -166,7 +233,7 @@ const AddStudent = () => {
         if (!service_ids.every(isUnique))
             return setMessage({ ...message, error: "Service ID should be unique" })
         data.forEach((data) => {
-            if (!data.name || !data.rank || !data.service_id || !data.f_occ || !data.fo_name || !data.gender|| !data.m_occ || !data.mo_name|| !data.qualification || data.academic_marks==0 || data.pro_extra_co_marks==0)
+            if (!data.name || !data.rank || !data.service_id || !data.f_occ || !data.fo_name || !data.gender || !data.m_occ || !data.mo_name || !data.qualification || data.academic_marks == 0 || data.pro_extra_co_marks == 0||data.kpi == 0)
                 return setMessage({ ...message, error: "Few fields are empty" })
         })
         axios.put('/counsellor/addCounseleeList', {
@@ -177,7 +244,8 @@ const AddStudent = () => {
             }
         }).then(data => {
             setMessage({ message: data?.data?.message, error: null })
-            setData([{ rank: "Flying officer", name: "", service_id: "", gender: "Male",
+            setData([{
+                rank: "Flying officer", name: "", service_id: "", gender: "Male",
                 dob: "",
                 mo_name: "",
                 m_occ: "",
@@ -186,8 +254,10 @@ const AddStudent = () => {
                 si_name: "",
                 si_occ: "",
                 qualification: "",
-                academic_marks:0,
-                pro_extra_co_marks:0}])
+                academic_marks: 0,
+                pro_extra_co_marks: 0,
+                kpi:0
+            }])
 
         }).catch(err => {
             err = err.response.data
@@ -234,7 +304,7 @@ const AddStudent = () => {
                         <Button id="submit-Btn" className='mx-2' variant="contained" color="info" onClick={() => handleIncreaseStudent()} endIcon={<AddIcon />} size="medium"> Add More </Button>
                         <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleDownloadTemplate} color="info" endIcon={<DownloadIcon />} size="medium"> Download Excel Template</Button>
                         <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleUpload} color="info" endIcon={<UploadIcon />} size="medium"> Upload Excel</Button>
-                        <input id="uploadexcel" type='file' style={{display:"none"}} onChange={handleUploadInput}/>
+                        <input id="uploadexcel" type='file' style={{ display: "none" }} onChange={handleUploadInput} />
                         <Button id="submit-Btn" className='mx-2' variant="contained" onClick={handleSubmit} color="success" endIcon={<SendIcon />} size="medium"> Submit</Button>
                         <Fab sx={{ ml: 1 }} variant="extended" onClick={() => { logout(navigate) }} endIcon={<LogoutIcon />}>
                             Logout
@@ -246,7 +316,7 @@ const AddStudent = () => {
                     <Col xs={12} className="d-flex justify-content-center flex-wrap">
                         {data.map((data, index) => {
                             return (
-                                <Form className="table-user d-inline-block mx-1" style={{ minWidth:"30%" }}>
+                                <Form className="table-user d-inline-block mx-1" style={{ minWidth: "30%" }}>
                                     <FloatingLabel
                                         controlId="floatingInput"
                                         label="Service ID"
@@ -399,23 +469,23 @@ const AddStudent = () => {
                                         </Col>
                                     </Row>
                                     <FloatingLabel
-                                                controlId="floatingInput"
-                                                label="Qualification"
-                                                className="mb-3">
-                                                <Form.Select style={{ background: "transparent", color: "white" }} value={data.qualification} name="qualification" onChange={(e) => handleChange(e, index)} index={index}>
+                                        controlId="floatingInput"
+                                        label="Qualification"
+                                        className="mb-3">
+                                        <Form.Select style={{ background: "transparent", color: "white" }} value={data.qualification} name="qualification" onChange={(e) => handleChange(e, index)} index={index}>
 
-                                                    <option selected disabled style={{ color: "black" }} value="Select">Select</option>
-                                                    <option style={{ color: "black" }} value="Graduate">Graduate</option>
+                                            <option selected disabled style={{ color: "black" }} value="Select">Select</option>
+                                            <option style={{ color: "black" }} value="Graduate">Graduate</option>
 
-                                                    <option style={{ color: "black" }} value="Post Graduate">Post Graduate</option>
+                                            <option style={{ color: "black" }} value="Post Graduate">Post Graduate</option>
 
-                                                    <option style={{ color: "black" }} value="PHd">PHd</option>
-                                                </Form.Select>
-                                                {!data.qualification &&
-                                                    <Form.Text className="text-danger">
-                                                        *Qualification can't be empty
-                                                    </Form.Text>}
-                                            </FloatingLabel>
+                                            <option style={{ color: "black" }} value="PHd">PHd</option>
+                                        </Form.Select>
+                                        {!data.qualification &&
+                                            <Form.Text className="text-danger">
+                                                *Qualification can't be empty
+                                            </Form.Text>}
+                                    </FloatingLabel>
                                     <Row>
                                         <Col>
                                             <FloatingLabel
@@ -425,47 +495,46 @@ const AddStudent = () => {
                                                 style={{ color: "white" }}
 
                                             >
-                                                <Form.Control type="number" id="input-field" placeholder="Academic Marks" name="academic_marks" value={data.academic_marks>=0?data.academic_marks:data.academic_marks=0} onChange={(e) => handleChange(e, index)} index={index} />
-                                                {data.academic_marks==0 &&
+                                                <Form.Control type="number" id="input-field" placeholder="Academic Marks" name="academic_marks" value={data.academic_marks >= 0 ? data.academic_marks : data.academic_marks = 0} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {data.academic_marks == 0 &&
                                                     <Form.Text className="text-danger">
                                                         *Academic marks can't be empty
                                                     </Form.Text>}
                                             </FloatingLabel>
                                         </Col>
                                         <Col>
-                                        <FloatingLabel
+                                            <FloatingLabel
                                                 controlId="floatingInput"
                                                 label="Project & Extra Curricular Marks"
                                                 className="mb-3"
                                                 style={{ color: "white" }}
 
                                             >
-                                                <Form.Control type="number" id="input-field" placeholder="Project & Extra Curricular Marks" name="pro_extra_co_marks" value={data.pro_extra_co_marks>=0?data.pro_extra_co_marks:data.pro_extra_co_marks=0} onChange={(e) => handleChange(e, index)} index={index} />
-                                                {data.pro_extra_co_marks==0 &&
+                                                <Form.Control type="number" id="input-field" placeholder="Project & Extra Curricular Marks" name="pro_extra_co_marks" value={data.pro_extra_co_marks >= 0 ? data.pro_extra_co_marks : data.pro_extra_co_marks = 0} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {data.pro_extra_co_marks == 0 &&
                                                     <Form.Text className="text-danger">
                                                         *Project & Extra Curricular marks can't be empty
                                                     </Form.Text>}
                                             </FloatingLabel>
+
                                         </Col>
                                     </Row>
-                                    {/* <FloatingLabel
-                                        controlId="floatingInput"
-                                        label="Rank"
-                                        className="mb-3">
-                                        <Form.Select style={{ background: "transparent", color: "white" }} value={data.rank} name="rank" onChange={(e) => handleChange(e, index)} index={index}>
+                                    <Row>
+                                        <Col>
+                                            <FloatingLabel
+                                                controlId="floatingInput"
+                                                label="KPI Marks"
+                                                className="mb-3"
+                                                style={{ color: "white" }}
 
-                                            <option selected disabled style={{ color: "black" }} value="Select">Select</option>
-                                            <option style={{ color: "black" }} value="Flying officer">Flying officer</option>
-
-                                            <option style={{ color: "black" }} value="Flight cadet">Flight cadet</option>
-
-                                        </Form.Select>
-                                        {!data.rank &&
-                                            <Form.Text className="text-danger">
-                                                *Rank can't be empty
-                                            </Form.Text>}
-                                    </FloatingLabel> */}
-
+                                            >
+                                                <Form.Control type="number" id="input-field" placeholder="KPI Marks" name="kpi" value={data.kpi >= 0 ? data.kpi : data.kpi = 0} onChange={(e) => handleChange(e, index)} index={index} />
+                                                {data.pro_extra_co_marks == 0 &&
+                                                    <Form.Text className="text-danger">
+                                                        *KPI marks can't be empty
+                                                    </Form.Text>}
+                                            </FloatingLabel></Col>
+                                    </Row>
                                     <div className='text-end'>
                                         <DeleteIcon style={{ color: "white" }} onClick={() => handleDelete(index)} />
                                     </div>

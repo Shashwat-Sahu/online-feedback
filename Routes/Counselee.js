@@ -46,6 +46,7 @@ router.get("/getCounselees", verifyTokenUser, (req, res) => {
     console.log(user)
     if (user)
         Counselee.find({ "service_id": { $in: user.counselee_list } }).select("-_id -__v").then(data => {
+    console.log(data)
             return res.status(200).json({counsellor:user,data})
         })
 

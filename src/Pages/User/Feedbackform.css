@@ -2,7 +2,9 @@
     position: fixed;
     left: 0;
     top: 0;
-    background-color: #0d6efd40
+    background-color: #0d6efd40;
+    display: flex;
+    flex-direction: column;
 }
 
 #sidebarfeedback-xs{
@@ -23,3 +25,21 @@
     flex-direction: row;
 }
 
+.kpi-marks-container{
+    padding: 10px;
+    background-color: #fcf0ca;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: auto;
+    margin-bottom: 50px;
+}
+
+.kpi-marks-value{
+    padding: 3px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    font-size: 1rem;
+    font-size: 6rem;
+}
