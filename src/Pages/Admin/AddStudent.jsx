@@ -17,6 +17,7 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import Fab from '@mui/material/Fab';
 import { logout } from '../../Controllers/logoutController';
 import * as excelJs from 'exceljs';
+import "./addStudent.css"
 
 const AddStudent = () => {
     const [data, setData] = useState([{
@@ -42,7 +43,7 @@ const AddStudent = () => {
     const handleChange = (e, index) => {
         const newArray = data.map((item, i) => {
             if (index === i) {
-                return { ...item, [e.target.name]: e.target.value };
+                return { ...item, [e.target.name]: e.target.value, kpi:(item.academic_marks+item.pro_extra_co_marks)/2 };
             } else {
                 return item;
             }
@@ -521,19 +522,8 @@ const AddStudent = () => {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <FloatingLabel
-                                                controlId="floatingInput"
-                                                label="KPI Marks"
-                                                className="mb-3"
-                                                style={{ color: "white" }}
-
-                                            >
-                                                <Form.Control type="number" id="input-field" placeholder="KPI Marks" name="kpi" value={data.kpi >= 0 ? data.kpi : data.kpi = 0} onChange={(e) => handleChange(e, index)} index={index} />
-                                                {data.pro_extra_co_marks == 0 &&
-                                                    <Form.Text className="text-danger">
-                                                        *KPI marks can't be empty
-                                                    </Form.Text>}
-                                            </FloatingLabel></Col>
+                                                    <div className='kpi-container'>KPI : {data.kpi}</div>
+                                            </Col>
                                     </Row>
                                     <div className='text-end'>
                                         <DeleteIcon style={{ color: "white" }} onClick={() => handleDelete(index)} />
