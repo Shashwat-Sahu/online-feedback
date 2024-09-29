@@ -43,7 +43,16 @@ const AddStudent = () => {
     const handleChange = (e, index) => {
         const newArray = data.map((item, i) => {
             if (index === i) {
-                return { ...item, [e.target.name]: e.target.value, kpi:(item.academic_marks+item.pro_extra_co_marks)/2 };
+                if(e.target.name=="academic_marks")
+                {
+                    return  { ...item, [e.target.name]: Number(e.target.value) ,kpi:(Number(e.target.value)+Number(item.pro_extra_co_marks))/2}
+                }
+                else if(e.target.name=="pro_extra_co_marks")
+                {
+
+                    return  { ...item, [e.target.name]: Number(e.target.value) ,kpi:(Number(e.target.value)+Number(item.academic_marks))/2}
+                }
+                return { ...item, [e.target.name]: e.target.value };
             } else {
                 return item;
             }
@@ -80,9 +89,9 @@ const AddStudent = () => {
             const wb = XLSX.read(bufferArray, { type: "buffer", cellText: false, cellDates: true })
             const wsname = wb.SheetNames[0]
             const ws = wb.Sheets[wsname]
-
             const data = XLSX.utils.sheet_to_json(ws, { raw: false, dateNF: 'yyyy-mm-dd' })
             const fileName = file.name.split(".")[0]
+            
             const updateData = data.map(x => {
                 return {
 
@@ -98,9 +107,9 @@ const AddStudent = () => {
                     si_name: x["sibling name"],
                     si_occ: x["sibling occupation"],
                     qualification: x["qualification"],
-                    academic_marks: x["academic marks"],
-                    pro_extra_co_marks: x["project & extra co-curricular marks"],
-                    kpi:x["KPI Marks"]
+                    academic_marks: Number(x["academic marks"]),
+                    pro_extra_co_marks: Number(x["project & extra co-curricular marks"]),
+                    kpi:(Number(x["academic marks"])+Number(x["project & extra co-curricular marks"]))/2
                 }
             })
             setData(updateData)
@@ -133,8 +142,7 @@ const AddStudent = () => {
             "sibling occupation",
             "qualification",
             "academic marks",
-            "project & extra co-curricular marks",
-            "KPI Marks"]);
+            "project & extra co-curricular marks"]);
 
 
         ws.columns.map((col, index) => (col.width = 18));
