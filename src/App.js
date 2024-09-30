@@ -1,54 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
-import Login from './Pages/Login';
-import FeedbackForm from './Pages/User/FeedbackForm'
-import FeedbackFromHof from './Pages/Hof/FeedbackForm';
+import logo from "./logo.svg";
+import "./App.css";
+import Login from "./Pages/Login";
+import FeedbackForm from "./Pages/User/FeedbackForm";
+import FeedbackFromHof from "./Pages/Hof/FeedbackForm";
 
-import FeedbackFromCi from './Pages/CI/FeedbackForm';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import FeedbackFromCi from "./Pages/CI/FeedbackForm";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import AdminDashboard from './Pages/Admin';
-import AddUser from './Pages/Admin/AddUser';
-import AddStudent from './Pages/Admin/AddStudent';
-import ViewCounseleeList from './Pages/Admin/ViewCounseleeList';
-import { useEffect, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import FeedbackPage from './Pages/User/FeedbackPage';
+import AdminDashboard from "./Pages/Admin";
+import AddUser from "./Pages/Admin/AddUser";
+import AddStudent from "./Pages/Admin/AddStudent";
+import ViewCounseleeList from "./Pages/Admin/ViewCounseleeList";
+import { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import FeedbackPage from "./Pages/User/FeedbackPage";
+import AddQuestions from "./Pages/Admin/AddQuestions";
 
 const Routing = (props) => {
-  const navigate = useNavigate()
-  const { token, userType } = props
-  console.log(userType)
+  const navigate = useNavigate();
+  const { token, userType } = props;
+  console.log(userType);
   useEffect(() => {
-   
-    navigate("/")
-  }, [])
+    navigate("/");
+  }, []);
   return (
     <>
-     {!token && <Routes>
-        <Route path="/" Component={Login} />
-      </Routes>} {userType == "admin"&& token&&
+      {!token && (
+        <Routes>
+          <Route path="/" Component={Login} />
+        </Routes>
+      )}{" "}
+      {userType == "admin" && token && (
         <Routes>
           <Route path="/" Component={AdminDashboard} />
           <Route path="/admin/adduser" Component={AddUser} />
           <Route path="/admin/addstudent/:counselId" Component={AddStudent} />
-          <Route path="/admin/viewcounseleelist/:counselId" Component={ViewCounseleeList} />
-          
-        </Routes> }{userType == "counsellor"&&token&&
+          <Route
+            path="/admin/viewcounseleelist/:counselId"
+            Component={ViewCounseleeList}
+          />
+          <Route path="/admin/addquestions" Component={AddQuestions} />
+        </Routes>
+      )}
+      {userType == "counsellor" && token && (
         <Routes>
-
           <Route path="/" Component={FeedbackForm} />
           <Route path="/feedbackpageprint" Component={FeedbackPage} />
-          </Routes>}
-          
+        </Routes>
+      )}
     </>
-  )
-
-}
+  );
+};
 
 function App(props) {
-  const { token, userType } = props
-  console.log(props)
+  const { token, userType } = props;
+  console.log(props);
   // useEffect(() => {
   //   dispatch(setToken(localStorage.getItem("token")))
   // }, [])
@@ -60,36 +66,34 @@ function App(props) {
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.loginDetails.token,
-    userType: state.loginDetails.userType
-  }
-}
+    userType: state.loginDetails.userType,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    setToken: data => {
+    setToken: (data) => {
       dispatch({
-        type: 'SET_TOKEN',
+        type: "SET_TOKEN",
         token: data,
-      })
+      });
     },
-    setServiceId: data => {
+    setServiceId: (data) => {
       dispatch({
-        type: 'SET_SERVICE_ID',
+        type: "SET_SERVICE_ID",
         service_id: data,
-      })
+      });
     },
-    setType: data => {
+    setType: (data) => {
       dispatch({
-        type: 'SET_TYPE',
+        type: "SET_TYPE",
         userType: data,
-      })
-    }
-  }
-}
-
-
+      });
+    },
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

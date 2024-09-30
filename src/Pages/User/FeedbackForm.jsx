@@ -11,8 +11,8 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DownloadIcon from "@mui/icons-material/Download";
-
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+
 const FeedbackForm = () => {
   const navigate = useNavigate();
   const [counselees, setCounselees] = useState([]);
@@ -110,9 +110,8 @@ const FeedbackForm = () => {
         e.target.value + " ";
       formData.counselling_session[activeSession][questionIndex].grade =
         e.target.value;
-      formData.counselling_session[activeSession][
-        questionIndex
-      ].gradeRequired = true;
+      formData.counselling_session[activeSession][questionIndex].gradeRequired =
+        true;
     } else {
       formData.counselling_session[activeSession][questionIndex][type] =
         e.target.value;
@@ -146,7 +145,7 @@ const FeedbackForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       )
       .then((data) => {
         setMessage({ message: data?.data?.message, error: null });
@@ -182,6 +181,7 @@ const FeedbackForm = () => {
       if (index == 0)
         return {
           "session no": reportData.session,
+          "Created At": reportData.createdAt,
           Questions: question?.question,
           Answers: question?.answer,
         };
@@ -190,9 +190,10 @@ const FeedbackForm = () => {
     console.log(data);
     const merge = [
       { s: { r: 1, c: 0 }, e: { r: reportData.QnA.length, c: 0 } },
+      { s: { r: 1, c: 1 }, e: { r: reportData.QnA.length, c: 1 } },
     ];
     const ws = XLSX.utils.json_to_sheet(data, {
-      header: ["session no", "Questions", "Answers"],
+      header: ["session no", "Created At", "Questions", "Answers"],
     });
     ws["!merges"] = merge;
 
@@ -219,7 +220,7 @@ const FeedbackForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       )
       .then((data) => {
         if (data?.data) {
@@ -320,7 +321,17 @@ const FeedbackForm = () => {
               <h4 className="kpi-heading">KPI Remark</h4>
               <div className="kpi-marks-value">{selectedCounselee?.kpi}</div>
               <div className="kpi-remark">
-                Feedback: <b>Satisfactory</b>
+                Feedback:{" "}
+                <b>
+                  {selectedCounselee?.kpi > 90
+                    ? "Very Good"
+                    : selectedCounselee?.kpi < 90 && selectedCounselee?.kpi > 75
+                      ? "Good"
+                      : selectedCounselee?.kpi < 75 &&
+                          selectedCounselee?.kpi > 50
+                        ? "Satisfactory"
+                        : "Poor"}
+                </b>
               </div>
             </div>
           )}
@@ -430,7 +441,7 @@ const FeedbackForm = () => {
                     color="secondary"
                     onClick={() => {
                       setActiveSession(
-                        activeSession - 1 >= 0 ? activeSession - 1 : 0
+                        activeSession - 1 >= 0 ? activeSession - 1 : 0,
                       );
 
                       setTotalSession(totalSession - 1);
@@ -518,7 +529,7 @@ const FeedbackForm = () => {
                   <Col md={4}>
                     <div class="input-group mb-2">
                       {questions?.find(
-                        (elem) => elem.question == quesAns.question
+                        (elem) => elem.question == quesAns.question,
                       )?.gradeRequired && (
                         <select
                           class="form-select"
@@ -642,7 +653,7 @@ const FeedbackForm = () => {
                     if (counsellingsession[activeSession].length == 0) {
                       counsellingsession.pop();
                       setActiveSession(
-                        activeSession - 1 >= 0 ? activeSession - 1 : 0
+                        activeSession - 1 >= 0 ? activeSession - 1 : 0,
                       );
 
                       setTotalSession(totalSession - 1);
@@ -698,18 +709,30 @@ const FeedbackForm = () => {
                 <thead>
                   <tr>
                     <th scope="col">Session No.</th>
+                    <th scope="col">Created At</th>
                     <th scope="col">Questions</th>
                     <th scope="col">Answer</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {console.log(prevReport)}
                   {prevReport.current?.counselling_session?.map((session, i) =>
                     session.map((question, index) => {
                       return (
                         <tr>
                           {index == 0 && (
                             <td rowSpan={session?.length}>{i + 1}</td>
+                          )}
+
+                          {index == 0 && (
+                            <td rowSpan={session?.length}>
+                              {new Date(
+                                prevReport.current?.counselling_session_timestamp[
+                                  i
+                                ],
+                              ).toLocaleDateString("en-IN")}
+                            </td>
                           )}
                           {/* <td>{new Date(report?.created_at).toLocaleString()}</td> */}
                           <td>{question?.question}</td>
@@ -720,6 +743,11 @@ const FeedbackForm = () => {
                                 onClick={() =>
                                   ExportCSV({
                                     session: i + 1,
+                                    createdAt: new Date(
+                                      prevReport.current?.counselling_session_timestamp[
+                                        i
+                                      ],
+                                    ).toLocaleDateString("en-IN"),
                                     QnA: session,
                                   })
                                 }
@@ -728,7 +756,7 @@ const FeedbackForm = () => {
                           )}
                         </tr>
                       );
-                    })
+                    }),
                   )}
                 </tbody>
               </table>

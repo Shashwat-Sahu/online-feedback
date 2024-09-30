@@ -1,4 +1,4 @@
-export const logout = (navigate) =>{
-    localStorage.clear();
-    window.location.href = "/"
-}
+export const logout = (navigate) => {
+  localStorage.clear();
+  window.location.href = "/";
+};

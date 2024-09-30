@@ -1,18 +1,24 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const questionSchema = new mongoose.Schema({
-    question:{
-        type:String
+const questionSchema = new mongoose.Schema(
+  {
+    question: {
+      type: String,
     },
-    gradeRequired:{
-        type:Boolean,
-        default:false
+    gradeRequired: {
+      type: Boolean,
+      default: false,
     },
-     grade:[
-        {
-            type:String
-        }
-     ]
-})
+    grade: [
+      {
+        type: String,
+      },
+    ],
+  },
 
-mongoose.model("CounsellingQuestions",questionSchema);
+  {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+  },
+);
+
+mongoose.model("CounsellingQuestions", questionSchema);

@@ -1,36 +1,35 @@
-
-
-#submit-Btn{
-    border: none;
-    border-radius: 3rem;
-    font-size: 15px;
-    height: 3rem;
-    outline: none;
-    width: auto;
-    cursor: pointer;
-    transition: .3s;
+#submit-Btn {
+  border: none;
+  border-radius: 3rem;
+  font-size: 15px;
+  height: 3rem;
+  outline: none;
+  width: auto;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.counsellor-box{
-    background-image: url("https://wallpaperset.com/w/full/0/d/6/39864.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-    height: 100vh;
-    overflow-y: scroll;
+.counsellor-box {
+  background-image: url("https://wallpaperset.com/w/full/0/d/6/39864.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100vh;
+  overflow-y: scroll;
 }
-.table-user{
-    background-color: #0000008a;
-    border: 2px solid #ffffff61;
-    border-radius: 3rem;
-    margin: 2rem auto;
-    padding: 2rem 2rem;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
+.table-user {
+  background-color: #0000008a;
+  border: 2px solid #ffffff61;
+  border-radius: 3rem;
+  margin: 2rem auto;
+  padding: 2rem 2rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.568);
 }
-.in put-field,.form-floating>.form-control{
-   background-color: transparent;
-   border-radius: 1rem;
-   border-color: white;
-   color: white;
+.in put-field,
+.form-floating > .form-control {
+  background-color: transparent;
+  border-radius: 1rem;
+  border-color: white;
+  color: white;
 }
