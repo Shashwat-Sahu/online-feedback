@@ -18,7 +18,15 @@ const feedBackReport = new mongoose.Schema({
                     },
                     answer: {
                         type: String
-                    }
+                    },
+                    grade:{
+                        type:String,
+                        default:null
+                    },
+                    gradeRequired:{
+                        type:Boolean,
+                        default:false
+                    },
                 }
 
             ]

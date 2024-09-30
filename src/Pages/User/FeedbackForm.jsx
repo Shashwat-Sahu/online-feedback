@@ -58,6 +58,7 @@ const FeedbackForm = () => {
         },
       })
       .then((data) => {
+        console.log(data);
         setQuestions(data?.data);
       })
       .catch((err) => {
@@ -104,6 +105,14 @@ const FeedbackForm = () => {
       formData.counselling_session[activeSession][questionIndex].other = false;
       formData.counselling_session[activeSession][questionIndex].question =
         e.target.value;
+    } else if (type == "grade") {
+      formData.counselling_session[activeSession][questionIndex]["answer"] =
+        e.target.value + " ";
+      formData.counselling_session[activeSession][questionIndex].grade =
+        e.target.value;
+      formData.counselling_session[activeSession][
+        questionIndex
+      ].gradeRequired = true;
     } else {
       formData.counselling_session[activeSession][questionIndex][type] =
         e.target.value;
@@ -169,22 +178,26 @@ const FeedbackForm = () => {
     const fileType =
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
     const fileExtension = ".xlsx";
-    const data = reportData.QnA.map((question,index) => {
-      if(index==0)
-      return {"session no":reportData.session,"Questions":question?.question,"Answers":question?.answer}
-    else
-    return{"Questions":question?.question,"Answers":question?.answer}
-    }
-  )
-  console.log(data)
-  const merge = [
-    { s: { r: 1, c: 0 }, e: { r: reportData.QnA.length, c: 0 } }
-  ];
-    const ws = XLSX.utils.json_to_sheet(data,{header: ["session no","Questions","Answers"]});
-    ws["!merges"] = merge
-    
+    const data = reportData.QnA.map((question, index) => {
+      if (index == 0)
+        return {
+          "session no": reportData.session,
+          Questions: question?.question,
+          Answers: question?.answer,
+        };
+      else return { Questions: question?.question, Answers: question?.answer };
+    });
+    console.log(data);
+    const merge = [
+      { s: { r: 1, c: 0 }, e: { r: reportData.QnA.length, c: 0 } },
+    ];
+    const ws = XLSX.utils.json_to_sheet(data, {
+      header: ["session no", "Questions", "Answers"],
+    });
+    ws["!merges"] = merge;
+
     const wb = { Sheets: { data: ws }, SheetNames: ["data"] };
-    
+
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const dataFile = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(dataFile, fileName + fileExtension);
@@ -408,6 +421,27 @@ const FeedbackForm = () => {
             {console.log(selectedCounselee)}
             <h3>Counselling sessions</h3>
             <div className="counselling-container">
+              {totalSession >= 0 &&
+                prevReport.current?.counselling_session?.length <
+                  totalSession && (
+                  <Fab
+                    sx={{ mr: 1, mb: 1 }}
+                    variant="extended"
+                    color="secondary"
+                    onClick={() => {
+                      setActiveSession(
+                        activeSession - 1 >= 0 ? activeSession - 1 : 0
+                      );
+
+                      setTotalSession(totalSession - 1);
+                      formData.counselling_session.pop();
+
+                      setFormData(formData);
+                    }}
+                  >
+                    -
+                  </Fab>
+                )}
               {[...Array(totalSession)].map((val, ind) => {
                 return (
                   <Fab
@@ -429,7 +463,7 @@ const FeedbackForm = () => {
                 onClick={() => {
                   if (totalSession == 0) {
                     setActiveSession(0);
-                  }
+                  } else setActiveSession(totalSession);
                   setTotalSession(totalSession + 1);
                   formData.counselling_session.push([
                     {
@@ -438,7 +472,6 @@ const FeedbackForm = () => {
                       answer: "",
                     },
                   ]);
-
                   setFormData(formData);
                 }}
               >
@@ -449,34 +482,76 @@ const FeedbackForm = () => {
           {formData?.counselling_session[activeSession]?.map((quesAns, i) => {
             return (
               <>
-                <div class="input-group mb-2">
-                  <select
-                    class="form-select"
-                    aria-label="Select Question"
-                    name="qna"
-                    disabled={
-                      prevReport.current?.counselling_session?.length >=
-                        activeSession &&
-                      prevReport.current?.counselling_session[activeSession]
-                        ? true
-                        : false
-                    }
-                    onChange={(e) => {
-                      handleChange(e, i, "question");
-                    }}
-                    value={quesAns?.other ? "Other" : quesAns?.question}
-                  >
-                    <option selected disabled value="">
-                      Select Question
-                    </option>
-                    {questions?.map((elem, index) => {
-                      return (
-                        <option value={elem.question}>{elem.question}</option>
-                      );
-                    })}
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
+                <Row>
+                  <Col md={8}>
+                    <div class="input-group mb-2">
+                      <select
+                        class="form-select"
+                        aria-label="Select Question"
+                        name="qna"
+                        disabled={
+                          prevReport.current?.counselling_session?.length >=
+                            activeSession &&
+                          prevReport.current?.counselling_session[activeSession]
+                            ? true
+                            : false
+                        }
+                        onChange={(e) => {
+                          handleChange(e, i, "question");
+                        }}
+                        value={quesAns?.other ? "Other" : quesAns?.question}
+                      >
+                        <option selected disabled value="">
+                          Select Question
+                        </option>
+                        {questions?.map((elem, index) => {
+                          return (
+                            <option value={elem.question}>
+                              {elem.question}
+                            </option>
+                          );
+                        })}
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                  </Col>
+                  <Col md={4}>
+                    <div class="input-group mb-2">
+                      {questions?.find(
+                        (elem) => elem.question == quesAns.question
+                      )?.gradeRequired && (
+                        <select
+                          class="form-select"
+                          aria-label="Select Grade"
+                          name="grade"
+                          disabled={
+                            prevReport.current?.counselling_session?.length >=
+                              activeSession &&
+                            prevReport.current?.counselling_session[
+                              activeSession
+                            ]
+                              ? true
+                              : false
+                          }
+                          value={quesAns?.grade}
+                          onChange={(e) => {
+                            handleChange(e, i, "grade");
+                          }}
+                        >
+                          <option selected value="">
+                            Select Grade
+                          </option>
+                          {questions
+                            ?.find((elem) => elem.question == quesAns.question)
+                            ?.grade.map((elem, ind) => {
+                              return <option value={elem}>{ind + 1}</option>;
+                            })}
+                        </select>
+                      )}
+                    </div>
+                  </Col>
+                </Row>
+
                 {quesAns?.other && (
                   <div class="input-group mb-2">
                     <span class="input-group-text">Question</span>
@@ -531,30 +606,58 @@ const FeedbackForm = () => {
                 activeSession &&
               prevReport.current?.counselling_session[activeSession]
             ) && (
-              <Fab
-                sx={{ mr: 1, mb: 1 }}
-                variant="extended"
-                color="secondary"
-                onClick={() => {
-                  var counsellingsession = formData.counselling_session;
-                  counsellingsession[activeSession] = [
-                    ...counsellingsession[activeSession],
-                    {
-                      question: "",
-                      other: false,
-                      answer: "",
-                    },
-                  ];
-                  setFormData((prevData) => {
-                    return {
-                      ...prevData,
-                      counselling_session: counsellingsession,
-                    };
-                  });
-                }}
-              >
-                Add Questions +
-              </Fab>
+              <>
+                <Fab
+                  sx={{ mr: 1, mb: 1 }}
+                  variant="extended"
+                  color="secondary"
+                  onClick={() => {
+                    var counsellingsession = formData.counselling_session;
+                    counsellingsession[activeSession] = [
+                      ...counsellingsession[activeSession],
+                      {
+                        question: "",
+                        other: false,
+                        answer: "",
+                      },
+                    ];
+                    setFormData((prevData) => {
+                      return {
+                        ...prevData,
+                        counselling_session: counsellingsession,
+                      };
+                    });
+                  }}
+                >
+                  Add Questions +
+                </Fab>
+                <Fab
+                  sx={{ mr: 1, mb: 1 }}
+                  variant="extended"
+                  color="secondary"
+                  onClick={() => {
+                    var counsellingsession = formData.counselling_session;
+                    counsellingsession[activeSession].pop();
+                    console.log(counsellingsession);
+                    if (counsellingsession[activeSession].length == 0) {
+                      counsellingsession.pop();
+                      setActiveSession(
+                        activeSession - 1 >= 0 ? activeSession - 1 : 0
+                      );
+
+                      setTotalSession(totalSession - 1);
+                    }
+                    setFormData((prevData) => {
+                      return {
+                        ...prevData,
+                        counselling_session: counsellingsession,
+                      };
+                    });
+                  }}
+                >
+                  Delete Question
+                </Fab>
+              </>
             )}
 
           <div className="text-center mt-4 mb-4">
@@ -588,7 +691,7 @@ const FeedbackForm = () => {
               <KeyboardArrowRightIcon sx={{ ml: 1 }} />
             </Fab>
           </div>
-            <h2>Previous sessions</h2>
+          <h2>Previous sessions</h2>
           <div className="table-responsive">
             {prevReport.current?.counselling_session?.length > 0 && (
               <table class="table table-hover table-bordered mt-4 table-sm">
@@ -601,26 +704,32 @@ const FeedbackForm = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {prevReport.current?.counselling_session?.map(
-                    (session,i) => 
-                      session.map((question,index) => {
-                        return (
-                          <tr>
-                            {index==0&&<td rowSpan={session?.length}>{i + 1}</td>}
-                            {/* <td>{new Date(report?.created_at).toLocaleString()}</td> */}
-                            <td>{question?.question}</td>
-                            <td>{question?.answer}</td>
-                            {index==0&&<td rowSpan={session?.length}>
-                              <DownloadIcon onClick={() => ExportCSV({
-                                session:i+1,QnA:session
-                              })} />
-                            </td>}
-                          </tr>
-                        );
-                      }
-                    )
-                  )
-                  }
+                  {prevReport.current?.counselling_session?.map((session, i) =>
+                    session.map((question, index) => {
+                      return (
+                        <tr>
+                          {index == 0 && (
+                            <td rowSpan={session?.length}>{i + 1}</td>
+                          )}
+                          {/* <td>{new Date(report?.created_at).toLocaleString()}</td> */}
+                          <td>{question?.question}</td>
+                          <td>{question?.answer}</td>
+                          {index == 0 && (
+                            <td rowSpan={session?.length}>
+                              <DownloadIcon
+                                onClick={() =>
+                                  ExportCSV({
+                                    session: i + 1,
+                                    QnA: session,
+                                  })
+                                }
+                              />
+                            </td>
+                          )}
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             )}
