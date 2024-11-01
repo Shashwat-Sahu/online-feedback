@@ -3,7 +3,7 @@ import { Container, Row } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import jsPDF from "jspdf";
 
-const FeedbackPage = (details) => {
+const FeedbackPageAdmin = (details) => {
   const location = useLocation();
   const reportTemplateRef = useRef(null);
   const handleGeneratePdf = () => {
@@ -59,4 +59,4 @@ const FeedbackPage = (details) => {
   );
 };
 
-export default FeedbackPage;
+export default FeedbackPageAdmin;

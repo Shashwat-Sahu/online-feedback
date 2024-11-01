@@ -1,19 +1,19 @@
-#sidebarfeedback-md{
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color: #0d6efd40
+#sidebarfeedback-md {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #0d6efd40;
 }
 
-#sidebarfeedback-xs{
+#sidebarfeedback-xs {
+  display: none;
+}
+
+@media screen and (max-width: 780px) {
+  #sidebarfeedback-md {
     display: none;
-}
-
-@media screen and (max-width:780px) {
-    #sidebarfeedback-md{
-        display: none;
-    }
-    #sidebarfeedback-xs{
-        display: block;
-    }
+  }
+  #sidebarfeedback-xs {
+    display: block;
+  }
 }
