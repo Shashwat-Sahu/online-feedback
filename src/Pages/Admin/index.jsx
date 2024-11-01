@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setServiceId } from "../../Reducers/loginReducer";
 import { logout } from "../../Controllers/logoutController";
 
+import SearchIcon from "@mui/icons-material/Search";
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
 
@@ -50,6 +52,20 @@ const AdminDashboard = () => {
               size="large"
             >
               Add Questions
+            </Button>
+            <Button
+              style={{
+                backgroundColor: "#0a58ca",
+                color: "white",
+                marginLeft: "5px",
+              }}
+              variant="contained"
+              endIcon={<SearchIcon />}
+              onClick={() => {
+                navigate("/admin/searchcounselee");
+              }}
+              size="large"
+            >Search Counselee
             </Button>
           </Col>
           <Col className="text-end">

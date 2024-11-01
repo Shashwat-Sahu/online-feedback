@@ -58,7 +58,6 @@ const FeedbackForm = () => {
         },
       })
       .then((data) => {
-        console.log(data);
         setQuestions(data?.data);
       })
       .catch((err) => {
@@ -132,7 +131,6 @@ const FeedbackForm = () => {
         return (window.location.href = "/");
       }, 2000);
     }
-    console.log(formData);
     axios
       .post(
         "/user/feedbackreport",
@@ -151,7 +149,7 @@ const FeedbackForm = () => {
         setMessage({ message: data?.data?.message, error: null });
         setTimeout(() => {
           navigate("/feedbackpageprint", {
-            state: formData,
+            state: data?.data?.data,
           });
         }, 2000);
 
@@ -187,7 +185,6 @@ const FeedbackForm = () => {
         };
       else return { Questions: question?.question, Answers: question?.answer };
     });
-    console.log(data);
     const merge = [
       { s: { r: 1, c: 0 }, e: { r: reportData.QnA.length, c: 0 } },
       { s: { r: 1, c: 1 }, e: { r: reportData.QnA.length, c: 1 } },
@@ -379,7 +376,6 @@ const FeedbackForm = () => {
                 class="form-select"
                 aria-label="Select Counselee"
                 onChange={(e) => {
-                  console.log(counselees[e.target.value]);
                   setSelectedcounselee(counselees[e.target.value]);
                 }}
               >
@@ -429,7 +425,6 @@ const FeedbackForm = () => {
             </div>
           </div>
           <div>
-            {console.log(selectedCounselee)}
             <h3>Counselling sessions</h3>
             <div className="counselling-container">
               {totalSession >= 0 &&
@@ -649,7 +644,6 @@ const FeedbackForm = () => {
                   onClick={() => {
                     var counsellingsession = formData.counselling_session;
                     counsellingsession[activeSession].pop();
-                    console.log(counsellingsession);
                     if (counsellingsession[activeSession].length == 0) {
                       counsellingsession.pop();
                       setActiveSession(
@@ -716,7 +710,6 @@ const FeedbackForm = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {console.log(prevReport)}
                   {prevReport.current?.counselling_session?.map((session, i) =>
                     session.map((question, index) => {
                       return (

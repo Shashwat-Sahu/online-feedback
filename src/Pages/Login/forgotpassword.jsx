@@ -81,7 +81,6 @@ const ForgotPassword = () => {
       })
       .then((data) => {
         setSubmitting(false);
-        console.log(data);
         setMessage({ message: data?.data?.message, error: null });
         setOTPSent(data?.data?.message == "OTP Sent");
       })

@@ -34,7 +34,7 @@ router.post("/feedbackreport", VerifyTokenUser, (req, res) => {
     if (!data)
       return res.status(404).json({ error: "Not Found " + service_id });
     if (data)
-      return res.status(200).json({ message: "Added Record Successfully" });
+      return res.status(200).json({ message: "Added Record Successfully", data });
   });
 });
 

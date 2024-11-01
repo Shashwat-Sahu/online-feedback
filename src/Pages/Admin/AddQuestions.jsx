@@ -36,7 +36,6 @@ const AddQuestions = () => {
           },
         })
         .then((data) => {
-          console.log(data);
           setQuestions(data?.data);
           setUpdatingQuestions(data?.data);
         })
@@ -76,7 +75,6 @@ const AddQuestions = () => {
           return item;
         }
       });
-      console.log(newArray);
       setUpdatingQuestions(newArray);
     }
   };
@@ -120,7 +118,6 @@ const AddQuestions = () => {
         },
       )
       .then((data) => {
-        console.log(data);
 
         setMessage({ message: data?.data?.message, error: null });
       })
@@ -144,7 +141,6 @@ const AddQuestions = () => {
         },
       })
       .then((data) => {
-        console.log(data);
 
         setMessage({ message: data?.data?.message, error: null });
       })

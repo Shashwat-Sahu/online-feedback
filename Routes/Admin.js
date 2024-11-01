@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Counsellor = mongoose.model("Counsellor");
 const Counselee = mongoose.model("Counselee");
+const FeedbackReport = mongoose.model("FeedbackReport");
 const verifyToken = require("../Middleware/VerifyTokenAdmin");
 
 const Questions = mongoose.model("CounsellingQuestions");
@@ -24,7 +25,6 @@ router.get("/getCounselees", verifyToken, (req, res) => {
         Counselee.find({ service_id: { $in: data[0].counselee_list } })
           .select("-_id -__v")
           .then((data) => {
-            console.log(data);
             return res.send(data);
           });
     });
@@ -34,14 +34,12 @@ router.get("/getQuestions", verifyToken, (req, res) => {
   Questions.find()
     .sort({ updated_at: -1 })
     .then((data) => {
-      console.log(data);
       res.send(data);
     });
 });
 
 router.put("/updateQuestions", verifyToken, (req, res) => {
   const { question, gradeRequired, grade } = req.body;
-  console.log(question);
   Questions.findOneAndUpdate(
     { question: question },
     {
@@ -73,4 +71,12 @@ router.delete("/deleteQuestion", verifyToken, (req, res) => {
     }
   });
 });
+
+
+router.get("/getCounselee",verifyToken, (req,res)=>{
+  const service_id = req.query.service_id;
+  FeedbackReport.find({ service_id}).then(reports=>{
+    res.status(200).json({ data:(reports)})
+  })
+})
 module.exports = router;

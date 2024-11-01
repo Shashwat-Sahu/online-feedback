@@ -16,6 +16,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import FeedbackPage from "./Pages/User/FeedbackPage";
 import AddQuestions from "./Pages/Admin/AddQuestions";
 import ForgotPassword from "./Pages/Login/forgotpassword";
+import SearchCounselee from "./Pages/Admin/SearchCounselee";
+import FeedbackPageAdmin from "./Pages/Admin/FeedbackPage";
 
 const Routing = (props) => {
   const navigate = useNavigate();
@@ -38,6 +40,8 @@ const Routing = (props) => {
             Component={ViewCounseleeList}
           />
           <Route path="/admin/addquestions" Component={AddQuestions} />
+          <Route path="/admin/searchcounselee" Component={SearchCounselee} />
+          <Route path="/feedbackpageprint" Component={FeedbackPageAdmin} />
         </Routes>
       )}
       {userType == "counsellor" && token && (
