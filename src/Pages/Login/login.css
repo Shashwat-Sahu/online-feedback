@@ -107,3 +107,11 @@ label a {
 .icon {
   color: #58151ca6;
 }
+
+.forgotPassword{
+  text-align: center;
+}
+
+.forgotPassword:hover{
+  cursor: pointer;
+}

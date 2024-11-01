@@ -26,6 +26,7 @@ require("./Model/CI.js");
 
 app.use(require("./Routes/Admin.js"));
 app.use(require("./Routes/Login.js"));
+app.use(require("./Routes/ForgotPassword.js"));
 app.use("/counsellor", require("./Routes/Counsellor.js"));
 app.use("/counselee", require("./Routes/Counselee.js"));
 app.use("/user", require("./Routes/User.js"));

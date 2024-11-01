@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const AdminAuth = mongoose.model("AdminAuth");
 const Counsellor = mongoose.model("Counsellor");
-const CI = mongoose.model("CI");
 const jwt = require("jsonwebtoken");
 const sha256 = require("sha256");
 

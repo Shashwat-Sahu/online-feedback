@@ -15,19 +15,17 @@ import { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import FeedbackPage from "./Pages/User/FeedbackPage";
 import AddQuestions from "./Pages/Admin/AddQuestions";
+import ForgotPassword from "./Pages/Login/forgotpassword";
 
 const Routing = (props) => {
   const navigate = useNavigate();
   const { token, userType } = props;
-  console.log(userType);
-  useEffect(() => {
-    navigate("/");
-  }, []);
   return (
     <>
       {!token && (
         <Routes>
           <Route path="/" Component={Login} />
+          <Route path="/forgotpassword" Component={ForgotPassword} />
         </Routes>
       )}{" "}
       {userType == "admin" && token && (

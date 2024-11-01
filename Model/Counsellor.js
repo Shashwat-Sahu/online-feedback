@@ -20,6 +20,18 @@ const CounsellerSchema = new mongoose.Schema({
       type: Number,
     },
   ],
+  otp:{
+    type:Number,
+    require: false
+  },
+  otpExpiration:{
+    type:Date,
+    require:false
+  },
+  otpVerified:{
+    type:Boolean,
+    default:false
+  }
 });
 
 mongoose.model("Counsellor", CounsellerSchema);
