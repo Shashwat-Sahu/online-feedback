@@ -16,7 +16,7 @@ const sendEmail = (service_id, otp) => {
       secure: true,
       auth: {
         user: "apurvavishwakarma293@gmail.com",
-        pass: "hxut viom ijkn jqdr",
+        pass: process.env.MAIL_PASSWORD,
       },
     });
     const mailOptions = {
