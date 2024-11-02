@@ -246,7 +246,7 @@ const ForgotPassword = () => {
                     right: "0px",
                   }}
                 >
-                  Developed by AFTC
+                  Developed by 16TS
                 </p>
               </div>
             </Form>
