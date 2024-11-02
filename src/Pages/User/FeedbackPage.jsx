@@ -19,7 +19,7 @@ const FeedbackPage = (details) => {
       autoPaging: "text",
       margin: [2, 8, 4, 8],
       async callback(doc) {
-        await doc.save("document");
+        await doc.save(location.state?.service_id+"_"+new Date().toLocaleString());
       },
     });
   };
