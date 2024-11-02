@@ -27,6 +27,7 @@ const sendEmail = (service_id, otp) => {
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
+        console.log(error)
         rej("Error occurred");
       } else {
         res("Email Sent");
