@@ -9,6 +9,7 @@ const sha256 = require("sha256");
 
 const sendEmail = (service_id, otp) => {
   return new Promise((res, rej) => {
+    console.log(process.env.MAIL_PASSWORD)
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       host: "smtp.gmail.com",
