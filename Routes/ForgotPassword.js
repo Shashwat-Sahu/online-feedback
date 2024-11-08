@@ -22,7 +22,7 @@ const sendEmail = (service_id, otp) => {
     });
     const mailOptions = {
       from: "apurvavishwakarma293@gmail.com",
-      to: `shashwatsahu25@gmail.com`,
+      to: `av28061997@gmail.com`,
       subject: "OTP for verification",
       text: `OTP for verification of password : ${otp}`,
     };
