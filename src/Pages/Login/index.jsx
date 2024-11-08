@@ -157,7 +157,7 @@ const Login = (props) => {
                   
                 </div>
                 
-                <div className="forgotPassword" style={{textAlign:"center"}} onClick={()=>{navigate("/forgotpassword")}}>Forgot Password</div>
+                <div className="forgotPassword" style={{textAlign:"center",color:"white"}} onClick={()=>{navigate("/forgotpassword")}}>Forgot Password</div>
                 <div class="input-field mt-4">
                   <input type="submit" class="submit" value="Login" />
                 </div>

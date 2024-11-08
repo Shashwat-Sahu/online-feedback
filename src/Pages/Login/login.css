@@ -15,13 +15,13 @@
   height: 100vh;
 }
 
-span {
+/* span {
   color: #fff;
   font-size: small;
   display: flex;
   justify-content: center;
   padding: 10px 0 10px 0;
-}
+} */
 header {
   color: #393939;
   font-size: 30px;

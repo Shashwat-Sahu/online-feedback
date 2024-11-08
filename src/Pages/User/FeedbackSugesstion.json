@@ -1,0 +1,29 @@
+[
+    {
+        "score":[0,59],
+        "feedback":"Fail",
+        "suggestion":"Better Luck next time"
+    },
+    {
+        "score":[60,69],
+        "feedback":"You're progressing well, but there are areas where you can focus to strengthen your understanding.",
+        "suggestion":"Review fundamental concepts that seem unclear, especially focusing on weak topics.Allocate more time to revision and practice; aim to solve a few extra exercises every week."
+    },{
+        "score":[70,79],
+        "feedback":"You have a good grasp of the basics. With a little more effort, you can reach the next level.",
+        "suggestion":"Identify and target specific topics that you find challenging.Incorporate active learning methods like teaching a concept to a peer or explaining it aloud."
+    },{
+        "score":[80,89],
+        "feedback":"You’re performing well, and there’s potential to achieve even higher. Let’s focus on refining your skills.",
+        "suggestion":"Focus on problem-solving speed and accuracy to improve efficiency.Engage in more in-depth, analytical exercises, and apply concepts to real-life scenarios."
+    },{
+        "score":[90,99],
+        "feedback":"Excellent work! You have a strong understanding. With a few tweaks, you can achieve perfection.",
+        "suggestion":"Aim for mastery by tackling complex, high-level problems to deepen understanding.Practice under timed conditions to simulate real exam pressure."
+    },
+    {
+        "score":[100,100],
+        "feedback":"Outstanding performance! Keep up the fantastic work. Now, focus on sustaining this high standard.",
+        "suggestion":"Continue challenging yourself with advanced resources or projects related to the subject.Consider taking on leadership roles in group studies or helping others, as teaching can further reinforce your knowledge."
+    }
+]
