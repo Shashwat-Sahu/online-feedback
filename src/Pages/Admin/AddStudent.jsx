@@ -41,7 +41,8 @@ const AddStudent = () => {
       f_occ: "",
       si_name: "",
       si_occ: "",
-      qualification: "Graduate",
+      course_name: "",
+      qualification: "",
       academic_marks: 0,
       pro_extra_co_marks: 0,
       kpi: 0,
@@ -58,13 +59,13 @@ const AddStudent = () => {
           return {
             ...item,
             [e.target.name]: Number(e.target.value),
-            kpi: (Number(e.target.value) + Number(item.pro_extra_co_marks)) / 2,
+            kpi: Number(e.target.value),
           };
         } else if (e.target.name == "pro_extra_co_marks") {
           return {
             ...item,
             [e.target.name]: Number(e.target.value),
-            kpi: (Number(e.target.value) + Number(item.academic_marks)) / 2,
+            kpi: Number(e.target.value),
           };
         }
         return { ...item, [e.target.name]: e.target.value };
@@ -90,7 +91,8 @@ const AddStudent = () => {
         f_occ: "",
         si_name: "",
         si_occ: "",
-        qualification: "Graduate",
+        course_name: "",
+        qualification: "",
         academic_marks: 0,
         pro_extra_co_marks: 0,
         kpi: 0,
@@ -132,12 +134,10 @@ const AddStudent = () => {
           si_name: x["sibling name"],
           si_occ: x["sibling occupation"],
           qualification: x["qualification"],
+          course_name: x["course name"],
           academic_marks: Number(x["academic marks"]),
           pro_extra_co_marks: Number(x["project & extra co-curricular marks"]),
-          kpi:
-            (Number(x["academic marks"]) +
-              Number(x["project & extra co-curricular marks"])) /
-            2,
+          kpi: Number(x["academic marks"]),
         };
       });
       setData(updateData);
@@ -163,8 +163,12 @@ const AddStudent = () => {
         { name: "PHd" },
       ],
     };
+    var course_name = {
+      options: [{ name: "28 CCCN(O)" }, { name: "29 CCCN(O)" }],
+    };
     const options1 = [gender.options.map((opt) => opt.name)];
     const options2 = [qualification.options.map((opt) => opt.name)];
+    const options3 = [course_name.options.map((opt) => opt.name)];
 
     // Add data to the worksheet
     ws.addRow([
@@ -179,8 +183,8 @@ const AddStudent = () => {
       "sibling name",
       "sibling occupation",
       "qualification",
+      "course name",
       "academic marks",
-      "project & extra co-curricular marks",
     ]);
 
     ws.columns.map((col, index) => (col.width = 18));
@@ -190,6 +194,9 @@ const AddStudent = () => {
       type: "list",
       allowBlank: false,
       formulae: [`"${options1.join(",")}"`],
+      error: 'Please use the drop down to select a valid value',
+      errorTitle: 'Invalid Selection',
+      showErrorMessage: true,
     });
 
     // @ts-ignore
@@ -197,36 +204,30 @@ const AddStudent = () => {
       type: "list",
       allowBlank: false,
       formulae: [`"${options2.join(",")}"`],
+      error: 'Please use the drop down to select a valid value',
+      errorTitle: 'Invalid Selection',
+      showErrorMessage: true,
     });
 
     ws.dataValidations.add("L2:L99999", {
-      type: "whole",
-      operator: "between",
-      allowBlank: true,
-      showInputMessage: true,
-      formulae: [0, 100],
-      promptTitle: "Whole number",
-      prompt: "The value must between 0 to 100",
+      type: "list",
+      allowBlank: false,
+      formulae: [`"${options3.join(",")}"`],
+      error: 'Please use the drop down to select a valid value',
+      errorTitle: 'Invalid Selection',
+      showErrorMessage: true,
     });
     ws.dataValidations.add("M2:M99999", {
       type: "whole",
       operator: "between",
-      allowBlank: true,
+      allowBlank: false,
       showInputMessage: true,
       formulae: [0, 100],
       promptTitle: "Whole number",
       prompt: "The value must between 0 to 100",
     });
 
-    ws.dataValidations.add("N2:N99999", {
-      type: "whole",
-      operator: "between",
-      allowBlank: true,
-      showInputMessage: true,
-      formulae: [0, 100],
-      promptTitle: "Whole number",
-      prompt: "The value must between 0 to 100",
-    });
+    
     ws.getRow(1).fill = {
       type: "pattern",
       pattern: "solid",
@@ -249,7 +250,7 @@ const AddStudent = () => {
     const excelUrl = URL.createObjectURL(
       new Blob([excelBlob], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      }),
+      })
     );
 
     const link = document.createElement("a");
@@ -274,13 +275,14 @@ const AddStudent = () => {
   }
 
   const handleSubmit = () => {
+    try{
     var service_ids = data.map(function (obj) {
       return obj.service_id;
     });
     if (!service_ids.every(isUnique))
       return setMessage({ ...message, error: "Service ID should be unique" });
     data.forEach((data) => {
-      if (
+      if (!data.service_id||
         !data.name ||
         !data.rank ||
         !data.service_id ||
@@ -290,11 +292,10 @@ const AddStudent = () => {
         !data.m_occ ||
         !data.mo_name ||
         !data.qualification ||
-        data.academic_marks == 0 ||
-        data.pro_extra_co_marks == 0 ||
-        data.kpi == 0
+        !data.course_name ||
+        data.academic_marks < 0 || data.academic_marks>100
       )
-        return setMessage({ ...message, error: "Few fields are empty" });
+        throw "Few fields are empty or wrong"
     });
     axios
       .put(
@@ -307,7 +308,7 @@ const AddStudent = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       )
       .then((data) => {
         setMessage({ message: data?.data?.message, error: null });
@@ -325,6 +326,7 @@ const AddStudent = () => {
             si_name: "",
             si_occ: "",
             qualification: "",
+            course_name: "",
             academic_marks: 0,
             pro_extra_co_marks: 0,
             kpi: 0,
@@ -341,6 +343,10 @@ const AddStudent = () => {
           }, 2000);
         }
       });
+    }catch(err){
+      console.log(err)
+      setMessage({ ...message, error: err });
+    }
   };
   return (
     <div className="counsellor-box">
@@ -480,6 +486,7 @@ const AddStudent = () => {
                       index={index}
                       name="service_id"
                       onChange={(e) => handleChange(e, index)}
+                      isInvalid={!data.service_id}
                     />
                     {!data.service_id && (
                       <Form.Text className="text-danger">
@@ -503,6 +510,7 @@ const AddStudent = () => {
                           value={data.name}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.name}
                         />
                         {!data.name && (
                           <Form.Text className="text-danger">
@@ -523,6 +531,7 @@ const AddStudent = () => {
                           name="gender"
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.gender}
                         >
                           <option
                             selected
@@ -566,8 +575,9 @@ const AddStudent = () => {
                       index={index}
                       name="dob"
                       onChange={(e) => handleChange(e, index)}
+                      isInvalid={!data.dob}
                     />
-                    {!data.service_id && (
+                    {!data.dob && (
                       <Form.Text className="text-danger">
                         *Date of birth can't be empty
                       </Form.Text>
@@ -589,6 +599,7 @@ const AddStudent = () => {
                           value={data.mo_name}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.mo_name}
                         />
                         {!data.mo_name && (
                           <Form.Text className="text-danger">
@@ -612,6 +623,7 @@ const AddStudent = () => {
                           value={data.m_occ}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.m_occ}
                         />
                         {!data.m_occ && (
                           <Form.Text className="text-danger">
@@ -637,6 +649,7 @@ const AddStudent = () => {
                           value={data.fo_name}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.fo_name}
                         />
                         {!data.fo_name && (
                           <Form.Text className="text-danger">
@@ -660,6 +673,8 @@ const AddStudent = () => {
                           value={data.f_occ}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          
+                          isInvalid={!data.f_occ}
                         />
                         {!data.f_occ && (
                           <Form.Text className="text-danger">
@@ -685,6 +700,7 @@ const AddStudent = () => {
                           value={data.si_name}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.si_name}
                         />
                         {!data.si_name && (
                           <Form.Text className="text-danger">
@@ -708,8 +724,9 @@ const AddStudent = () => {
                           value={data.si_occ}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
+                          isInvalid={!data.si_occ}
                         />
-                        {!data.f_occ && (
+                        {!data.si_occ && (
                           <Form.Text className="text-danger">
                             *Sibling's Occupation can't be empty
                           </Form.Text>
@@ -717,44 +734,87 @@ const AddStudent = () => {
                       </FloatingLabel>
                     </Col>
                   </Row>
-                  <FloatingLabel
-                    controlId="floatingInput"
-                    label="Qualification"
-                    className="mb-3"
-                  >
-                    <Form.Select
-                      style={{ background: "transparent", color: "white" }}
-                      value={data.qualification}
-                      name="qualification"
-                      onChange={(e) => handleChange(e, index)}
-                      index={index}
-                    >
-                      <option
-                        selected
-                        disabled
-                        style={{ color: "black" }}
-                        value="Select"
+                  <Row>
+                    <Col>
+                      <FloatingLabel
+                        controlId="floatingInput"
+                        label="Qualification"
+                        className="mb-3"
                       >
-                        Select
-                      </option>
-                      <option style={{ color: "black" }} value="Graduate">
-                        Graduate
-                      </option>
+                        <Form.Select
+                          style={{ background: "transparent", color: "white" }}
+                          value={data.qualification}
+                          name="qualification"
+                          onChange={(e) => handleChange(e, index)}
+                          index={index}
+                        >
+                          <option
+                            selected
+                            disabled
+                            style={{ color: "black" }}
+                            value=""
+                          >
+                            Select
+                          </option>
+                          <option style={{ color: "black" }} value="Graduate">
+                            Graduate
+                          </option>
 
-                      <option style={{ color: "black" }} value="Post Graduate">
-                        Post Graduate
-                      </option>
+                          <option
+                            style={{ color: "black" }}
+                            value="Post Graduate"
+                          >
+                            Post Graduate
+                          </option>
 
-                      <option style={{ color: "black" }} value="PHd">
-                        PHd
-                      </option>
-                    </Form.Select>
-                    {!data.qualification && (
-                      <Form.Text className="text-danger">
-                        *Qualification can't be empty
-                      </Form.Text>
-                    )}
-                  </FloatingLabel>
+                          <option style={{ color: "black" }} value="PHd">
+                            PHd
+                          </option>
+                        </Form.Select>
+                        {!data.qualification && (
+                          <Form.Text className="text-danger">
+                            *Qualification can't be empty
+                          </Form.Text>
+                        )}
+                      </FloatingLabel>
+                    </Col>
+                    <Col>
+                      <FloatingLabel
+                        controlId="floatingInput"
+                        label="Course Name"
+                        className="mb-3"
+                      >
+                        <Form.Select
+                          style={{ background: "transparent", color: "white" }}
+                          value={data.course_name}
+                          name="course_name"
+                          onChange={(e) => handleChange(e, index)}
+                          index={index}
+                        >
+                          <option
+                            selected
+                            disabled
+                            style={{ color: "black" }}
+                            value=""
+                          >
+                            Select
+                          </option>
+                          <option style={{ color: "black" }} value="28 CCCN(O)">
+                            28 CCCN(O)
+                          </option>
+
+                          <option style={{ color: "black" }} value="29 CCCN(O)">
+                            29 CCCN(O)
+                          </option>
+                        </Form.Select>
+                        {!data.gender && (
+                          <Form.Text className="text-danger">
+                            *Course name cant be empty
+                          </Form.Text>
+                        )}
+                      </FloatingLabel>
+                    </Col>
+                  </Row>
                   <Row>
                     <Col>
                       <FloatingLabel
@@ -769,49 +829,20 @@ const AddStudent = () => {
                           placeholder="Academic Marks"
                           name="academic_marks"
                           value={
-                            data.academic_marks >= 0
-                              ? data.academic_marks
-                              : (data.academic_marks = 0)
+                            data.academic_marks 
                           }
+                          isInvalid={data.academic_marks<0 || data.academic_marks>100}
                           onChange={(e) => handleChange(e, index)}
                           index={index}
                         />
-                        {data.academic_marks == 0 && (
+                        {data.academic_marks<0 || data.academic_marks>100 && (
                           <Form.Text className="text-danger">
-                            *Academic marks can't be empty
+                            *Academic marks should be within 0 & 100
                           </Form.Text>
                         )}
                       </FloatingLabel>
                     </Col>
-                    <Col>
-                      <FloatingLabel
-                        controlId="floatingInput"
-                        label="Project & Extra Curricular Marks"
-                        className="mb-3"
-                        style={{ color: "white" }}
-                      >
-                        <Form.Control
-                          type="number"
-                          id="input-field"
-                          placeholder="Project & Extra Curricular Marks"
-                          name="pro_extra_co_marks"
-                          value={
-                            data.pro_extra_co_marks >= 0
-                              ? data.pro_extra_co_marks
-                              : (data.pro_extra_co_marks = 0)
-                          }
-                          onChange={(e) => handleChange(e, index)}
-                          index={index}
-                        />
-                        {data.pro_extra_co_marks == 0 && (
-                          <Form.Text className="text-danger">
-                            *Project & Extra Curricular marks can't be empty
-                          </Form.Text>
-                        )}
-                      </FloatingLabel>
-                    </Col>
-                  </Row>
-                  <Row>
+                 
                     <Col>
                       <div className="kpi-container">KPI : {data.kpi}</div>
                     </Col>

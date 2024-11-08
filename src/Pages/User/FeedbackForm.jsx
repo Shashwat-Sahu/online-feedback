@@ -11,7 +11,11 @@ import * as FileSaver from "file-saver";
 import * as XLSX from "xlsx";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import DownloadIcon from "@mui/icons-material/Download";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import FeedbackSuggestions from "./FeedbackSugesstion.json";
 
 const FeedbackForm = () => {
   const navigate = useNavigate();
@@ -29,6 +33,9 @@ const FeedbackForm = () => {
     counsellor_service_id: "00000",
     counselling_session: [],
   });
+
+  const [clausesEnabled, setClausesEnabled] = useState(Array(3).fill(false));
+
   useEffect(() => {
     axios
       .get("/counselee/getCounselees?", {
@@ -109,8 +116,9 @@ const FeedbackForm = () => {
         e.target.value + " ";
       formData.counselling_session[activeSession][questionIndex].grade =
         e.target.value;
-      formData.counselling_session[activeSession][questionIndex].gradeRequired =
-        true;
+      formData.counselling_session[activeSession][
+        questionIndex
+      ].gradeRequired = true;
     } else {
       formData.counselling_session[activeSession][questionIndex][type] =
         e.target.value;
@@ -143,18 +151,12 @@ const FeedbackForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       )
       .then((data) => {
         setMessage({ message: data?.data?.message, error: null });
-        setTimeout(() => {
-          navigate("/feedbackpageprint", {
-            state: data?.data?.data,
-          });
-        }, 2000);
-
-        // setFormData({
-        // })
+        prevReport.current = data?.data?.data
+        
       })
       .catch((err) => {
         err = err.response.data;
@@ -217,7 +219,7 @@ const FeedbackForm = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        },
+        }
       )
       .then((data) => {
         if (data?.data) {
@@ -315,21 +317,8 @@ const FeedbackForm = () => {
           </select>
           {selectedCounselee?.kpi && (
             <div className="kpi-marks-container">
-              <h4 className="kpi-heading">KPI Remark</h4>
+              <h4 className="kpi-heading">Academic Marks</h4>
               <div className="kpi-marks-value">{selectedCounselee?.kpi}</div>
-              <div className="kpi-remark">
-                Feedback:{" "}
-                <b>
-                  {selectedCounselee?.kpi > 90
-                    ? "Very Good"
-                    : selectedCounselee?.kpi < 90 && selectedCounselee?.kpi > 75
-                      ? "Good"
-                      : selectedCounselee?.kpi < 75 &&
-                          selectedCounselee?.kpi > 50
-                        ? "Satisfactory"
-                        : "Poor"}
-                </b>
-              </div>
             </div>
           )}
         </div>
@@ -424,112 +413,105 @@ const FeedbackForm = () => {
               </div>
             </div>
           </div>
-          <div>
-            <h3>Counselling sessions</h3>
-            <div className="counselling-container">
-              {totalSession >= 0 &&
-                prevReport.current?.counselling_session?.length <
-                  totalSession && (
-                  <Fab
-                    sx={{ mr: 1, mb: 1 }}
-                    variant="extended"
-                    color="secondary"
-                    onClick={() => {
-                      setActiveSession(
-                        activeSession - 1 >= 0 ? activeSession - 1 : 0,
-                      );
-
-                      setTotalSession(totalSession - 1);
-                      formData.counselling_session.pop();
-
-                      setFormData(formData);
-                    }}
-                  >
-                    -
-                  </Fab>
-                )}
-              {[...Array(totalSession)].map((val, ind) => {
-                return (
-                  <Fab
-                    sx={{ mr: 1, mb: 1 }}
-                    variant="extended"
-                    color={activeSession == ind ? "primary" : "information"}
-                    onClick={() => {
-                      setActiveSession(ind);
-                    }}
-                  >
-                    {ind + 1}
-                  </Fab>
-                );
-              })}
-              <Fab
-                sx={{ mr: 1, mb: 1 }}
-                variant="extended"
-                color="secondary"
-                onClick={() => {
-                  if (totalSession == 0) {
-                    setActiveSession(0);
-                  } else setActiveSession(totalSession);
-                  setTotalSession(totalSession + 1);
-                  formData.counselling_session.push([
-                    {
-                      question: "",
-                      other: false,
-                      answer: "",
-                    },
-                  ]);
-                  setFormData(formData);
-                }}
-              >
-                +
-              </Fab>
+          {selectedCounselee?.service_id&&<>
+            <div class="row">
+              {selectedCounselee?.kpi && (
+                <div className="kpi-marks-container">
+                  <div className="kpi-remark">
+                    {/* Feedback:{" "} */}
+                    <b>
+                      {FeedbackSuggestions.filter(
+                        (item) =>
+                          item.score[0] <= selectedCounselee?.kpi &&
+                          item.score[1] >= selectedCounselee?.kpi
+                      ).map((item) => {
+                        return (
+                          <>
+                            <h6 className="kpi-heading">
+                              Feedback: {item.feedback}
+                            </h6>
+                            <h6 className="kpi-heading">
+                              Suggestions: {item.suggestion}
+                            </h6>
+                          </>
+                        );
+                      })}
+                    </b>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-          {formData?.counselling_session[activeSession]?.map((quesAns, i) => {
-            return (
-              <>
-                <Row>
-                  <Col md={8}>
-                    <div class="input-group mb-2">
-                      <select
-                        class="form-select"
-                        aria-label="Select Question"
-                        name="qna"
-                        disabled={
-                          prevReport.current?.counselling_session?.length >=
-                            activeSession &&
-                          prevReport.current?.counselling_session[activeSession]
-                            ? true
-                            : false
-                        }
-                        onChange={(e) => {
-                          handleChange(e, i, "question");
-                        }}
-                        value={quesAns?.other ? "Other" : quesAns?.question}
-                      >
-                        <option selected disabled value="">
-                          Select Question
-                        </option>
-                        {questions?.map((elem, index) => {
-                          return (
-                            <option value={elem.question}>
-                              {elem.question}
-                            </option>
-                          );
-                        })}
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div class="input-group mb-2">
-                      {questions?.find(
-                        (elem) => elem.question == quesAns.question,
-                      )?.gradeRequired && (
+            <div>
+              <h3>Counselling sessions</h3>
+              <div className="counselling-container">
+                {totalSession >= 0 &&
+                  prevReport.current?.counselling_session?.length <
+                    totalSession && (
+                    <Fab
+                      sx={{ mr: 1, mb: 1 }}
+                      variant="extended"
+                      color="secondary"
+                      onClick={() => {
+                        setActiveSession(
+                          activeSession - 1 >= 0 ? activeSession - 1 : 0
+                        );
+
+                        setTotalSession(totalSession - 1);
+                        formData.counselling_session.pop();
+
+                        setFormData(formData);
+                      }}
+                    >
+                      -
+                    </Fab>
+                  )}
+                {[...Array(totalSession)].map((val, ind) => {
+                  return (
+                    <Fab
+                      sx={{ mr: 1, mb: 1 }}
+                      variant="extended"
+                      color={activeSession == ind ? "primary" : "information"}
+                      onClick={() => {
+                        setActiveSession(ind);
+                      }}
+                    >
+                      {ind + 1}
+                    </Fab>
+                  );
+                })}
+                <Fab
+                  sx={{ mr: 1, mb: 1 }}
+                  variant="extended"
+                  color="secondary"
+                  onClick={() => {
+                    if (totalSession == 0) {
+                      setActiveSession(0);
+                    } else setActiveSession(totalSession);
+                    setTotalSession(totalSession + 1);
+                    formData.counselling_session.push([
+                      {
+                        question: "",
+                        other: false,
+                        answer: "",
+                      },
+                    ]);
+                    setFormData(formData);
+                  }}
+                >
+                  +
+                </Fab>
+              </div>
+            </div>
+            {formData?.counselling_session[activeSession]?.map((quesAns, i) => {
+              return (
+                <>
+                  <Row>
+                    <Col md={8}>
+                      <div class="input-group mb-2">
                         <select
                           class="form-select"
-                          aria-label="Select Grade"
-                          name="grade"
+                          aria-label="Select Question"
+                          name="qna"
                           disabled={
                             prevReport.current?.counselling_session?.length >=
                               activeSession &&
@@ -539,222 +521,337 @@ const FeedbackForm = () => {
                               ? true
                               : false
                           }
-                          value={quesAns?.grade}
                           onChange={(e) => {
-                            handleChange(e, i, "grade");
+                            handleChange(e, i, "question");
                           }}
+                          value={quesAns?.other ? "Other" : quesAns?.question}
                         >
-                          <option selected value="">
-                            Select Grade
+                          <option selected disabled value="">
+                            Select Question
                           </option>
-                          {questions
-                            ?.find((elem) => elem.question == quesAns.question)
-                            ?.grade.map((elem, ind) => {
-                              return <option value={elem}>{ind + 1}</option>;
-                            })}
+                          {questions?.map((elem, index) => {
+                            return (
+                              <option value={elem.question}>
+                                {elem.question}
+                              </option>
+                            );
+                          })}
+                          <option value="Other">Other</option>
                         </select>
-                      )}
+                      </div>
+                    </Col>
+                    <Col md={4}>
+                      <div class="input-group mb-2">
+                        {questions?.find(
+                          (elem) => elem.question == quesAns.question
+                        )?.gradeRequired && (
+                          <select
+                            class="form-select"
+                            aria-label="Select Grade"
+                            name="grade"
+                            disabled={
+                              prevReport.current?.counselling_session?.length >=
+                                activeSession &&
+                              prevReport.current?.counselling_session[
+                                activeSession
+                              ]
+                                ? true
+                                : false
+                            }
+                            value={quesAns?.grade}
+                            onChange={(e) => {
+                              handleChange(e, i, "grade");
+                            }}
+                          >
+                            <option selected value="">
+                              Select Grade
+                            </option>
+                            {questions
+                              ?.find(
+                                (elem) => elem.question == quesAns.question
+                              )
+                              ?.grade.map((elem, ind) => {
+                                return <option value={elem}>{ind + 1}</option>;
+                              })}
+                          </select>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+
+                  {quesAns?.other && (
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Question</span>
+                      <textarea
+                        class="form-control"
+                        name="question"
+                        value={quesAns?.question}
+                        disabled={
+                          prevReport.current?.counselling_session?.length >=
+                            activeSession &&
+                          prevReport.current?.counselling_session[activeSession]
+                            ? true
+                            : false
+                        }
+                        aria-label="With textarea"
+                        onChange={(e) => {
+                          handleChangeOther(e, i);
+                        }}
+                        style={{ borderColor: "#adb5bd", color: "black" }}
+                      ></textarea>
                     </div>
-                  </Col>
-                </Row>
-
-                {quesAns?.other && (
-                  <div class="input-group mb-2">
-                    <span class="input-group-text">Question</span>
-                    <textarea
-                      class="form-control"
-                      name="question"
-                      value={quesAns?.question}
-                      disabled={
-                        prevReport.current?.counselling_session?.length >=
-                          activeSession &&
-                        prevReport.current?.counselling_session[activeSession]
-                          ? true
-                          : false
-                      }
-                      aria-label="With textarea"
-                      onChange={(e) => {
-                        handleChangeOther(e, i);
-                      }}
-                      style={{ borderColor: "#adb5bd", color: "black" }}
-                    ></textarea>
-                  </div>
-                )}
-                {activeSession >= 0 && (
-                  <div class="input-group mb-2">
-                    <span class="input-group-text">Answer</span>
-                    <textarea
-                      class="form-control"
-                      name="Academics"
-                      value={quesAns?.answer}
-                      disabled={
-                        prevReport.current?.counselling_session?.length >=
-                          activeSession &&
-                        prevReport.current?.counselling_session[activeSession]
-                          ? true
-                          : false
-                      }
-                      aria-label="With textarea"
-                      onChange={(e) => {
-                        handleChange(e, i, "answer");
-                      }}
-                      style={{ borderColor: "#adb5bd", color: "black" }}
-                    ></textarea>
-                  </div>
-                )}
-              </>
-            );
-          })}
-
-          {activeSession >= 0 &&
-            !(
-              prevReport.current?.counselling_session?.length >=
-                activeSession &&
-              prevReport.current?.counselling_session[activeSession]
-            ) && (
-              <>
-                <Fab
-                  sx={{ mr: 1, mb: 1 }}
-                  variant="extended"
-                  color="secondary"
-                  onClick={() => {
-                    var counsellingsession = formData.counselling_session;
-                    counsellingsession[activeSession] = [
-                      ...counsellingsession[activeSession],
-                      {
-                        question: "",
-                        other: false,
-                        answer: "",
-                      },
-                    ];
-                    setFormData((prevData) => {
-                      return {
-                        ...prevData,
-                        counselling_session: counsellingsession,
-                      };
-                    });
-                  }}
-                >
-                  Add Questions +
-                </Fab>
-                <Fab
-                  sx={{ mr: 1, mb: 1 }}
-                  variant="extended"
-                  color="secondary"
-                  onClick={() => {
-                    var counsellingsession = formData.counselling_session;
-                    counsellingsession[activeSession].pop();
-                    if (counsellingsession[activeSession].length == 0) {
-                      counsellingsession.pop();
-                      setActiveSession(
-                        activeSession - 1 >= 0 ? activeSession - 1 : 0,
-                      );
-
-                      setTotalSession(totalSession - 1);
-                    }
-                    setFormData((prevData) => {
-                      return {
-                        ...prevData,
-                        counselling_session: counsellingsession,
-                      };
-                    });
-                  }}
-                >
-                  Delete Question
-                </Fab>
-              </>
-            )}
-
-          <div className="text-center mt-4 mb-4">
-            <Fab
-              sx={{ mr: 1, mb: 1 }}
-              variant="extended"
-              onClick={Reset}
-              endIcon={<RestartAltIcon />}
-              color="error"
-            >
-              Reset
-              <RestartAltIcon sx={{ ml: 1 }} />
-            </Fab>
-            <Fab
-              sx={{ mr: 1, mb: 1 }}
-              variant="extended"
-              onClick={GetPrevReport}
-              endIcon={<LogoutIcon />}
-              color="primary"
-            >
-              Last Feedback reports
-              <LogoutIcon sx={{ ml: 1 }} />
-            </Fab>
-            <Fab
-              sx={{ mb: 1 }}
-              variant="extended"
-              onClick={SubmitReport}
-              color="success"
-            >
-              Generate Report
-              <KeyboardArrowRightIcon sx={{ ml: 1 }} />
-            </Fab>
-          </div>
-          <h2>Previous sessions</h2>
-          <div className="table-responsive">
-            {prevReport.current?.counselling_session?.length > 0 && (
-              <table class="table table-hover table-bordered mt-4 table-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">Session No.</th>
-                    <th scope="col">Created At</th>
-                    <th scope="col">Questions</th>
-                    <th scope="col">Answer</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {prevReport.current?.counselling_session?.map((session, i) =>
-                    session.map((question, index) => {
-                      return (
-                        <tr>
-                          {index == 0 && (
-                            <td rowSpan={session?.length}>{i + 1}</td>
-                          )}
-
-                          {index == 0 && (
-                            <td rowSpan={session?.length}>
-                              {new Date(
-                                prevReport.current?.counselling_session_timestamp[
-                                  i
-                                ],
-                              ).toLocaleDateString("en-IN")}
-                            </td>
-                          )}
-                          {/* <td>{new Date(report?.created_at).toLocaleString()}</td> */}
-                          <td>{question?.question}</td>
-                          <td>{question?.answer}</td>
-                          {index == 0 && (
-                            <td rowSpan={session?.length}>
-                              <DownloadIcon
-                                onClick={() =>
-                                  ExportCSV({
-                                    session: i + 1,
-                                    createdAt: new Date(
-                                      prevReport.current?.counselling_session_timestamp[
-                                        i
-                                      ],
-                                    ).toLocaleDateString("en-IN"),
-                                    QnA: session,
-                                  })
-                                }
-                              />
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    }),
                   )}
-                </tbody>
-              </table>
+                  {activeSession >= 0 && (
+                    <div class="input-group mb-2">
+                      <span class="input-group-text">Answer</span>
+                      <textarea
+                        class="form-control"
+                        name="Academics"
+                        value={quesAns?.answer}
+                        disabled={
+                          prevReport.current?.counselling_session?.length >=
+                            activeSession &&
+                          prevReport.current?.counselling_session[activeSession]
+                            ? true
+                            : false
+                        }
+                        aria-label="With textarea"
+                        onChange={(e) => {
+                          handleChange(e, i, "answer");
+                        }}
+                        style={{ borderColor: "#adb5bd", color: "black" }}
+                      ></textarea>
+                    </div>
+                  )}
+                </>
+              );
+            })}
+
+            {activeSession >= 0 &&
+              !(
+                prevReport.current?.counselling_session?.length >=
+                  activeSession &&
+                prevReport.current?.counselling_session[activeSession]
+              ) && (
+                <>
+                  <Fab
+                    sx={{ mr: 1, mb: 1 }}
+                    variant="extended"
+                    color="secondary"
+                    onClick={() => {
+                      var counsellingsession = formData.counselling_session;
+                      counsellingsession[activeSession] = [
+                        ...counsellingsession[activeSession],
+                        {
+                          question: "",
+                          other: false,
+                          answer: "",
+                        },
+                      ];
+                      setFormData((prevData) => {
+                        return {
+                          ...prevData,
+                          counselling_session: counsellingsession,
+                        };
+                      });
+                    }}
+                  >
+                    Add Questions +
+                  </Fab>
+                  <Fab
+                    sx={{ mr: 1, mb: 1 }}
+                    variant="extended"
+                    color="secondary"
+                    onClick={() => {
+                      var counsellingsession = formData.counselling_session;
+                      counsellingsession[activeSession].pop();
+                      if (counsellingsession[activeSession].length == 0) {
+                        counsellingsession.pop();
+                        setActiveSession(
+                          activeSession - 1 >= 0 ? activeSession - 1 : 0
+                        );
+
+                        setTotalSession(totalSession - 1);
+                      }
+                      setFormData((prevData) => {
+                        return {
+                          ...prevData,
+                          counselling_session: counsellingsession,
+                        };
+                      });
+                    }}
+                  >
+                    Delete Question
+                  </Fab>
+                </>
+              )}
+            {prevReport.current?.counselling_session?.length <=
+              activeSession && (
+              <FormGroup>
+                <FormControlLabel
+                  required
+                  control={
+                    <Checkbox
+                      value={clausesEnabled[0]}
+                      onChange={(e) => {
+                        let clauses = [...clausesEnabled];
+                        clauses[0] = e.target.checked;
+                        setClausesEnabled(clauses);
+                      }}
+                    />
+                  }
+                  label="The counselee has been made aware of the drug policy"
+                />
+                <FormControlLabel
+                  required
+                  control={
+                    <Checkbox
+                      value={clausesEnabled[1]}
+                      onChange={(e) => {
+                        let clauses = [...clausesEnabled];
+                        clauses[1] = e.target.checked;
+                        setClausesEnabled(clauses);
+                      }}
+                    />
+                  }
+                  label="The counselee has been made aware of the IT policies"
+                />
+                <FormControlLabel
+                  required
+                  control={
+                    <Checkbox
+                      value={clausesEnabled[2]}
+                      onChange={(e) => {
+                        let clauses = [...clausesEnabled];
+                        clauses[2] = e.target.checked;
+                        setClausesEnabled(clauses);
+                      }}
+                    />
+                  }
+                  label="The counselee has been made aware regarding discipline and conduct"
+                />
+              </FormGroup>
             )}
-          </div>
+            <div className="text-center mt-4 mb-4">
+              <Fab
+                sx={{ mr: 1, mb: 1 }}
+                variant="extended"
+                onClick={Reset}
+                endIcon={<RestartAltIcon />}
+                color="error"
+              >
+                Reset
+                <RestartAltIcon sx={{ ml: 1 }} />
+              </Fab>
+              <Fab
+                sx={{ mr: 1, mb: 1 }}
+                variant="extended"
+                onClick={GetPrevReport}
+                endIcon={<LogoutIcon />}
+                color="primary"
+              >
+                Last Feedback reports
+                <LogoutIcon sx={{ ml: 1 }} />
+              </Fab>
+              <Fab
+                sx={{ mr: 1, mb: 1 }}
+                variant="extended"
+                onClick={()=>navigate("/feedbackpageprint", {
+                  state: prevReport.current,
+                })}
+                endIcon={<LogoutIcon />}
+                color="primary"
+              >
+                PDF Report Generate
+                <LogoutIcon sx={{ ml: 1 }} />
+              </Fab>
+              <Fab
+                sx={{ mb: 1 }}
+                variant="extended"
+                onClick={SubmitReport}
+                color="success"
+                disabled={
+                  prevReport.current?.counselling_session?.length <=
+                    activeSession &&
+                  clausesEnabled.every((item) => item == true)
+                    ? false
+                    : true
+                }
+              >
+                Submit Report
+                <KeyboardArrowRightIcon sx={{ ml: 1 }} />
+              </Fab>
+              {clausesEnabled.every((item) => item == true)}
+            </div>
+            <h2>Previous sessions</h2>
+            <div className="table-responsive">
+              {prevReport.current?.counselling_session?.length > 0 && (
+                <table class="table table-hover table-bordered mt-4 table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col">Session No.</th>
+                      <th scope="col">Created At</th>
+                      <th scope="col">Questions</th>
+                      <th scope="col">Answer</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {prevReport.current?.counselling_session?.map(
+                      (session, i) =>
+                        session.map((question, index) => {
+                          return (
+                            <tr>
+                              {index == 0 && (
+                                <td rowSpan={session?.length}>{i + 1}</td>
+                              )}
+
+                              {index == 0 && (
+                                <td rowSpan={session?.length}>
+                                  {new Date(
+                                    prevReport.current?.counselling_session_timestamp[
+                                      i
+                                    ]
+                                  ).toLocaleDateString("en-IN")}
+                                </td>
+                              )}
+                              {/* <td>{new Date(report?.created_at).toLocaleString()}</td> */}
+                              <td>{question?.question}</td>
+                              <td>{question?.answer}</td>
+                              {index == 0 && (
+                                <td rowSpan={session?.length}>
+                                  <DownloadIcon
+                                    onClick={() =>
+                                      // ExportCSV({
+                                      //   session: i + 1,
+                                      //   createdAt: new Date(
+                                      //     prevReport.current?.counselling_session_timestamp[
+                                      //       i
+                                      //     ]
+                                      //   ).toLocaleDateString("en-IN"),
+                                      //   QnA: session,
+                                      // })
+                                      navigate("/feedbackpageprint", {
+                                        state: {service_id:selectedCounselee?.service_id,
+                                          counselling_session:[session],
+                                          counselling_session_timestamp:[prevReport.current?.counselling_session_timestamp[i]]
+                                        },
+
+                                      })
+                                    }
+                                  />
+                                </td>
+                              )}
+                            </tr>
+                          );
+                        })
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            
+          </>}
         </div>
       </div>
     </div>

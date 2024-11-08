@@ -47,6 +47,9 @@ const CounseleeSchema = new mongoose.Schema({
   kpi: {
     type: Number,
   },
+  course_name:{
+    type:String,
+  }
 });
 
 mongoose.model("Counselee", CounseleeSchema);

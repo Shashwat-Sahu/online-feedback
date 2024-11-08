@@ -43,6 +43,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
       academic_marks,
       pro_extra_co_marks,
       kpi,
+      course_name
     } = element;
     return Counselee.findOneAndUpdate(
       { service_id },
@@ -63,6 +64,7 @@ async function addCounselee(counselee_list, counsellor_service_id) {
           academic_marks,
           pro_extra_co_marks,
           kpi,
+          course_name
         },
       },
       {

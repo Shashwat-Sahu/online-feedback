@@ -65,7 +65,7 @@ const AdminDashboard = () => {
                 navigate("/admin/searchcounselee");
               }}
               size="large"
-            >Search Counselee
+            >Feedback report
             </Button>
           </Col>
           <Col className="text-end">

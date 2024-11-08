@@ -52,7 +52,7 @@ router.put("/updateQuestions", verifyToken, (req, res) => {
     {
       new: true,
       upsert: true,
-    },
+    }
   ).then((data) => {
     if (!data)
       return res.status(404).json({ error: "Not Found " + service_id });
@@ -72,11 +72,41 @@ router.delete("/deleteQuestion", verifyToken, (req, res) => {
   });
 });
 
+router.post("/getCounselee", verifyToken, (req, res) => {
+  const service_id = req.body.service_id;
+  const course_name = req.body.course_name;
+  const filters_applied = req.body.filters_applied;
+  console.log(service_id,course_name,filters_applied)
+  if (filters_applied) {
+    Counselee.find({ course_name: { $in: course_name } }).then((counselees) => {
+      const serviceIds = counselees.map((item) => item.service_id);
+      serviceIds.push(service_id)
+      FeedbackReport.find({ service_id: { $in: serviceIds } }).then(
+        (reports) => {
+          const finalReports = reports.map((report) => {
+            const course_name = counselees.find(
+              (item) => item.service_id == report.service_id
+            )?.course_name;
+            return { report, course_name };
+          });
+          return res.status(200).json({ data: finalReports });
+        }
+      );
+    });
+  } else
+    FeedbackReport.find({ service_id }).then((reports) => {
+      const serviceIds = reports.map((item) => item.service_id);
 
-router.get("/getCounselee",verifyToken, (req,res)=>{
-  const service_id = req.query.service_id;
-  FeedbackReport.find({ service_id}).then(reports=>{
-    res.status(200).json({ data:(reports)})
-  })
-})
+      Counselee.find({ service_id: { $in: serviceIds } }).then((counselees) => {
+        const finalReports = reports.map((report) => {
+          const course_name = counselees.find(
+            (item) => item.service_id == report.service_id
+          )?.course_name;
+          return { report, course_name };
+        });
+
+        res.status(200).json({ data: finalReports });
+      });
+    });
+});
 module.exports = router;
