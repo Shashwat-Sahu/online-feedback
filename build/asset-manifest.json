@@ -1,24 +1,25 @@
 {
   "files": {
     "main.css": "/static/css/main.6aa3e918.css",
-    "main.js": "/static/js/main.861d90cf.js",
+    "main.js": "/static/js/main.bca1c12f.js",
     "static/js/498.41bbf620.chunk.js": "/static/js/498.41bbf620.chunk.js",
     "static/js/703.84516d6b.chunk.js": "/static/js/703.84516d6b.chunk.js",
-    "static/js/379.5003003e.chunk.js": "/static/js/379.5003003e.chunk.js",
+    "static/js/465.68a37427.chunk.js": "/static/js/465.68a37427.chunk.js",
     "static/js/787.23c2b3b9.chunk.js": "/static/js/787.23c2b3b9.chunk.js",
     "static/media/wp4004569-indian-air-force-wallpapers.jpg": "/static/media/wp4004569-indian-air-force-wallpapers.e35f0bdb4a6469999b99.jpg",
+    "static/media/logo.png": "/static/media/logo.2ed2a2f87e2bea85b009.png",
     "static/media/training.png": "/static/media/training.3d9e2ba31fbf11aed815.png",
     "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/index.html",
     "main.6aa3e918.css.map": "/static/css/main.6aa3e918.css.map",
-    "main.861d90cf.js.map": "/static/js/main.861d90cf.js.map",
+    "main.bca1c12f.js.map": "/static/js/main.bca1c12f.js.map",
     "498.41bbf620.chunk.js.map": "/static/js/498.41bbf620.chunk.js.map",
     "703.84516d6b.chunk.js.map": "/static/js/703.84516d6b.chunk.js.map",
-    "379.5003003e.chunk.js.map": "/static/js/379.5003003e.chunk.js.map",
+    "465.68a37427.chunk.js.map": "/static/js/465.68a37427.chunk.js.map",
     "787.23c2b3b9.chunk.js.map": "/static/js/787.23c2b3b9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6aa3e918.css",
-    "static/js/main.861d90cf.js"
+    "static/js/main.bca1c12f.js"
   ]
 }

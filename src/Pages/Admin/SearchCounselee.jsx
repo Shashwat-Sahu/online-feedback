@@ -69,7 +69,6 @@ const SearchCounselee = () => {
     setFilters({...filters,"course_name":course_name})
     let filterApplied = !course_name.every(item=>item=='')
     
-    console.log(value,course_name,filterApplied)
     setFiltersApplied(filterApplied)
     
   }
@@ -87,7 +86,6 @@ const SearchCounselee = () => {
         },
       },)
       .then((data) => {
-        console.log(data)
         setSubmitting(false);
         setReports(data?.data?.data);
         setMessage({ message: data?.data?.message, error: null });
