@@ -11,7 +11,6 @@ const verifyToken = require("../Middleware/VerifyTokenHof");
 const sha256 = require("sha256");
 
 router.get("/getReports", verifyToken, (req, res) => {
-  console.log(req.hof);
   FeedbackReport.find({ report_hof: req.hof.service_id })
     .sort({ created_at: -1 })
     .then((data) => {
@@ -30,7 +29,6 @@ router.put("/updateReport", verifyToken, (req, res) => {
   const { report_id, hof_comments, report_ci } = req.body;
   FeedbackReport.find({ _id: report_id, ci_comments: "" }).then((data) => {
     if (data.length > 0) {
-      console.log("exists", data);
       FeedbackReport.findByIdAndUpdate(
         report_id,
         {
@@ -44,7 +42,6 @@ router.put("/updateReport", verifyToken, (req, res) => {
         },
       )
         .then((data) => {
-          console.log(data);
           res.json({ message: "Updated Successfully", report: data });
         })
         .catch((err) => {
@@ -70,7 +67,6 @@ router.get("/getAllCi", verifyToken, (req, res) => {
   CI.find()
     .select("-password")
     .then((data) => {
-      console.log(data);
       res.json({ CI: data });
     });
 });

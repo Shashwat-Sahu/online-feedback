@@ -11,10 +11,12 @@ router.post("/feedbackreport", VerifyTokenUser, (req, res) => {
 
     counsellor_service_id,
     counselling_session,
+    counselling_session_timestamp
   } = req.body;
 
   if (!service_id)
     return res.status(422).json({ error: "Service ID is empty" });
+
 
   FeedbackReport.findOneAndUpdate(
     { service_id, counsellor_service_id },
@@ -22,9 +24,7 @@ router.post("/feedbackreport", VerifyTokenUser, (req, res) => {
       counsellor_service_id,
       service_id,
       counselling_session,
-      $push: {
-        counselling_session_timestamp: new Date(),
-      },
+      counselling_session_timestamp,
     },
     {
       new: true,

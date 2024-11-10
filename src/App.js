@@ -56,10 +56,7 @@ const Routing = (props) => {
 
 function App(props) {
   const { token, userType } = props;
-  console.log(props);
-  // useEffect(() => {
-  //   dispatch(setToken(localStorage.getItem("token")))
-  // }, [])
+  
 
   return (
     <BrowserRouter>

@@ -7,14 +7,12 @@ const jwt = require("jsonwebtoken");
 const sha256 = require("sha256");
 
 router.post("/login", (req, res) => {
-  console.log(req.body);
   const { service_id, password, type } = req.body;
 
   if (type == "admin") {
     const cryptedPassword = sha256(password);
     AdminAuth.find({ service_id: service_id, password: cryptedPassword }).then(
       (data) => {
-        console.log(cryptedPassword, data);
         if (data.length > 0) {
           const token = jwt.sign(
             { service_id, time: new Date().toDateString() },
@@ -32,10 +30,8 @@ router.post("/login", (req, res) => {
     );
   } else if (type == "counsellor") {
     const cryptedPassword = sha256(password);
-    console.log("user", service_id, password, cryptedPassword);
     Counsellor.find({ service_id: service_id, password: cryptedPassword }).then(
       (data) => {
-        console.log(cryptedPassword, data);
         if (data.length > 0) {
           const token = jwt.sign(
             { service_id, time: new Date().toDateString() },

@@ -72,7 +72,6 @@ async function addCounselee(counselee_list, counsellor_service_id) {
         new: true,
       },
     ).then((data) => {
-      console.log(data);
       if (data) {
         return Counsellor.findOneAndUpdate(
           {
@@ -92,12 +91,10 @@ async function addCounselee(counselee_list, counsellor_service_id) {
   });
 
   var result = await Promise.all(added);
-  console.log(result);
   return result;
 }
 
 router.put("/update", verifyToken, (req, res) => {
-  console.log(req.body);
   const { service_id, name, rank } = req.body;
   Counsellor.findOneAndUpdate(
     { service_id },
@@ -115,7 +112,6 @@ router.put("/update", verifyToken, (req, res) => {
 });
 
 router.delete("/delete", verifyToken, (req, res) => {
-  console.log(req.query);
   const service_id = req.query.service_id;
   Counsellor.findOneAndDelete({ service_id }).then((data) => {
     if (!data)
@@ -147,7 +143,6 @@ router.put("/addCounseleeList", verifyToken, async (req, res) => {
     );
   });
   Promise.all(promises).then(async (result) => {
-    console.log("found counselleee", result);
     var alreadyExist = result.filter((ele) => ele != undefined);
     if (alreadyExist.length > 0)
       return res
