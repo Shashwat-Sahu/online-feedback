@@ -46,6 +46,7 @@ const FeedbackForm = React.memo(() => {
         },
       })
       .then((data) => {
+        console.log(data);
         setCounselees(data.data.data);
         setCounsellor(data.data.counsellor);
       })
@@ -165,9 +166,10 @@ const FeedbackForm = React.memo(() => {
         }
       )
       .then((data) => {
+        console.log(data);
         setMessage({ message: data?.data?.message, error: null });
         prevReport.current = { ...data?.data?.data };
-        setPrevReport({...data?.data?.data })
+        setPrevReport({ ...data?.data?.data });
       })
       .catch((err) => {
         err = err.response.data;
@@ -798,6 +800,7 @@ const FeedbackForm = React.memo(() => {
                       data={{
                         ...JSON.parse(JSON.stringify(prevReportsState)),
                         name: selectedCounselee.name,
+                        rank: selectedCounselee.rank,
                         counsellor,
                         ...FeedbackSuggestions.filter(
                           (item) =>
@@ -899,12 +902,16 @@ const FeedbackForm = React.memo(() => {
                                     <BlobProvider
                                       document={
                                         <Pdf
-                                        session_index={i+1}
+                                          session_index={i + 1}
                                           data={{
-                                            
+                                            rank: selectedCounselee.rank,
                                             service_id:
                                               selectedCounselee?.service_id,
-                                            counselling_session: [JSON.parse(JSON.stringify(session))],
+                                            counselling_session: [
+                                              JSON.parse(
+                                                JSON.stringify(session)
+                                              ),
+                                            ],
                                             counselling_session_timestamp: [
                                               prevReportsState
                                                 ?.counselling_session_timestamp[

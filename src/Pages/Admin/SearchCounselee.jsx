@@ -21,6 +21,9 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { BlobProvider } from "@react-pdf/renderer";
+import Pdf from "../User/Pdf";
+import FeedbackSuggestions from "../User/FeedbackSugesstion.json";
 
 const style = {
   position: "absolute",
@@ -86,6 +89,7 @@ const SearchCounselee = () => {
         },
       },)
       .then((data) => {
+        console.log(data)
         setSubmitting(false);
         setReports(data?.data?.data);
         setMessage({ message: data?.data?.message, error: null });
@@ -209,6 +213,7 @@ const SearchCounselee = () => {
               <Spinner animation="border" variant="light" className="m-auto" />
             </div>
           )}
+          {console.log(reports)}
           {reports.length > 0 && (
             <table class="table table-hover table-bordered mt-4 table-sm">
               <thead>
@@ -222,17 +227,72 @@ const SearchCounselee = () => {
                 {reports.map((report) => {
                   return (
                     <tr>
-                      <td>{report.report.service_id}</td>
+                      <td>{report.counselee_details.service_id}</td>
                       <td>{report.course_name}</td>
                       <td>
                         Download Report{" "}
-                        <DownloadIcon
-                          onClick={() => {
-                            navigate("/feedbackpageprint", {
-                              state: report.report,
-                            });
-                          }}
-                        />
+                        <BlobProvider
+                                      document={
+                                        <Pdf
+                                          data={{
+                                            rank: report.counselee_details.rank,
+                                            service_id:
+                                            report.counselee_details?.service_id,
+                                            counselling_session: report.report.counselling_session,
+                                            counselling_session_timestamp: report.report.counselling_session,
+                                            name: report.counselee_details.name,
+                                            counsellor:report.counsellor_details,
+                                            ...FeedbackSuggestions.filter(
+                                              (item) =>
+                                                item.score[0] <=
+                                              report.counselee_details?.kpi &&
+                                                item.score[1] >=
+                                                report.counselee_details?.kpi
+                                            ).map((item) => item)[0],
+                                          }}
+                                        />
+                                      }
+                                    >
+                                      {({ blob, url, loading, error }) => (
+                                        <DownloadIcon
+                                          onClick={() => {
+                                            if (blob) {
+                                              // Create a URL for the blob and open it in a new tab
+                                              const blobUrl =
+                                                URL.createObjectURL(blob);
+                                              const newWindow = window.open(
+                                                blobUrl,
+                                                "_blank"
+                                              );
+
+                                              if (newWindow) {
+                                                newWindow.focus(); // Focus the new tab/window
+                                              } else {
+                                                console.error(
+                                                  "Failed to open new window"
+                                                );
+                                              }
+
+                                              // Optional: revoke the object URL after opening
+                                              setTimeout(
+                                                () =>
+                                                  URL.revokeObjectURL(blobUrl),
+                                                1000
+                                              );
+                                            } else if (loading) {
+                                              console.log(
+                                                "Loading document..."
+                                              );
+                                            } else if (error) {
+                                              console.error(
+                                                "Error generating document:",
+                                                error
+                                              );
+                                            }
+                                          }}
+                                        />
+                                      )}
+                                    </BlobProvider>
                       </td>
                     </tr>
                   );

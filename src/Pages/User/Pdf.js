@@ -75,6 +75,15 @@ const styles = StyleSheet.create({
     bottom: 40,
     textAlign: "start",
   },
+  counselee: {
+    position: "absolute",
+    display: "flex",
+    flexDirection: "column",
+    fontSize: 15,
+    bottom: 40,
+    left:35,
+    textAlign: "left",
+  },
   pageNumber: {
     position: "absolute",
     fontSize: 12,
@@ -107,7 +116,7 @@ function Pdf({data,session_index}) {
           <Page size="A4" style={styles.body}>
             <Image src={imgLogo} style={styles.watermark} />
             <Text style={styles.header} fixed>
-              INDIAN AIR FORCE
+              16 TETRA SCHOOL
             </Text>
             <Text style={styles.position}>Date:{new Date(data.counselling_session_timestamp[ind]).toLocaleDateString()}</Text>
             <Text style={styles.author}>
@@ -134,7 +143,13 @@ function Pdf({data,session_index}) {
               );
             })}
 
-            <Text style={styles.counsellee}>Counsellee Signature:</Text>
+            {/* <Text style={styles.counsellee}>Counsellee Signature:</Text> */}
+            <View style={styles.counselee}>
+              <Text>Counselee details:</Text>
+              <Text>Name:{data?.name}</Text>
+              <Text>Rank:{data?.rank}</Text>
+              <Text>Service no.:{data?.service_id}</Text>
+            </View>
             <View style={styles.counsellor}>
               <Text>Counsellor details:</Text>
               <Text>Name:{data.counsellor?.name}</Text>

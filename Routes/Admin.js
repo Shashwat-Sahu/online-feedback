@@ -83,28 +83,29 @@ router.post("/getCounselee", verifyToken, (req, res) => {
       serviceIds.push(service_id)
       FeedbackReport.find({ service_id: { $in: serviceIds } }).then(
         (reports) => {
-          const finalReports = reports.map((report) => {
-            const course_name = counselees.find(
+          const finalReports = reports.map(async (report) => {
+            const counselee_details = counselees.find(
               (item) => item.service_id == report.service_id
-            )?.course_name;
-            return { report, course_name };
+            );
+            const counsellor_details = await Counsellor.find({service_id:report.counsellor_service_id}).select("name rank service_id")
+            return { report, course_name:counselee_details.course_name, counselee_details, counsellor_details };
           });
           return res.status(200).json({ data: finalReports });
         }
       );
     });
   } else
-    FeedbackReport.find({ service_id }).then((reports) => {
+    FeedbackReport.find({ service_id }).then(async (reports) => {
       const serviceIds = reports.map((item) => item.service_id);
-
-      Counselee.find({ service_id: { $in: serviceIds } }).then((counselees) => {
-        const finalReports = reports.map((report) => {
-          const course_name = counselees.find(
+      Counselee.find({ service_id: { $in: serviceIds } }).then(async (counselees) => {
+        const finalReports =  await Promise.all( reports.map(async (report) => {
+          const counselee_details = counselees.find(
             (item) => item.service_id == report.service_id
-          )?.course_name;
-          return { report, course_name };
-        });
-
+          );
+          const counsellor_details = await Counsellor.find({service_id:report.counsellor_service_id}).select("name rank service_id").then(data=>data[0])
+          
+          return { report, course_name:counselee_details.course_name, counselee_details, counsellor_details };
+        }));
         res.status(200).json({ data: finalReports });
       });
     });
