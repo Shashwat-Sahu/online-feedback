@@ -108,7 +108,8 @@ function Pdf({data,session_index}) {
   return (
     <Document title="Feedback report">
       {data?.counselling_session?.map((session, ind) => {
-        
+        {console.log(session)}
+        let ogsessionlen = session.length
        const elem =  Array(Math.ceil((session?.length)/4))?.fill(1).map((_,pagePerSession)=>{
           
         let chunkarray = session.splice(0, 4);
@@ -164,6 +165,15 @@ function Pdf({data,session_index}) {
               }
               fixed
             />
+              {pagePerSession+1== Math.ceil((ogsessionlen)/4)?
+              
+            <View>
+                <Text>The counselee has been made aware of the drug policy</Text>
+                <Text>The counselee has been made aware of the IT policies</Text>
+                <Text>The counselee has been made aware regarding discipline and conduct</Text>
+            </View>
+              :""
+            }
           </Page>
         );
         

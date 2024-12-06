@@ -164,7 +164,7 @@ const AddStudent = () => {
       ],
     };
     var course_name = {
-      options: [{ name: "28 CCCN(O)" }, { name: "29 CCCN(O)" }],
+      options: [{ name: "28 CCCN(O)" }, { name: "29 CCCN(O)" },{ name: "30 CCCN(O)" },],
     };
     const options1 = [gender.options.map((opt) => opt.name)];
     const options2 = [qualification.options.map((opt) => opt.name)];
@@ -805,6 +805,9 @@ const AddStudent = () => {
 
                           <option style={{ color: "black" }} value="29 CCCN(O)">
                             29 CCCN(O)
+                          </option>
+                          <option style={{ color: "black" }} value="30 CCCN(O)">
+                            30 CCCN(O)
                           </option>
                         </Form.Select>
                         {!data.gender && (

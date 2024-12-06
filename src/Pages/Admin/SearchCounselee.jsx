@@ -49,7 +49,7 @@ const SearchCounselee = () => {
   const [message, setMessage] = useState({ message: null, error: null });
   const [submitting, setSubmitting] = useState(false);
   const [service_id,setService_id] = useState('')
-  const [filters,setFilters] = useState({course_name:['','']})
+  const [filters,setFilters] = useState({course_name:['','','']})
   const [filtersApplied, setFiltersApplied] = useState(false)
 
 
@@ -183,6 +183,15 @@ const SearchCounselee = () => {
                     }
                     control={<Checkbox name = "course_name" value = '29 CCCN(O)' checked={!!filters.course_name[1]} onChange={(e)=>handleFilter(e,1)}/>}
                   />
+                  <FormControlLabel
+                  name = "course_name"
+                    label={
+                      <Typography sx={{ fontColor: "black" }}>
+                        30 CCCN(O)
+                      </Typography>
+                    }
+                    control={<Checkbox name = "course_name" value = '30 CCCN(O)' checked={!!filters.course_name[2]} onChange={(e)=>handleFilter(e,2)}/>}
+                  />
                 </FormGroup>
                 <Button 
               onClick={()=>{handleClose();handleSubmit()}}
@@ -227,20 +236,21 @@ const SearchCounselee = () => {
                 {reports.map((report) => {
                   return (
                     <tr>
-                      <td>{report.counselee_details.service_id}</td>
+                      <td>{report.counselee_details?.service_id}</td>
                       <td>{report.course_name}</td>
                       <td>
+                        {console.log(report)}
                         Download Report{" "}
                         <BlobProvider
                                       document={
                                         <Pdf
                                           data={{
-                                            rank: report.counselee_details.rank,
+                                            rank: report.counselee_details?.rank,
                                             service_id:
                                             report.counselee_details?.service_id,
-                                            counselling_session: report.report.counselling_session,
-                                            counselling_session_timestamp: report.report.counselling_session,
-                                            name: report.counselee_details.name,
+                                            counselling_session: report.report?.counselling_session,
+                                            counselling_session_timestamp: report.report?.counselling_session_timestamp,
+                                            name: report.counselee_details?.name,
                                             counsellor:report.counsellor_details,
                                             ...FeedbackSuggestions.filter(
                                               (item) =>

@@ -4,7 +4,7 @@ const app = express();
 require("dotenv").config();
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO, {
+mongoose.connect(process.env.MONGO_LOCAL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
