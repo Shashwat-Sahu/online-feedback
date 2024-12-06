@@ -49,6 +49,9 @@ const CounseleeSchema = new mongoose.Schema({
   },
   course_name:{
     type:String,
+  },
+  key:{
+    type:String
   }
 });
 
